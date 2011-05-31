@@ -4,17 +4,47 @@
 package setvis;
 
 import java.awt.Polygon;
+import java.awt.Shape;
+import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
 
+import setvis.ch.RoundBorder;
+
 /**
  * Converts data types and values.
  * 
- * @author Joschi
+ * @author Joschi <josua.krause@googlemail.com>
  * 
  */
 public final class DataConverter {
+
+	/**
+	 * The method of Shape creation.
+	 * 
+	 * @author Joschi <josua.krause@googlemail.com>
+	 * 
+	 */
+	public static enum ShapeMethod {
+		POLY, QUAD, BEZIER,
+	}
+
+	/**
+	 * The default method to create shapes.
+	 */
+	private static final ShapeMethod DEFAULT_METHOD = ShapeMethod.POLY;
+
+	/**
+	 * The default radius of {@link #convertRect(Rectangle2D, double)}, which is
+	 * applied before outline creation.
+	 */
+	private static final double DEFAULT_RADIUS = 10.0;
+
+	/**
+	 * The default border size, which is applied after outline creation.
+	 */
+	private static final double DEFAULT_BORDER = 10.0;
 
 	private DataConverter() {
 		// not constructible
@@ -41,6 +71,120 @@ public final class DataConverter {
 	}
 
 	/**
+	 * Generates a path with quadratic interpolated lines.
+	 * 
+	 * @param points
+	 *            The vertices.
+	 * @return The path.
+	 */
+	public static GeneralPath convertToQuadPath(final Point2D[] points) {
+		final GeneralPath res = new GeneralPath();
+		final RoundBorder rb = new RoundBorder(points, false);
+		final int len = rb.getSize();
+		Point2D first = null;
+		final Point2D[] buff = new Point2D[2];
+		for (int i = 0; i < len; ++i) {
+			for (final Point2D p : rb.getOrthos(i, DEFAULT_BORDER)) {
+				if (first == null) {
+					first = p;
+					res.moveTo(p.getX(), p.getY());
+					continue;
+				}
+				feedPoint(res, buff, p);
+			}
+		}
+		feedPoint(res, buff, first);
+		if (buff[0] != null) {
+			feedPoint(res, buff, buff[0]);
+		}
+		return res;
+	}
+
+	/**
+	 * Adds a point to the buffer and flushes the buffer when it is full, by
+	 * drawing a quadratic interpolated curve.
+	 * 
+	 * @param path
+	 *            The path drawer.
+	 * @param buff
+	 *            The buffer of size 2.
+	 * @param p
+	 *            The new point.
+	 */
+	private static void feedPoint(final GeneralPath path, final Point2D[] buff,
+			final Point2D p) {
+		if (buff[0] == null) {
+			buff[0] = p;
+			return;
+		}
+		buff[1] = p;
+		if (buff[1] == null) {
+			return;
+		}
+		path.quadTo(buff[0].getX(), buff[0].getY(), buff[1].getX(),
+				buff[1].getY());
+		buff[0] = null;
+		buff[1] = null;
+	}
+
+	/**
+	 * Converts the vertices to a bezier interpolated path.
+	 * 
+	 * @param points
+	 *            The vertices.
+	 * @return The path.
+	 */
+	public static GeneralPath convertToBezierPath(final Point2D[] points) {
+		final GeneralPath res = new GeneralPath();
+		final RoundBorder rb = new RoundBorder(points, false);
+		final int len = rb.getSize();
+		Point2D first = null;
+		for (int i = 0; i < len; ++i) {
+			final Point2D[] vertices = rb.getOrthoBezier(i, DEFAULT_BORDER);
+			final Point2D p = vertices[0];
+			if (first == null) {
+				first = p;
+				res.moveTo(p.getX(), p.getY());
+			} else {
+				res.lineTo(p.getX(), p.getY());
+			}
+			final Point2D s = vertices[1];
+			final Point2D e = vertices[2];
+			if (s == null) {
+				res.lineTo(e.getX(), e.getY());
+				continue;
+			}
+			res.curveTo(s.getX(), s.getY(), s.getX(), s.getY(), e.getX(),
+					e.getY());
+		}
+		if (first != null) {
+			res.lineTo(first.getX(), first.getY());
+		}
+		return res;
+	}
+
+	/**
+	 * Converts vertices to a shape with the method given by
+	 * {@link #DEFAULT_METHOD}.
+	 * 
+	 * @param points
+	 *            The vertices.
+	 * @return The Shape.
+	 */
+	public static Shape convertToShape(final Point2D[] points) {
+		switch (DEFAULT_METHOD) {
+		case POLY:
+			return convertToPolygon(points);
+		case QUAD:
+			return convertToQuadPath(points);
+		case BEZIER:
+			return convertToBezierPath(points);
+		default:
+			throw new InternalError();
+		}
+	}
+
+	/**
 	 * Converts a list of rectangles into an array by calling
 	 * {@link #convertRect(Rectangle2D)} on each item.
 	 * 
@@ -56,11 +200,6 @@ public final class DataConverter {
 		}
 		return res;
 	}
-
-	/**
-	 * The default radius of {@link #convertRect(Rectangle2D, double)}.
-	 */
-	private static final double DEFAULT_RADIUS = 10.0;
 
 	/**
 	 * Calls {@link #convertRect(Rectangle2D, double)} with the

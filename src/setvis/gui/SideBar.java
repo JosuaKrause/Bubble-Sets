@@ -26,7 +26,7 @@ import javax.swing.event.ListSelectionListener;
 /**
  * The side bar for controlling the input to the {@link CanvasComponent}.
  * 
- * @author Joschi
+ * @author Joschi <josua.krause@googlemail.com>
  * 
  */
 public class SideBar extends JPanel {
@@ -58,7 +58,7 @@ public class SideBar extends JPanel {
 	 * A simple list model for maintaining groups of the {@link CanvasComponent}
 	 * .
 	 * 
-	 * @author Joschi
+	 * @author Joschi <josua.krause@googlemail.com>
 	 * 
 	 */
 	private class CanvasListModel extends AbstractListModel {

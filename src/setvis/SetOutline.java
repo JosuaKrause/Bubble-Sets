@@ -9,7 +9,7 @@ import java.awt.geom.Rectangle2D;
 /**
  * An interface for generating an outline for a set.
  * 
- * @author Joschi
+ * @author Joschi <josua.krause@googlemail.com>
  * 
  */
 public interface SetOutline {

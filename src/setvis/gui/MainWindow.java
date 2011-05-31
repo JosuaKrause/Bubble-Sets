@@ -14,7 +14,7 @@ import setvis.SetOutline;
 /**
  * The main window of the application.
  * 
- * @author Joschi
+ * @author Joschi <josua.krause@googlemail.com>
  * 
  */
 public class MainWindow extends JFrame {

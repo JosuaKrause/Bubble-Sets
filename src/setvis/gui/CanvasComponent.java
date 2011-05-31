@@ -7,7 +7,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.Polygon;
+import java.awt.RenderingHints;
+import java.awt.Shape;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
@@ -24,7 +25,7 @@ import setvis.SetOutline;
 /**
  * The component for maintaining and displaying the rectangles.
  * 
- * @author Joschi
+ * @author Joschi <josua.krause@googlemail.com>
  * 
  */
 public class CanvasComponent extends JComponent {
@@ -32,7 +33,7 @@ public class CanvasComponent extends JComponent {
 	/**
 	 * A class to identify a given rectangle.
 	 * 
-	 * @author Joschi
+	 * @author Joschi <josua.krause@googlemail.com>
 	 * 
 	 */
 	public class Position {
@@ -159,9 +160,9 @@ public class CanvasComponent extends JComponent {
 	};
 
 	/**
-	 * The cached polygons of the outlines.
+	 * The cached shapes of the outlines.
 	 */
-	private Polygon[] groupShapes;
+	private Shape[] groupShapes;
 
 	/**
 	 * The current group new rectangles will be added to.
@@ -389,27 +390,29 @@ public class CanvasComponent extends JComponent {
 	 */
 	public void moveItem(final Position pos, final double dx, final double dy) {
 		final Rectangle2D r = pos.rect;
-		r.setRect(r.getMinX() + dx, r.getMinY() + dy, r.getWidth(), r
-				.getHeight());
+		r.setRect(r.getMinX() + dx, r.getMinY() + dy, r.getWidth(),
+				r.getHeight());
 	}
 
 	@Override
 	public void paint(final Graphics gfx) {
 		final Graphics2D g2d = (Graphics2D) gfx;
+		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+				RenderingHints.VALUE_ANTIALIAS_ON);
 		final int count = getGroupCount();
 		if (groupShapes == null) {
 			// the cache needs to be recreated
-			groupShapes = new Polygon[count];
+			groupShapes = new Shape[count];
 			int i = 0;
 			for (final List<Rectangle2D> group : items) {
-				final Point2D[] points = set.createOutline(DataConverter
-						.convertToRect(group), DataConverter
-						.convertToRect(getNonMembers(i)));
+				final Point2D[] points = set.createOutline(
+						DataConverter.convertToRect(group),
+						DataConverter.convertToRect(getNonMembers(i)));
 				groupShapes[i++] = points.length > 0 ? DataConverter
-						.convertToPolygon(points) : null;
+						.convertToShape(points) : null;
 			}
 		}
-		// draw baclkground
+		// draw background
 		g2d.setColor(Color.WHITE);
 		final Rectangle2D r = getBounds();
 		g2d.fillRect(0, 0, (int) r.getWidth() - 1, (int) r.getHeight() - 1);
@@ -422,12 +425,12 @@ public class CanvasComponent extends JComponent {
 		for (int i = 0; i < items.size(); ++i) {
 			final Color c = new Color(Color.HSBtoRGB(hue, 0.7f, 1f));
 			final Color t = new Color(~0x80000000 & c.getRGB(), true);
-			final Polygon gs = groupShapes[pos];
+			final Shape gs = groupShapes[pos];
 			if (gs != null) {
 				g2d.setColor(t);
-				g2d.fillPolygon(gs);
+				g2d.fill(gs);
 				g2d.setColor(c);
-				g2d.drawPolygon(gs);
+				g2d.draw(gs);
 			}
 			hue += step;
 			++pos;

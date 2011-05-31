@@ -9,7 +9,7 @@ import setvis.gui.MainWindow;
 /**
  * Starts the main application.
  * 
- * @author Joschi
+ * @author Joschi <josua.krause@googlemail.com>
  * 
  */
 public final class Main {
