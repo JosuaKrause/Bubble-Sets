@@ -25,12 +25,12 @@ public class MainWindow extends JFrame {
 	/**
 	 * Creates the main window.
 	 * 
-	 * @param create
+	 * @param shaper
 	 *            The shape generator for the outlines.
 	 */
-	public MainWindow(final AbstractShapeCreator create) {
+	public MainWindow(final AbstractShapeCreator shaper) {
 		super("Set visualisation");
-		final CanvasComponent canvas = new CanvasComponent(create);
+		final CanvasComponent canvas = new CanvasComponent(shaper);
 		final JPanel pane = new JPanel(new BorderLayout());
 		pane.add(canvas, BorderLayout.CENTER);
 		pane.add(new SideBar(canvas), BorderLayout.EAST);

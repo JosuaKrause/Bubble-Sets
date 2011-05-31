@@ -66,7 +66,7 @@ public class CanvasComponent extends JComponent {
 	/**
 	 * The generator of the shapes of the sets.
 	 */
-	private final AbstractShapeCreator create;
+	private final AbstractShapeCreator shaper;
 
 	/**
 	 * A list of all groups containing lists of the group members.
@@ -84,7 +84,7 @@ public class CanvasComponent extends JComponent {
 			final double y = e.getY();
 			switch (e.getButton()) {
 			case MouseEvent.BUTTON1:
-				// left click -> create item
+				// left click -> shaper item
 				if (getItemsAt(x, y).isEmpty()) {
 					addItem(curItemGroup, x, y, curItemWidth, curItemHeight);
 				}
@@ -190,11 +190,11 @@ public class CanvasComponent extends JComponent {
 	/**
 	 * Creates a canvas component.
 	 * 
-	 * @param create
+	 * @param shaper
 	 *            The shape generator for the outlines.
 	 */
-	public CanvasComponent(final AbstractShapeCreator create) {
-		this.create = create;
+	public CanvasComponent(final AbstractShapeCreator shaper) {
+		this.shaper = shaper;
 		items = new ArrayList<List<Rectangle2D>>();
 		addGroup();
 		dx = 0.0;
@@ -247,6 +247,21 @@ public class CanvasComponent extends JComponent {
 		}
 		items.remove(last);
 		if (curItemGroup == last) {
+			curItemGroup = 0;
+		}
+		invalidateOutlines();
+	}
+
+	/**
+	 * Removes the group denoted by {@link #getCurrentGroup()}.
+	 */
+	public void removeSelectedGroup() {
+		if (items.size() <= 1) {
+			return;
+		}
+		items.remove(curItemGroup);
+		--curItemGroup;
+		if (curItemGroup < 0) {
 			curItemGroup = 0;
 		}
 		invalidateOutlines();
@@ -400,7 +415,7 @@ public class CanvasComponent extends JComponent {
 		final int count = getGroupCount();
 		if (groupShapes == null) {
 			// the cache needs to be recreated
-			groupShapes = create.createShapesForLists(items);
+			groupShapes = shaper.createShapesForLists(items);
 		}
 		// draw background
 		g2d.setColor(Color.WHITE);

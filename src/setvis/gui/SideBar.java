@@ -132,7 +132,7 @@ public class SideBar extends JPanel {
 
 			@Override
 			public void actionPerformed(final ActionEvent e) {
-				canvas.removeLastGroup();
+				canvas.removeSelectedGroup();
 				// the current group may have changed
 				list.setSelectedIndex(canvas.getCurrentGroup());
 				listModel.invalidate();

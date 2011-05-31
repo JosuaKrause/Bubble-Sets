@@ -15,15 +15,28 @@ import static setvis.VecUtil.subVec;
 import java.awt.Shape;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 
 import setvis.SetOutline;
 
 /**
+ * Generates a quadratic interpolated {@link Shape} for the vertices generated
+ * by {@link SetOutline#createOutline(Rectangle2D[], Rectangle2D[])}.
+ * 
  * @author Joschi <josua.krause@googlemail.com>
  * 
  */
 public class QuadShapeGenerator extends RoundShapeGenerator {
 
+	/**
+	 * Creates an {@link QuadShapeGenerator} with a given set outline creator.
+	 * 
+	 * @param outline
+	 *            The creator of the set outlines.
+	 * @param clockwise
+	 *            Whether the result of the set outlines are interpreted in
+	 *            clockwise order.
+	 */
 	public QuadShapeGenerator(final SetOutline outline, final boolean clockwise) {
 		super(outline, clockwise);
 	}
@@ -45,6 +58,7 @@ public class QuadShapeGenerator extends RoundShapeGenerator {
 			}
 		}
 		feedPoint(res, buff, first);
+		// close the line, if the buffer is not empty
 		if (buff[0] != null) {
 			feedPoint(res, buff, buff[0]);
 		}
@@ -78,7 +92,7 @@ public class QuadShapeGenerator extends RoundShapeGenerator {
 		buff[1] = null;
 	}
 
-	public Point2D[] getOrthos(final Point2D[] points, final int index,
+	private Point2D[] getOrthos(final Point2D[] points, final int index,
 			final double distance) {
 		final int len = points.length;
 		switch (len) {
