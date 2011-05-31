@@ -9,7 +9,7 @@ import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import setvis.SetOutline;
+import setvis.shape.AbstractShapeCreator;
 
 /**
  * The main window of the application.
@@ -25,12 +25,12 @@ public class MainWindow extends JFrame {
 	/**
 	 * Creates the main window.
 	 * 
-	 * @param set
-	 *            The outline generator.
+	 * @param create
+	 *            The shape generator for the outlines.
 	 */
-	public MainWindow(final SetOutline set) {
+	public MainWindow(final AbstractShapeCreator create) {
 		super("Set visualisation");
-		final CanvasComponent canvas = new CanvasComponent(set);
+		final CanvasComponent canvas = new CanvasComponent(create);
 		final JPanel pane = new JPanel(new BorderLayout());
 		pane.add(canvas, BorderLayout.CENTER);
 		pane.add(new SideBar(canvas), BorderLayout.EAST);

@@ -5,6 +5,8 @@ package setvis;
 
 import setvis.ch.ConvexHull;
 import setvis.gui.MainWindow;
+import setvis.shape.AbstractShapeCreator;
+import setvis.shape.PolygonShapeCreator;
 
 /**
  * Starts the main application.
@@ -27,6 +29,7 @@ public final class Main {
 	public static void main(final String[] args) {
 		// using a simple convex hull
 		final SetOutline setOutline = new ConvexHull();
-		new MainWindow(setOutline).setVisible(true);
+		final AbstractShapeCreator shaper = new PolygonShapeCreator(setOutline);
+		new MainWindow(shaper).setVisible(true);
 	}
 }

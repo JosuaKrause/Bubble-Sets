@@ -11,7 +11,6 @@ import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -19,8 +18,7 @@ import java.util.List;
 
 import javax.swing.JComponent;
 
-import setvis.DataConverter;
-import setvis.SetOutline;
+import setvis.shape.AbstractShapeCreator;
 
 /**
  * The component for maintaining and displaying the rectangles.
@@ -66,9 +64,9 @@ public class CanvasComponent extends JComponent {
 	private static final long serialVersionUID = -310139729093190621L;
 
 	/**
-	 * The generator of the outlines of the sets.
+	 * The generator of the shapes of the sets.
 	 */
-	private final SetOutline set;
+	private final AbstractShapeCreator create;
 
 	/**
 	 * A list of all groups containing lists of the group members.
@@ -192,11 +190,11 @@ public class CanvasComponent extends JComponent {
 	/**
 	 * Creates a canvas component.
 	 * 
-	 * @param set
-	 *            The outline generator.
+	 * @param create
+	 *            The shape generator for the outlines.
 	 */
-	public CanvasComponent(final SetOutline set) {
-		this.set = set;
+	public CanvasComponent(final AbstractShapeCreator create) {
+		this.create = create;
 		items = new ArrayList<List<Rectangle2D>>();
 		addGroup();
 		dx = 0.0;
@@ -390,8 +388,8 @@ public class CanvasComponent extends JComponent {
 	 */
 	public void moveItem(final Position pos, final double dx, final double dy) {
 		final Rectangle2D r = pos.rect;
-		r.setRect(r.getMinX() + dx, r.getMinY() + dy, r.getWidth(),
-				r.getHeight());
+		r.setRect(r.getMinX() + dx, r.getMinY() + dy, r.getWidth(), r
+				.getHeight());
 	}
 
 	@Override
@@ -402,15 +400,7 @@ public class CanvasComponent extends JComponent {
 		final int count = getGroupCount();
 		if (groupShapes == null) {
 			// the cache needs to be recreated
-			groupShapes = new Shape[count];
-			int i = 0;
-			for (final List<Rectangle2D> group : items) {
-				final Point2D[] points = set.createOutline(
-						DataConverter.convertToRect(group),
-						DataConverter.convertToRect(getNonMembers(i)));
-				groupShapes[i++] = points.length > 0 ? DataConverter
-						.convertToShape(points) : null;
-			}
+			groupShapes = create.createShapesForLists(items);
 		}
 		// draw background
 		g2d.setColor(Color.WHITE);
@@ -454,25 +444,6 @@ public class CanvasComponent extends JComponent {
 			hue += step;
 			++pos;
 		}
-	}
-
-	/**
-	 * Finds all items not belonging to the given group.
-	 * 
-	 * @param groupID
-	 *            The group.
-	 * @return All items not belonging to the group.
-	 */
-	private List<Rectangle2D> getNonMembers(final int groupID) {
-		final List<Rectangle2D> res = new LinkedList<Rectangle2D>();
-		int g = 0;
-		for (final List<Rectangle2D> group : items) {
-			if (g++ == groupID) {
-				continue;
-			}
-			res.addAll(group);
-		}
-		return res;
 	}
 
 }
