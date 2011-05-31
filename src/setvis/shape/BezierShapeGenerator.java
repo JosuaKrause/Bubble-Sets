@@ -54,13 +54,14 @@ public class BezierShapeGenerator extends RoundShapeGenerator {
 			} else {
 				res.lineTo(p.getX(), p.getY());
 			}
-			final Point2D s = vertices[1];
-			final Point2D e = vertices[2];
-			if (s == null) {
+			final Point2D s0 = vertices[1];
+			final Point2D s1 = vertices[2];
+			final Point2D e = vertices[3];
+			if (s0 == null) {
 				res.lineTo(e.getX(), e.getY());
 				continue;
 			}
-			res.curveTo(s.getX(), s.getY(), s.getX(), s.getY(), e.getX(), e
+			res.curveTo(s0.getX(), s0.getY(), s1.getX(), s1.getY(), e.getX(), e
 					.getY());
 		}
 		if (first != null) {
@@ -83,8 +84,12 @@ public class BezierShapeGenerator extends RoundShapeGenerator {
 		final Point2D nor = mulVec(normVec(or), distance);
 		final Point2D first = addVec(nor, point);
 		final Point2D second = addVec(nol, point);
-		return new Point2D[] { first, getIntersection(first, pr, second, lp),
-				second };
+		final Point2D s = getIntersection(first, pr, second, lp);
+		final Point2D s0 = s == null ? null : addVec(first, mulVec(subVec(s,
+				first), 0.5));
+		final Point2D s1 = s == null ? null : addVec(second, mulVec(subVec(s,
+				second), 0.5));
+		return new Point2D[] { first, s0, s1, second };
 	}
 
 	private Point2D getIntersection(final Point2D a, final Point2D v,
