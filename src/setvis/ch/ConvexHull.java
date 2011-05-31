@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.LinkedList;
 
-import setvis.GeomUtil;
+import setvis.VecUtil;
 import setvis.SetOutline;
 
 /**
@@ -57,13 +57,13 @@ public class ConvexHull implements SetOutline {
 		final Comparator<Point2D> cmp = new Comparator<Point2D>() {
 			@Override
 			public int compare(final Point2D o1, final Point2D o2) {
-				if (GeomUtil.isNull(ref, o1)) {
+				if (VecUtil.isNull(ref, o1)) {
 					return -1;
 				}
-				if (GeomUtil.isNull(ref, o2)) {
+				if (VecUtil.isNull(ref, o2)) {
 					return 1;
 				}
-				return -GeomUtil.relTo(ref, o1, o2);
+				return -VecUtil.relTo(ref, o1, o2);
 			}
 		};
 		Arrays.sort(all, cmp);
@@ -86,7 +86,7 @@ public class ConvexHull implements SetOutline {
 			final Point2D p1 = res.get(0);
 			final Point2D p2 = res.get(1);
 			final Point2D si = all[i];
-			if (GeomUtil.isNull(p2, p1) || GeomUtil.relTo(p2, p1, si) < 0) {
+			if (VecUtil.isNull(p2, p1) || VecUtil.relTo(p2, p1, si) < 0) {
 				res.removeFirst();
 				continue;
 			}
