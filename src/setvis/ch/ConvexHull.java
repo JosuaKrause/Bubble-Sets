@@ -9,8 +9,8 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.LinkedList;
 
-import setvis.VecUtil;
 import setvis.SetOutline;
+import setvis.VecUtil;
 
 /**
  * Calculates a convex hull outline, ignoring the non members. The convex hull
@@ -84,11 +84,13 @@ public class ConvexHull implements SetOutline {
 		final int n = all.length;
 		while (i < n) {
 			final Point2D p1 = res.get(0);
-			final Point2D p2 = res.get(1);
 			final Point2D si = all[i];
-			if (VecUtil.isNull(p2, p1) || VecUtil.relTo(p2, p1, si) < 0) {
-				res.removeFirst();
-				continue;
+			if (res.size() > 1) {
+				final Point2D p2 = res.get(1);
+				if (VecUtil.isNull(p2, p1) || VecUtil.relTo(p2, p1, si) < 0) {
+					res.removeFirst();
+					continue;
+				}
 			}
 			res.addFirst(si);
 			++i;
