@@ -32,7 +32,7 @@ public final class Main {
 		// final AbstractShapeCreator shaper = new
 		// PolygonShapeCreator(setOutline);
 		final AbstractShapeCreator shaper = new BezierShapeGenerator(
-				setOutline, true);
+				setOutline, true, true);
 		new MainWindow(shaper).setVisible(true);
 	}
 }
