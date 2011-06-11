@@ -159,8 +159,10 @@ public abstract class AbstractShapeCreator {
 	 *         returned rectangle is newly created.
 	 */
 	protected Rectangle2D mapRect(final Rectangle2D r) {
-		return new Rectangle2D.Double(r.getMinX(), r.getMinY(), r.getWidth(), r
-				.getHeight());
+		final double radius = getRadius();
+		final double dblRad = radius * 2.0;
+		return new Rectangle2D.Double(r.getMinX() - radius, r.getMinY()
+				- radius, r.getWidth() + dblRad, r.getHeight() + dblRad);
 	}
 
 	/**

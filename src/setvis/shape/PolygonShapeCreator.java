@@ -43,12 +43,4 @@ public class PolygonShapeCreator extends AbstractShapeCreator {
 		return new Polygon(x, y, size);
 	}
 
-	@Override
-	protected Rectangle2D mapRect(final Rectangle2D r) {
-		final double radius = getRadius();
-		final double dblRad = radius * 2.0;
-		return new Rectangle2D.Double(r.getMinX() - radius, r.getMinY()
-				- radius, r.getWidth() + dblRad, r.getHeight() + dblRad);
-	}
-
 }
