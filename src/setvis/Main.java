@@ -7,6 +7,7 @@ import setvis.ch.ConvexHull;
 import setvis.gui.MainWindow;
 import setvis.shape.AbstractShapeCreator;
 import setvis.shape.BezierShapeGenerator;
+import setvis.shape.PolygonShapeCreator;
 
 /**
  * Starts the main application.
@@ -15,6 +16,11 @@ import setvis.shape.BezierShapeGenerator;
  * 
  */
 public final class Main {
+
+	/**
+	 * Whether to use a bezier shape renderer or one with direct lines.
+	 */
+	public static boolean useBezierShape = true;
 
 	private Main() {
 		// no constructor
@@ -29,10 +35,9 @@ public final class Main {
 	public static void main(final String[] args) {
 		// using a simple convex hull
 		final SetOutline setOutline = new ConvexHull();
-		// final AbstractShapeCreator shaper = new
-		// PolygonShapeCreator(setOutline);
-		final AbstractShapeCreator shaper = new BezierShapeGenerator(
-				setOutline, true, true);
+		final AbstractShapeCreator shaper = useBezierShape ? new BezierShapeGenerator(
+				setOutline)
+				: new PolygonShapeCreator(setOutline);
 		new MainWindow(shaper).setVisible(true);
 	}
 }

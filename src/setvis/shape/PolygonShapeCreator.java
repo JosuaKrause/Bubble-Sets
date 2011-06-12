@@ -3,8 +3,8 @@
  */
 package setvis.shape;
 
-import java.awt.Polygon;
 import java.awt.Shape;
+import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
@@ -32,15 +32,22 @@ public class PolygonShapeCreator extends AbstractShapeCreator {
 
 	@Override
 	protected Shape convertToShape(final Point2D[] points) {
-		final int size = points.length;
-		final int[] x = new int[size];
-		final int[] y = new int[size];
-		int i = size;
-		while (--i >= 0) {
-			x[i] = (int) points[i].getX();
-			y[i] = (int) points[i].getY();
+		final GeneralPath res = new GeneralPath();
+		boolean first = true;
+		for (final Point2D pos : points) {
+			final double x = pos.getX();
+			final double y = pos.getY();
+			if (first) {
+				res.moveTo(x, y);
+				first = false;
+			} else {
+				res.lineTo(x, y);
+			}
 		}
-		return new Polygon(x, y, size);
+		if (!first) {
+			res.closePath();
+		}
+		return res;
 	}
 
 }

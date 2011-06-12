@@ -33,6 +33,18 @@ public class BezierShapeGenerator extends RoundShapeGenerator {
 
 	/**
 	 * Creates an {@link BezierShapeGenerator} with a given set outline creator.
+	 * The ordering is assumed to be clock-wise and the generator will use a
+	 * maximal radius for the curves.
+	 * 
+	 * @param outline
+	 *            The creator of the set outlines.
+	 */
+	public BezierShapeGenerator(final SetOutline outline) {
+		this(outline, true, true);
+	}
+
+	/**
+	 * Creates an {@link BezierShapeGenerator} with a given set outline creator.
 	 * 
 	 * @param outline
 	 *            The creator of the set outlines.
@@ -52,14 +64,14 @@ public class BezierShapeGenerator extends RoundShapeGenerator {
 	protected Shape convertToShape(final Point2D[] points) {
 		final GeneralPath res = new GeneralPath();
 		final int len = points.length;
-		Point2D first = null;
+		boolean first = true;
 		for (int i = 0; i < len; ++i) {
 			final Point2D[] vertices = hasMaxRadius ? getRestrictedBezier(
 					points, i) : getBezierForPoint(points, i);
 			final Point2D p = vertices[0];
-			if (first == null) {
+			if (first) {
 				res.moveTo(p.getX(), p.getY());
-				first = p;
+				first = false;
 			} else if (hasMaxRadius) {
 				res.lineTo(p.getX(), p.getY());
 			}
@@ -68,8 +80,8 @@ public class BezierShapeGenerator extends RoundShapeGenerator {
 			res.curveTo(s0.getX(), s0.getY(), s0.getX(), s0.getY(), s1.getX(),
 					s1.getY());
 		}
-		if (first != null && hasMaxRadius) {
-			res.lineTo(first.getX(), first.getY());
+		if (!first && hasMaxRadius) {
+			res.closePath();
 		}
 		return res;
 	}

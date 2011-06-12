@@ -29,7 +29,7 @@ public class MainWindow extends JFrame {
 	 *            The shape generator for the outlines.
 	 */
 	public MainWindow(final AbstractShapeCreator shaper) {
-		super("Set visualisation");
+		super("Set visualization");
 		final CanvasComponent canvas = new CanvasComponent(shaper);
 		final JPanel pane = new JPanel(new BorderLayout());
 		pane.add(canvas, BorderLayout.CENTER);
