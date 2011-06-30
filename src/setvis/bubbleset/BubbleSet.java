@@ -56,13 +56,23 @@ public class BubbleSet implements SetOutline {
 	public static long time = 0;
 	public static int renderings = 0;
 
-	// data column for aggregate member items which stores their distance to the
-	// aggregate centroid
-	private static final String CENTROID_DISTANCE = "CentroidDistance";
+	class MemberItem {
+		Rectangle2D member;
+		float[] centroidDistance;
+		Deque<Line2D> virtualEdges;
 
-	// data column for aggregate member items which stores their virtual edge
-	// set
-	private static final String VIRTUAL_EDGES = "VirtualEdges";
+		public double getX() {
+			return member.getX();
+		}
+
+		public double getY() {
+			return member.getY();
+		}
+
+		public Rectangle2D getBounds2D() {
+			return member.getBounds2D();
+		}
+	}
 
 	/** The maximum number of passes through all nodes to attempt edge rerouting */
 	private static final int MAX_ROUTING_ITERATIONS = 100;
@@ -176,8 +186,13 @@ public class BubbleSet implements SetOutline {
 
 		Rectangle2D bounds = null;
 
+		final MemberItem[] memberItems = new MemberItem[members.length];
+		for (int i = 0; i < members.length; i++) {
+			memberItems[i].member = members[i];
+		}
+
 		// calculate and store virtual edges
-		final ArrayList<Deque<Line2D>> virtualEdges = calculateVirtualEdges(members);
+		calculateVirtualEdges(memberItems, nonMembers);
 
 		// cycle through members of aggregate adding to bounds of influence
 		for (int memberIndex = 0; memberIndex < members.length; memberIndex++) {
@@ -186,15 +201,15 @@ public class BubbleSet implements SetOutline {
 				// need to start with item bounds (not empty bounds because 0,0
 				// may not be
 				// in area of influence
-				bounds = (Rectangle2D) members[memberIndex].getBounds().clone();
+				bounds = (Rectangle2D) memberItems[memberIndex].getBounds2D()
+						.clone();
 			} else {
-				bounds.add(members[memberIndex].getBounds());
+				bounds.add(memberItems[memberIndex].getBounds2D());
 			}
 
 			// add the bounds of the virtual edges to the active area
-			if (virtualEdges.get(memberIndex) != null) {
-				final Deque<Line2D> virtualMemberEdges = (Deque<Line2D>) virtualEdges
-						.get(memberIndex);
+			if (memberItems[memberIndex].virtualEdges != null) {
+				final Deque<Line2D> virtualMemberEdges = memberItems[memberIndex].virtualEdges;
 				final Iterator<Line2D> lines = virtualMemberEdges.iterator();
 				while (lines.hasNext()) {
 					bounds.add(lines.next().getBounds2D());
@@ -693,38 +708,35 @@ public class BubbleSet implements SetOutline {
 	 * 
 	 * @param aitem
 	 */
-	private void calculateVirtualEdges(final AggregateItem aitem) {
-		final Deque<VisualItem> visited = new ArrayDeque<VisualItem>();
+	private void calculateVirtualEdges(final MemberItem[] memberItems,
+			final Rectangle2D[] nonMembers) {
+		final Deque<MemberItem> visited = new ArrayDeque<MemberItem>();
 
-		final Iterator aNodeItems = getSortedNodeIterator(aitem, centroidSort);
+		final Iterator memberIterator = getSortedItemIterator(memberItems,
+				centroidSort);
 
-		while (aNodeItems.hasNext()) {
-			final VisualItem item = (VisualItem) aNodeItems.next();
-			boolean itemConnected = false;
+		while (memberIterator.hasNext()) {
+			final MemberItem item = (MemberItem) memberIterator.next();
+			final boolean itemConnected = false;
 
-			// check for visible edge structure connecting this node to others
-			if ((useStructuralEdges) && (item instanceof NodeItem)) {
-				final NodeItem nodeItem = (NodeItem) item;
-				final Iterator edgeIterator = aitem
-						.items(VISIBLE_EDGE_PREDICATE);
-				while (edgeIterator.hasNext()) {
-					final EdgeItem edge = (EdgeItem) edgeIterator.next();
-					// check to see if this edge connects the current node
-					if ((edge.getTargetItem() == item)
-							|| (edge.getSourceItem() == nodeItem)) {
-						if (aitem.containsItem(edge.getAdjacentItem(nodeItem))) {
-							// edge connects this item to another item in
-							// aggregate
-							itemConnected = true;
-						}
-					}
-				}
-			}
-
+			/*
+			 * // check for visible edge structure connecting this node to
+			 * others if ((useStructuralEdges) && (item instanceof NodeItem)) {
+			 * final NodeItem nodeItem = (NodeItem) item; final Iterator
+			 * edgeIterator = aitem .items(VISIBLE_EDGE_PREDICATE); while
+			 * (edgeIterator.hasNext()) { final EdgeItem edge = (EdgeItem)
+			 * edgeIterator.next(); // check to see if this edge connects the
+			 * current node if ((edge.getTargetItem() == item) ||
+			 * (edge.getSourceItem() == nodeItem)) { if
+			 * (aitem.containsItem(edge.getAdjacentItem(nodeItem))) { // edge
+			 * connects this item to another item in // aggregate itemConnected
+			 * = true; } } } }
+			 */
 			if (!itemConnected) {
-				item.set(VIRTUAL_EDGES, connectItem(aitem, item, visited));
+				item.virtualEdges = connectItem(memberItems, nonMembers, item,
+						visited);
 			} else {
-				item.set(VIRTUAL_EDGES, new ArrayDeque<Line2D>());
+				item.virtualEdges = new ArrayDeque<Line2D>();
 			}
 			visited.add(item);
 		}
@@ -745,9 +757,10 @@ public class BubbleSet implements SetOutline {
 	 * @return a deque containing the virtual edges which connect the item to
 	 *         its best neighbour
 	 */
-	private Deque<Line2D> connectItem(final AggregateItem aitem,
-			final VisualItem item, final Collection<VisualItem> visited) {
-		VisualItem closestNeighbour = null;
+	private Deque<Line2D> connectItem(final MemberItem[] memberItems,
+			final Rectangle2D[] nonMemberItems, final MemberItem item,
+			final Collection<MemberItem> visited) {
+		MemberItem closestNeighbour = null;
 		Deque<Line2D> scannedLines = new ArrayDeque<Line2D>();
 		final Deque<Line2D> linesToCheck = new ArrayDeque<Line2D>();
 
@@ -759,7 +772,7 @@ public class BubbleSet implements SetOutline {
 		double minLength = Double.MAX_VALUE;
 		while (neighbourIterator.hasNext()) {
 			double numberInterferenceItems = 0;
-			final VisualItem neighbourItem = (VisualItem) neighbourIterator
+			final MemberItem neighbourItem = (MemberItem) neighbourIterator
 					.next();
 			final double distance = Point2D.distance(item.getX(), item.getY(),
 					neighbourItem.getX(), neighbourItem.getY());
@@ -773,10 +786,9 @@ public class BubbleSet implements SetOutline {
 				// augment distance by number of interfering items
 				final Line2D completeLine = new Line2D.Double(item.getX(),
 						item.getY(), neighbourItem.getX(), neighbourItem.getY());
-				final Iterator interferenceItems = m_vis.getVisualGroup(
-						sourceGroup).tuples(visibleNodePredicate);
+				final Iterator interferenceItems = nonMembers.iterator();
 				numberInterferenceItems = countInterferenceItems(
-						interferenceItems, aitem, completeLine);
+						interferenceItems, memberItems, completeLine);
 				// add all non interference edges
 				/*
 				 * if (numberInterferenceItems == 0) {
