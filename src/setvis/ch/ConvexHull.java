@@ -7,7 +7,9 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Set;
 
 import setvis.SetOutline;
 import setvis.VecUtil;
@@ -27,8 +29,7 @@ public class ConvexHull implements SetOutline {
 		if (members.length == 0) {
 			return new Point2D[0];
 		}
-		final Point2D[] all = new Point2D[members.length * 4];
-		int pos = 0;
+		final Set<Point2D> all = new HashSet<Point2D>();
 		Point2D ref = null;
 		for (final Rectangle2D r : members) {
 			final Point2D p = new Point2D.Double(r.getMinX(), r.getMaxY());
@@ -36,13 +37,14 @@ public class ConvexHull implements SetOutline {
 					|| (p.getY() == ref.getY() && p.getX() < ref.getX())) {
 				ref = p;
 			}
-			all[pos++] = p;
-			all[pos++] = new Point2D.Double(r.getMaxX(), r.getMinY());
-			all[pos++] = new Point2D.Double(r.getMaxX(), r.getMaxY());
-			all[pos++] = new Point2D.Double(r.getMinX(), r.getMinY());
+			all.add(p);
+			all.add(new Point2D.Double(r.getMaxX(), r.getMinY()));
+			all.add(new Point2D.Double(r.getMaxX(), r.getMaxY()));
+			all.add(new Point2D.Double(r.getMinX(), r.getMinY()));
 		}
-		sortPolar(all, ref);
-		return grahamScan(all);
+		final Point2D[] points = all.toArray(new Point2D[all.size()]);
+		sortPolar(points, ref);
+		return grahamScan(points);
 	}
 
 	/**
@@ -87,7 +89,7 @@ public class ConvexHull implements SetOutline {
 			final Point2D si = all[i];
 			if (res.size() > 1) {
 				final Point2D p2 = res.get(1);
-				if (VecUtil.isNull(p2, p1) || VecUtil.relTo(p2, p1, si) < 0) {
+				if (VecUtil.isNull(p2, p1) || VecUtil.relTo(p2, p1, si) <= 0) {
 					res.removeFirst();
 					continue;
 				}

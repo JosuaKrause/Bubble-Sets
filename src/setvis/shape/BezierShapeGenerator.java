@@ -66,6 +66,9 @@ public class BezierShapeGenerator extends RoundShapeGenerator {
 		final int len = points.length;
 		boolean first = true;
 		for (int i = 0; i < len; ++i) {
+			final Point2D a = points[i];
+			final Point2D b = points[getOtherIndex(i, len, false)];
+			final Point2D c = points[getOtherIndex(i, len, true)];
 			final Point2D[] vertices = hasMaxRadius ? getRestrictedBezier(
 					points, i) : getBezierForPoint(points, i);
 			final Point2D p = vertices[0];
@@ -75,8 +78,13 @@ public class BezierShapeGenerator extends RoundShapeGenerator {
 			} else if (hasMaxRadius) {
 				res.lineTo(p.getX(), p.getY());
 			}
-			final Point2D s0 = vertices[1];
 			final Point2D s1 = vertices[2];
+			if ((a.getX() == b.getX() && b.getX() == c.getX())
+					|| (a.getY() == b.getY() && b.getY() == c.getY())) {
+				res.lineTo(s1.getX(), s1.getY());
+				continue;
+			}
+			final Point2D s0 = vertices[1];
 			res.curveTo(s0.getX(), s0.getY(), s0.getX(), s0.getY(), s1.getX(),
 					s1.getY());
 		}

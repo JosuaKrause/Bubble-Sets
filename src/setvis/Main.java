@@ -36,8 +36,7 @@ public final class Main {
 		// using a simple convex hull
 		final SetOutline setOutline = new ConvexHull();
 		final AbstractShapeCreator shaper = useBezierShape ? new BezierShapeGenerator(
-				setOutline)
-				: new PolygonShapeCreator(setOutline);
+				setOutline) : new PolygonShapeCreator(setOutline);
 		new MainWindow(shaper).setVisible(true);
 	}
 }
