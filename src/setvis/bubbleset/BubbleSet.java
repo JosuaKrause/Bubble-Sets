@@ -758,7 +758,7 @@ public class BubbleSet implements SetOutline {
 	 *         its best neighbour
 	 */
 	private Deque<Line2D> connectItem(final MemberItem[] memberItems,
-			final Rectangle2D[] nonMemberItems, final MemberItem item,
+			final Rectangle2D[] nonMembers, final MemberItem item,
 			final Collection<MemberItem> visited) {
 		MemberItem closestNeighbour = null;
 		Deque<Line2D> scannedLines = new ArrayDeque<Line2D>();
@@ -786,9 +786,8 @@ public class BubbleSet implements SetOutline {
 				// augment distance by number of interfering items
 				final Line2D completeLine = new Line2D.Double(item.getX(),
 						item.getY(), neighbourItem.getX(), neighbourItem.getY());
-				final Iterator interferenceItems = nonMembers.iterator();
-				numberInterferenceItems = countInterferenceItems(
-						interferenceItems, memberItems, completeLine);
+				numberInterferenceItems = countInterferenceItems(nonMembers,
+						memberItems, completeLine);
 				// add all non interference edges
 				/*
 				 * if (numberInterferenceItems == 0) {
@@ -823,16 +822,12 @@ public class BubbleSet implements SetOutline {
 					hasIntersection = false;
 					while (!hasIntersection && !linesToCheck.isEmpty()) {
 						final Line2D line = linesToCheck.pop();
-
 						// move virtual edges around nodes, not other edges
 						// (routing around edges would be too difficult)
-						final Iterator interferenceItems = m_vis
-								.getVisualGroup(sourceGroup).tuples(
-										visibleNodePredicate);
 
 						// resolve intersections in order along edge
-						final VisualItem closestItem = getCenterItem(
-								interferenceItems, aitem, line);
+						final Rectangle2D closestItem = getCenterItem(
+								nonMembers, memberItems, line);
 
 						if (closestItem != null) {
 							numIntersections = testIntersection(line,
@@ -1195,63 +1190,48 @@ public class BubbleSet implements SetOutline {
 	 * @param testLine
 	 * @return the closest item or null if there are no intersections.
 	 */
-	public VisualItem getCenterItem(final Iterator interferenceItems,
-			final AggregateItem currentAggregate, final Line2D testLine) {
+	public Rectangle2D getCenterItem(final Rectangle2D[] nonMembers,
+			final MemberItem[] memberItems, final Line2D testLine) {
 		double minDistance = Double.MAX_VALUE;
-		VisualItem closestItem = null;
+		Rectangle2D closestItem = null;
 
-		while (interferenceItems.hasNext()) {
-			final VisualItem interferenceItem = (VisualItem) interferenceItems
-					.next();
-			if (!currentAggregate.containsItem(interferenceItem)) {
-
-				// only test if overlap is possible (QUES not sure if this is
-				// faster b/c it adds some tests to every item)
-				if ((interferenceItem.getBounds().getMinX() <= (Math.max(
-						testLine.getX1(), testLine.getX2()))
-						&& (interferenceItem.getBounds().getMinY() <= Math.max(
-								testLine.getY1(), testLine.getY2())) && ((interferenceItem
-						.getBounds().getMaxX() >= (Math.min(testLine.getX1(),
-						testLine.getX2())) && (interferenceItem.getBounds()
-						.getMaxY() >= Math.min(testLine.getY1(),
-						testLine.getY2())))))) {
-
-					final double distance = fractionToLineCenter(
-							interferenceItem.getBounds(), testLine);
-					// find closest intersection
-					if ((distance != -1) && (distance < minDistance)) {
-						closestItem = interferenceItem;
-						minDistance = distance;
-					}
+		for (final Rectangle2D interferenceItem : nonMembers) {
+			// only test if overlap is possible (QUES not sure if this is
+			// faster b/c it adds some tests to every item)
+			if ((interferenceItem.getBounds().getMinX() <= (Math.max(
+					testLine.getX1(), testLine.getX2()))
+					&& (interferenceItem.getBounds().getMinY() <= Math.max(
+							testLine.getY1(), testLine.getY2())) && ((interferenceItem
+					.getBounds().getMaxX() >= (Math.min(testLine.getX1(),
+					testLine.getX2())) && (interferenceItem.getBounds()
+					.getMaxY() >= Math.min(testLine.getY1(), testLine.getY2())))))) {
+				final double distance = fractionToLineCenter(
+						interferenceItem.getBounds(), testLine);
+				// find closest intersection
+				if ((distance != -1) && (distance < minDistance)) {
+					closestItem = interferenceItem;
+					minDistance = distance;
 				}
 			}
 		}
 		return closestItem;
 	}
 
-	public int countInterferenceItems(final Iterator interferenceItems,
-			final AggregateItem currentAggregate, final Line2D testLine) {
+	public int countInterferenceItems(final Rectangle2D[] interferenceItems,
+			final MemberItem[] memberItems, final Line2D testLine) {
 		int count = 0;
-		while (interferenceItems.hasNext()) {
-			final VisualItem interferenceItem = (VisualItem) interferenceItems
-					.next();
-			if (!currentAggregate.containsItem(interferenceItem)) {
-				// only test if overlap is possible (QUES not sure if this is
-				// faster b/c it adds some tests to every item)
-				// only test if overlap is possible (QUES not sure if this is
-				// faster b/c it adds some tests to every item)
-				if ((interferenceItem.getBounds().getMinX() <= (Math.max(
-						testLine.getX1(), testLine.getX2()))
-						&& (interferenceItem.getBounds().getMinY() <= Math.max(
-								testLine.getY1(), testLine.getY2())) && ((interferenceItem
-						.getBounds().getMaxX() >= (Math.min(testLine.getX1(),
-						testLine.getX2())) && (interferenceItem.getBounds()
-						.getMaxY() >= Math.min(testLine.getY1(),
-						testLine.getY2())))))) {
-					if (fractionToLineCenter(interferenceItem.getBounds(),
-							testLine) != -1) {
-						count++;
-					}
+		for (final Rectangle2D interferenceItem : interferenceItems) {
+			// only test if overlap is possible (QUES not sure if this is
+			// faster b/c it adds some tests to every item)
+			if ((interferenceItem.getBounds().getMinX() <= (Math.max(
+					testLine.getX1(), testLine.getX2()))
+					&& (interferenceItem.getBounds().getMinY() <= Math.max(
+							testLine.getY1(), testLine.getY2())) && ((interferenceItem
+					.getBounds().getMaxX() >= (Math.min(testLine.getX1(),
+					testLine.getX2())) && (interferenceItem.getBounds()
+					.getMaxY() >= Math.min(testLine.getY1(), testLine.getY2())))))) {
+				if (fractionToLineCenter(interferenceItem.getBounds(), testLine) != -1) {
+					count++;
 				}
 			}
 		}
