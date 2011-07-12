@@ -85,7 +85,8 @@ public abstract class AbstractShapeCreator {
 		final Shape[] res = new Shape[items.size()];
 		int i = 0;
 		for (final Rectangle2D[] group : items) {
-			res[i++] = createShapeFor(group, getNonMembers(items, i));
+			res[i] = createShapeFor(group, getNonMembers(items, i));
+			i++;
 		}
 		return res;
 	}
@@ -103,6 +104,7 @@ public abstract class AbstractShapeCreator {
 			final int groupID) {
 		final List<Rectangle2D> res = new LinkedList<Rectangle2D>();
 		int g = 0;
+
 		for (final Rectangle2D[] group : items) {
 			if (g++ == groupID) {
 				continue;

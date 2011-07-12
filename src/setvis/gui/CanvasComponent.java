@@ -403,8 +403,8 @@ public class CanvasComponent extends JComponent {
 	 */
 	public void moveItem(final Position pos, final double dx, final double dy) {
 		final Rectangle2D r = pos.rect;
-		r.setRect(r.getMinX() + dx, r.getMinY() + dy, r.getWidth(), r
-				.getHeight());
+		r.setRect(r.getMinX() + dx, r.getMinY() + dy, r.getWidth(),
+				r.getHeight());
 	}
 
 	@Override

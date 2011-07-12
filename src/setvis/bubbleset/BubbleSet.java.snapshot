@@ -132,7 +132,7 @@ public class BubbleSet implements SetOutline {
 	 * the radius for the contour around a single node -- the point at which the
 	 * energy is 1
 	 */
-	private final double nodeR0 = 15;
+	private final double nodeR0 = 30;
 	/**
 	 * the radius at which potential reaches zero -- the extent of energy
 	 * contribution by the node

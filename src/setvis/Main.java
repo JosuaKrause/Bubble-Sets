@@ -3,7 +3,7 @@
  */
 package setvis;
 
-import setvis.ch.ConvexHull;
+import setvis.bubbleset.BubbleSet;
 import setvis.gui.MainWindow;
 import setvis.shape.AbstractShapeCreator;
 import setvis.shape.BezierShapeGenerator;
@@ -34,7 +34,7 @@ public final class Main {
 	 */
 	public static void main(final String[] args) {
 		// using a simple convex hull
-		final SetOutline setOutline = new ConvexHull();
+		final SetOutline setOutline = new BubbleSet();
 		final AbstractShapeCreator shaper = useBezierShape ? new BezierShapeGenerator(
 				setOutline) : new PolygonShapeCreator(setOutline);
 		new MainWindow(shaper).setVisible(true);
