@@ -17,7 +17,7 @@ import setvis.shape.AbstractShapeCreator;
  * @author Joschi <josua.krause@googlemail.com>
  * 
  */
-public class MainWindow extends JFrame {
+public class MainWindow extends JFrame implements CanvasListener {
 
 	// serial version uid
 	private static final long serialVersionUID = -7857037941409543268L;
@@ -40,8 +40,9 @@ public class MainWindow extends JFrame {
 	 */
 	public MainWindow(final AbstractShapeCreator shaper) {
 		super("Set visualization");
-		canvas = new CanvasComponent(this, shaper);
+		canvas = new CanvasComponent(shaper);
 		sideBar = new SideBar(canvas);
+		canvas.addCanvasListener(this);
 		final JPanel pane = new JPanel(new BorderLayout());
 		pane.add(canvas, BorderLayout.CENTER);
 		pane.add(sideBar, BorderLayout.EAST);
@@ -52,13 +53,9 @@ public class MainWindow extends JFrame {
 		setLocationRelativeTo(null);
 	}
 
-	/**
-	 * Is automatically called when the canvas changes.
-	 */
+	@Override
 	public void canvasChanged() {
-		if (sideBar != null) {
-			sideBar.invalidateGroupList();
-		}
+		sideBar.invalidateGroupList();
 	}
 
 	/**
@@ -66,6 +63,12 @@ public class MainWindow extends JFrame {
 	 */
 	public Canvas getCanvas() {
 		return canvas;
+	}
+
+	@Override
+	public void dispose() {
+		canvas.removeCanvasListener(this);
+		super.dispose();
 	}
 
 }

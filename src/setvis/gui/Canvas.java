@@ -17,6 +17,26 @@ import setvis.shape.AbstractShapeCreator;
 public interface Canvas {
 
 	/**
+	 * Adds a canvas listener.
+	 * 
+	 * @param listener
+	 *            The listener to add. If it is <code>null</code> an
+	 *            {@link NullPointerException} is thrown.
+	 */
+	void addCanvasListener(CanvasListener listener);
+
+	/**
+	 * @param listener
+	 *            The canvas listener to remove.
+	 */
+	void removeCanvasListener(CanvasListener listener);
+
+	/**
+	 * Repaints the canvas.
+	 */
+	void repaint();
+
+	/**
 	 * Sets the shape and outline generator by its type.
 	 * 
 	 * @param outlineType

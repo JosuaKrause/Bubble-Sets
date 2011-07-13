@@ -71,9 +71,9 @@ public class CanvasComponent extends JComponent implements Canvas {
 	private static final long serialVersionUID = -310139729093190621L;
 
 	/**
-	 * The parent of this component.
+	 * The list of canvas listeners.
 	 */
-	private final MainWindow parent;
+	private final List<CanvasListener> canvasListeners;
 
 	/**
 	 * A list of all groups containing lists of the group members.
@@ -202,16 +202,12 @@ public class CanvasComponent extends JComponent implements Canvas {
 	/**
 	 * Creates a canvas component.
 	 * 
-	 * @param parent
-	 *            The parent of this component.
-	 * 
 	 * @param shaper
 	 *            The shape generator for the outlines.
 	 */
-	public CanvasComponent(final MainWindow parent,
-			final AbstractShapeCreator shaper) {
-		this.parent = parent;
+	public CanvasComponent(final AbstractShapeCreator shaper) {
 		this.shaper = shaper;
+		canvasListeners = new LinkedList<CanvasListener>();
 		items = new ArrayList<List<Rectangle2D>>();
 		addGroup();
 		dx = 0.0;
@@ -279,13 +275,36 @@ public class CanvasComponent extends JComponent implements Canvas {
 		this.dy += dy;
 	}
 
+	@Override
+	public void addCanvasListener(final CanvasListener listener) {
+		if (listener == null) {
+			throw new NullPointerException("listener");
+		}
+		canvasListeners.add(listener);
+		listener.canvasChanged();
+	}
+
+	@Override
+	public void removeCanvasListener(final CanvasListener listener) {
+		canvasListeners.remove(listener);
+	}
+
+	/**
+	 * Notifies all canvas listeners.
+	 */
+	protected void notifyCanvasListeners() {
+		for (final CanvasListener cl : canvasListeners) {
+			cl.canvasChanged();
+		}
+	}
+
 	/**
 	 * Signalizes that something has changed. This results in clearing the
 	 * outline cache, notifying the parent and a call to {@link #repaint()}.
 	 */
 	protected void invalidateOutlines() {
 		groupShapes = null;
-		parent.canvasChanged();
+		notifyCanvasListeners();
 		repaint();
 	}
 
@@ -397,8 +416,8 @@ public class CanvasComponent extends JComponent implements Canvas {
 	@Override
 	public void moveItem(final Position pos, final double dx, final double dy) {
 		final Rectangle2D r = pos.rect;
-		r.setRect(r.getMinX() + dx, r.getMinY() + dy, r.getWidth(),
-				r.getHeight());
+		r.setRect(r.getMinX() + dx, r.getMinY() + dy, r.getWidth(), r
+				.getHeight());
 	}
 
 	@Override
