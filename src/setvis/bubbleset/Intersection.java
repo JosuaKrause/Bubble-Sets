@@ -12,9 +12,12 @@ import java.awt.geom.Rectangle2D;
  */
 public class Intersection extends Point2D.Double {
 
+	/** the serial version UID */
+	private static final long serialVersionUID = 8788447626238369821L;
+
 	public enum State {
 		Point, Parallel, Coincident, None
-	};
+	}
 
 	private final State state;
 
@@ -35,7 +38,9 @@ public class Intersection extends Point2D.Double {
 	 * Calculate the intersection of two line segments.
 	 * 
 	 * @param a
+	 *            TODO
 	 * @param b
+	 *            TODO
 	 * @return an Intersection item storing the type of intersection and the
 	 *         exact point if any was found
 	 */
@@ -76,8 +81,10 @@ public class Intersection extends Point2D.Double {
 	 * on line a. This is slightly faster than determining the actual
 	 * intersection coordinates.
 	 * 
-	 * @param bounds
-	 * @param line
+	 * @param a
+	 *            TODO
+	 * @param b
+	 *            TODO
 	 * @return the smallest fraction along the line that indicates an
 	 *         intersection point
 	 */
@@ -106,7 +113,9 @@ public class Intersection extends Point2D.Double {
 	 * determining the actual intersection coordinates.
 	 * 
 	 * @param bounds
+	 *            TODO
 	 * @param line
+	 *            TODO
 	 * @return the smallest fraction along the line that indicates an
 	 *         intersection point
 	 */
@@ -192,7 +201,9 @@ public class Intersection extends Point2D.Double {
 	 * actual intersection coordinates.
 	 * 
 	 * @param bounds
+	 *            TODO
 	 * @param line
+	 *            TODO
 	 * @return the smallest fraction along the line that indicates an
 	 *         intersection point
 	 */
@@ -270,7 +281,7 @@ public class Intersection extends Point2D.Double {
 	 * 
 	 * @param line
 	 *            the line to test
-	 * @param rectangle
+	 * @param bounds
 	 *            the rectangular bounds to test each side of
 	 * @param intersections
 	 *            an array of at least 4 intersections where the intersections
