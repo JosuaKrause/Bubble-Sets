@@ -78,7 +78,7 @@ public class BubbleSet implements SetOutline {
 	 * The size of square super pixels used for calculations (larger results in
 	 * lower resolution contours and faster calculations).
 	 */
-	private int pixelGroup = 3;
+	private int pixelGroup = 4;
 
 	/**
 	 * The radius for the contour around a virtual edge -- the point at which
@@ -110,6 +110,12 @@ public class BubbleSet implements SetOutline {
 	private double morphBuffer = nodeR0;
 
 	/**
+	 * Number of points to skip in the marching squares when making the contour.
+	 * Larger numbers create smoother, but less precise curves.
+	 */
+	private int skip = 8;
+
+	/**
 	 * Create a new BubbleSet calculation instance with the given parameters.
 	 * 
 	 * @param routingIterations
@@ -136,10 +142,15 @@ public class BubbleSet implements SetOutline {
 	 * @param morphBuffer
 	 *            the buffer distance to route the bubble set around interfering
 	 *            rectangles; usually nodeR0 is a good value
+	 * @param skip
+	 *            the number of points to skip in the marching squares when
+	 *            making the contour. Larger numbers create smoother, but less
+	 *            precise curves
 	 */
 	public BubbleSet(final int routingIterations, final int marchingIterations,
 			final int pixelGroup, final double edgeR0, final double edgeR1,
-			final double nodeR0, final double nodeR1, final double morphBuffer) {
+			final double nodeR0, final double nodeR1, final double morphBuffer,
+			final int skip) {
 		maxRoutingIterations = routingIterations;
 		maxMarchingIterations = marchingIterations;
 		this.pixelGroup = pixelGroup;
@@ -148,6 +159,7 @@ public class BubbleSet implements SetOutline {
 		this.nodeR0 = nodeR0;
 		this.nodeR1 = nodeR1;
 		this.morphBuffer = morphBuffer;
+		this.skip = skip;
 	}
 
 	/**
@@ -157,25 +169,8 @@ public class BubbleSet implements SetOutline {
 		// use default paramters
 	}
 
-	// skip every N points in the marching squares when making the contour
-	private int skip = 10;
-
-	/**
-	 * @return the number of points to skip in the marching squares when making
-	 *         the contour
-	 */
-	public int getSkip() {
-		return skip;
-	}
-
-	/**
-	 * @param skip
-	 *            the number of points to skip in the marching squares when
-	 *            making the contour
-	 */
-	public void setSkip(final int skip) {
-		this.skip = skip;
-	}
+	// FIELDS BELOW ARE USED BY THE ALGORITHM AND GENERALLY SHOULD NOT BE
+	// CHANGED (HENCE NO GET/SET)
 
 	/**
 	 * The energy threshold for marching squares
@@ -1564,5 +1559,118 @@ public class BubbleSet implements SetOutline {
 		// will only get here if intersection was along edge (parallel) or at a
 		// corner
 		return null;
+	}
+
+	// ///////////////////////
+	// GETTERS / SETTERS
+	// ///////////////////////
+
+	/**
+	 * @return the size of square super pixels used for calculations (larger
+	 *         results in lower resolution contours and faster calculations).
+	 */
+	public int getPixelGroup() {
+		return pixelGroup;
+	}
+
+	/**
+	 * @param pixelGroup
+	 *            the size of square super pixels used for calculations (larger
+	 *            results in lower resolution contours and faster calculations).
+	 */
+	public void setPixelGroup(final int pixelGroup) {
+		this.pixelGroup = pixelGroup;
+	}
+
+	/**
+	 * @return the edgeR0
+	 */
+	public double getEdgeR0() {
+		return edgeR0;
+	}
+
+	/**
+	 * @param edgeR0
+	 *            the edgeR0 to set
+	 */
+	public void setEdgeR0(final double edgeR0) {
+		this.edgeR0 = edgeR0;
+	}
+
+	/**
+	 * @return the edgeR1
+	 */
+	public double getEdgeR1() {
+		return edgeR1;
+	}
+
+	/**
+	 * @param edgeR1
+	 *            the edgeR1 to set
+	 */
+	public void setEdgeR1(final double edgeR1) {
+		this.edgeR1 = edgeR1;
+	}
+
+	/**
+	 * @return the nodeR0
+	 */
+	public double getNodeR0() {
+		return nodeR0;
+	}
+
+	/**
+	 * @param nodeR0
+	 *            the nodeR0 to set
+	 */
+	public void setNodeR0(final double nodeR0) {
+		this.nodeR0 = nodeR0;
+	}
+
+	/**
+	 * @return the nodeR1
+	 */
+	public double getNodeR1() {
+		return nodeR1;
+	}
+
+	/**
+	 * @param nodeR1
+	 *            the nodeR1 to set
+	 */
+	public void setNodeR1(final double nodeR1) {
+		this.nodeR1 = nodeR1;
+	}
+
+	/**
+	 * @return the morphBuffer
+	 */
+	public double getMorphBuffer() {
+		return morphBuffer;
+	}
+
+	/**
+	 * @param morphBuffer
+	 *            the morphBuffer to set
+	 */
+	public void setMorphBuffer(final double morphBuffer) {
+		this.morphBuffer = morphBuffer;
+	}
+
+	/**
+	 * @return the number of points to skip in the marching squares when making
+	 *         the contour
+	 */
+	public int getSkip() {
+		return skip;
+	}
+
+	/**
+	 * @param skip
+	 *            the number of points to skip in the marching squares when
+	 *            making the contour
+	 */
+	public void setSkip(final int skip) {
+		this.skip = skip;
 	}
 }
