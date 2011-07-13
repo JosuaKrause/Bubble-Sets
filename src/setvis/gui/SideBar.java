@@ -5,6 +5,8 @@ package setvis.gui;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -13,6 +15,7 @@ import javax.swing.AbstractListModel;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -22,6 +25,11 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
+import setvis.OutlineType;
+import setvis.SetOutline;
+import setvis.ShapeType;
+import setvis.shape.AbstractShapeCreator;
 
 /**
  * The side bar for controlling the input to the {@link CanvasComponent}.
@@ -52,7 +60,7 @@ public class SideBar extends JPanel {
 	/**
 	 * The underlying canvas.
 	 */
-	private final CanvasComponent canvas;
+	private final Canvas canvas;
 
 	/**
 	 * A simple list model for maintaining groups of the {@link CanvasComponent}
@@ -85,17 +93,50 @@ public class SideBar extends JPanel {
 
 	}
 
+	/** The canvas list model. */
+	private final CanvasListModel listModel;
+
+	/** The constraints for the layout. */
+	private final GridBagConstraints constraint;
+
 	/**
-	 * Creates a side bar for the given {@link CanvasComponent}.
+	 * Creates a side bar for the given {@link Canvas}.
 	 * 
 	 * @param cc
-	 *            The {@link CanvasComponent}.
+	 *            The {@link Canvas}.
 	 */
-	public SideBar(final CanvasComponent cc) {
+	public SideBar(final Canvas cc) {
 		canvas = cc;
-		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		final CanvasListModel listModel = new CanvasListModel();
+		setLayout(new GridBagLayout());
+		constraint = new GridBagConstraints();
+		constraint.gridx = 0;
+		constraint.fill = GridBagConstraints.BOTH;
+		// determine the current status
+		final AbstractShapeCreator asc = cc.getShapeCreator();
+		final SetOutline so = asc.getSetOutline();
+		// the combo-box for outlines
+		final JComboBox outlineBox = new JComboBox(OutlineType.values());
+		outlineBox.setSelectedItem(OutlineType.getFor(so));
+		addHor(new JLabel("Outline:"), outlineBox);
+		// the combo-box for shape creators
+		final JComboBox shapeBox = new JComboBox(ShapeType.values());
+		shapeBox.setSelectedItem(ShapeType.getFor(asc));
+		addHor(new JLabel("Shape:"), shapeBox);
+		// interaction for the shape and outline combo-boxes
+		final ActionListener shapeOutlineListener = new ActionListener() {
+
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				cc.setShapeAndOutline(
+						(OutlineType) outlineBox.getSelectedItem(),
+						(ShapeType) shapeBox.getSelectedItem());
+			}
+
+		};
+		outlineBox.addActionListener(shapeOutlineListener);
+		shapeBox.addActionListener(shapeOutlineListener);
 		// the groups list
+		listModel = new CanvasListModel();
 		final JList list = new JList(listModel);
 		list.setSelectedIndex(cc.getCurrentGroup());
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -109,7 +150,7 @@ public class SideBar extends JPanel {
 			}
 
 		});
-		add(new JScrollPane(list));
+		add(new JScrollPane(list), constraint);
 		// adding and removing groups
 		final JButton addGroup = new JButton(new AbstractAction("+") {
 
@@ -121,7 +162,7 @@ public class SideBar extends JPanel {
 				canvas.addGroup();
 				// select the newly created group
 				list.setSelectedIndex(canvas.getGroupCount() - 1);
-				listModel.invalidate();
+				invalidateGroupList();
 			}
 
 		});
@@ -135,11 +176,19 @@ public class SideBar extends JPanel {
 				canvas.removeSelectedGroup();
 				// the current group may have changed
 				list.setSelectedIndex(canvas.getCurrentGroup());
-				listModel.invalidate();
+				invalidateGroupList();
 			}
 
 		});
+		constraint.fill = GridBagConstraints.VERTICAL;
 		addHor(addGroup, remGroup);
+		constraint.fill = GridBagConstraints.BOTH;
+		// add empty filling space
+		final JPanel empty = new JPanel();
+		constraint.weighty = 1.0;
+		// empty.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		add(empty, constraint);
+		constraint.weighty = 0.0;
 		// the rectangle width and height input fields
 		final JTextField width = new JTextField(4);
 		final JTextField height = new JTextField(4);
@@ -179,7 +228,6 @@ public class SideBar extends JPanel {
 		};
 		width.addActionListener(bounds);
 		height.addActionListener(bounds);
-		add(Box.createVerticalGlue());
 		addHor(new JLabel("width:"), width);
 		addHor(new JLabel("height:"), height);
 	}
@@ -202,6 +250,14 @@ public class SideBar extends JPanel {
 			}
 			hor.add(c);
 		}
-		add(hor);
+		add(hor, constraint);
 	}
+
+	/**
+	 * Advises the list to recheck its content.
+	 */
+	public void invalidateGroupList() {
+		listModel.invalidate();
+	}
+
 }

@@ -36,6 +36,13 @@ public abstract class AbstractShapeCreator {
 	}
 
 	/**
+	 * @return The underlying outline generator.
+	 */
+	public SetOutline getSetOutline() {
+		return setOutline;
+	}
+
+	/**
 	 * The radius that should be added to the rectangles for the outline
 	 * creation.
 	 */

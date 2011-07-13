@@ -23,6 +23,16 @@ public class MainWindow extends JFrame {
 	private static final long serialVersionUID = -7857037941409543268L;
 
 	/**
+	 * The underlying canvas.
+	 */
+	private final CanvasComponent canvas;
+
+	/**
+	 * The underlying side bar.
+	 */
+	private final SideBar sideBar;
+
+	/**
 	 * Creates the main window.
 	 * 
 	 * @param shaper
@@ -30,15 +40,32 @@ public class MainWindow extends JFrame {
 	 */
 	public MainWindow(final AbstractShapeCreator shaper) {
 		super("Set visualization");
-		final CanvasComponent canvas = new CanvasComponent(shaper);
+		canvas = new CanvasComponent(this, shaper);
+		sideBar = new SideBar(canvas);
 		final JPanel pane = new JPanel(new BorderLayout());
 		pane.add(canvas, BorderLayout.CENTER);
-		pane.add(new SideBar(canvas), BorderLayout.EAST);
+		pane.add(sideBar, BorderLayout.EAST);
 		add(pane);
 		setPreferredSize(new Dimension(640, 480));
 		pack();
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(null);
+	}
+
+	/**
+	 * Is automatically called when the canvas changes.
+	 */
+	public void canvasChanged() {
+		if (sideBar != null) {
+			sideBar.invalidateGroupList();
+		}
+	}
+
+	/**
+	 * @return The canvas represented in this window.
+	 */
+	public Canvas getCanvas() {
+		return canvas;
 	}
 
 }

@@ -18,7 +18,14 @@ import java.util.List;
 
 import javax.swing.JComponent;
 
+import setvis.OutlineType;
+import setvis.SetOutline;
+import setvis.ShapeType;
+import setvis.bubbleset.BubbleSet;
+import setvis.ch.ConvexHull;
 import setvis.shape.AbstractShapeCreator;
+import setvis.shape.BezierShapeGenerator;
+import setvis.shape.PolygonShapeCreator;
 
 /**
  * The component for maintaining and displaying the rectangles.
@@ -26,7 +33,7 @@ import setvis.shape.AbstractShapeCreator;
  * @author Joschi <josua.krause@googlemail.com>
  * 
  */
-public class CanvasComponent extends JComponent {
+public class CanvasComponent extends JComponent implements Canvas {
 
 	/**
 	 * A class to identify a given rectangle.
@@ -64,9 +71,9 @@ public class CanvasComponent extends JComponent {
 	private static final long serialVersionUID = -310139729093190621L;
 
 	/**
-	 * The generator of the shapes of the sets.
+	 * The parent of this component.
 	 */
-	private final AbstractShapeCreator shaper;
+	private final MainWindow parent;
 
 	/**
 	 * A list of all groups containing lists of the group members.
@@ -158,6 +165,11 @@ public class CanvasComponent extends JComponent {
 	};
 
 	/**
+	 * The generator of the shapes of the sets.
+	 */
+	private AbstractShapeCreator shaper;
+
+	/**
 	 * The cached shapes of the outlines.
 	 */
 	private Shape[] groupShapes;
@@ -190,10 +202,15 @@ public class CanvasComponent extends JComponent {
 	/**
 	 * Creates a canvas component.
 	 * 
+	 * @param parent
+	 *            The parent of this component.
+	 * 
 	 * @param shaper
 	 *            The shape generator for the outlines.
 	 */
-	public CanvasComponent(final AbstractShapeCreator shaper) {
+	public CanvasComponent(final MainWindow parent,
+			final AbstractShapeCreator shaper) {
+		this.parent = parent;
 		this.shaper = shaper;
 		items = new ArrayList<List<Rectangle2D>>();
 		addGroup();
@@ -206,14 +223,57 @@ public class CanvasComponent extends JComponent {
 		addMouseMotionListener(mouse);
 	}
 
-	/**
-	 * Translates the whole scene.
-	 * 
-	 * @param dx
-	 *            The translation on the x axis.
-	 * @param dy
-	 *            The translation on the y axis.
-	 */
+	@Override
+	public void setShapeAndOutline(final OutlineType outlineType,
+			final ShapeType shapeType) {
+		final SetOutline oldOut = shaper.getSetOutline();
+		final OutlineType oldType = OutlineType.getFor(oldOut);
+		SetOutline outline;
+		if (oldType == outlineType) {
+			final ShapeType oldShapeType = ShapeType.getFor(shaper);
+			if (oldShapeType == shapeType) {
+				return;
+			}
+			outline = oldOut;
+		} else {
+			switch (outlineType) {
+			case BUBBLE_SETS:
+				// TODO: configurable
+				outline = new BubbleSet();
+				break;
+			case CONVEX_HULL:
+				outline = new ConvexHull();
+				break;
+			default:
+				throw new InternalError("" + outlineType);
+			}
+		}
+		AbstractShapeCreator asc;
+		switch (shapeType) {
+		case LINES:
+			asc = new PolygonShapeCreator(outline);
+			break;
+		case BEZIER:
+			asc = new BezierShapeGenerator(outline);
+			break;
+		default:
+			throw new InternalError("" + shapeType);
+		}
+		setShapeCreator(asc);
+	}
+
+	@Override
+	public void setShapeCreator(final AbstractShapeCreator shaper) {
+		this.shaper = shaper;
+		invalidateOutlines();
+	}
+
+	@Override
+	public AbstractShapeCreator getShapeCreator() {
+		return shaper;
+	}
+
+	@Override
 	public void translateScene(final double dx, final double dy) {
 		this.dx += dx;
 		this.dy += dy;
@@ -221,25 +281,22 @@ public class CanvasComponent extends JComponent {
 
 	/**
 	 * Signalizes that something has changed. This results in clearing the
-	 * outline cache and a call to {@link #repaint()}.
+	 * outline cache, notifying the parent and a call to {@link #repaint()}.
 	 */
 	protected void invalidateOutlines() {
 		groupShapes = null;
+		parent.canvasChanged();
 		repaint();
 	}
 
-	/**
-	 * Adds a new empty group.
-	 */
+	@Override
 	public void addGroup() {
 		curItemGroup = items.size();
 		items.add(new LinkedList<Rectangle2D>());
 		invalidateOutlines();
 	}
 
-	/**
-	 * Removes the most recently added group.
-	 */
+	@Override
 	public void removeLastGroup() {
 		final int last = items.size() - 1;
 		if (last == 0) {
@@ -252,9 +309,7 @@ public class CanvasComponent extends JComponent {
 		invalidateOutlines();
 	}
 
-	/**
-	 * Removes the group denoted by {@link #getCurrentGroup()}.
-	 */
+	@Override
 	public void removeSelectedGroup() {
 		if (items.size() <= 1) {
 			return;
@@ -267,79 +322,42 @@ public class CanvasComponent extends JComponent {
 		invalidateOutlines();
 	}
 
-	/**
-	 * Sets the group to which newly created items will be added.
-	 * 
-	 * @param curItemGroup
-	 *            The new group id.
-	 */
+	@Override
 	public void setCurrentGroup(final int curItemGroup) {
 		this.curItemGroup = curItemGroup;
 	}
 
-	/**
-	 * @return The current group id. It determines the group of newly created
-	 *         items.
-	 */
+	@Override
 	public int getCurrentGroup() {
 		return curItemGroup;
 	}
 
-	/**
-	 * @return The number of distinct groups.
-	 */
+	@Override
 	public int getGroupCount() {
 		return items.size();
 	}
 
-	/**
-	 * Sets the width newly created items will get.
-	 * 
-	 * @param curItemWidth
-	 *            The new width.
-	 */
+	@Override
 	public void setCurrentItemWidth(final int curItemWidth) {
 		this.curItemWidth = curItemWidth;
 	}
 
-	/**
-	 * @return The width newly created items will get.
-	 */
+	@Override
 	public int getCurrentItemWidth() {
 		return curItemWidth;
 	}
 
-	/**
-	 * Sets the height newly created items will get.
-	 * 
-	 * @param curItemHeight
-	 *            The new height.
-	 */
+	@Override
 	public void setCurrentItemHeight(final int curItemHeight) {
 		this.curItemHeight = curItemHeight;
 	}
 
-	/**
-	 * @return The height newly created items will get.
-	 */
+	@Override
 	public int getCurrentItemHeight() {
 		return curItemHeight;
 	}
 
-	/**
-	 * Adds a new item to the canvas.
-	 * 
-	 * @param groupID
-	 *            The group id.
-	 * @param tx
-	 *            The x position in component coordinates.
-	 * @param ty
-	 *            The y position in component coordinates.
-	 * @param width
-	 *            The width.
-	 * @param height
-	 *            The height.
-	 */
+	@Override
 	public void addItem(final int groupID, final double tx, final double ty,
 			final double width, final double height) {
 		final double x = tx - dx;
@@ -349,15 +367,7 @@ public class CanvasComponent extends JComponent {
 				width, height));
 	}
 
-	/**
-	 * Generates a list of all items at the position {@code (tx, ty)}.
-	 * 
-	 * @param tx
-	 *            The x value in component coordinates.
-	 * @param ty
-	 *            The y value in component coordinates.
-	 * @return A list of {@link Position}s.
-	 */
+	@Override
 	public List<Position> getItemsAt(final double tx, final double ty) {
 		final double x = tx - dx;
 		final double y = ty - dy;
@@ -375,14 +385,7 @@ public class CanvasComponent extends JComponent {
 		return res;
 	}
 
-	/**
-	 * Removes all items at the given position.
-	 * 
-	 * @param x
-	 *            The x value in component coordinates.
-	 * @param y
-	 *            The y value in component coordinates.
-	 */
+	@Override
 	public void removeItem(final double x, final double y) {
 		final List<Position> pos = getItemsAt(x, y);
 		for (final Position p : pos) {
@@ -391,16 +394,7 @@ public class CanvasComponent extends JComponent {
 		}
 	}
 
-	/**
-	 * Moves the item given by {@code pos}.
-	 * 
-	 * @param pos
-	 *            The identifier for the item.
-	 * @param dx
-	 *            The translation on the x axis.
-	 * @param dy
-	 *            The translation on the y axis.
-	 */
+	@Override
 	public void moveItem(final Position pos, final double dx, final double dy) {
 		final Rectangle2D r = pos.rect;
 		r.setRect(r.getMinX() + dx, r.getMinY() + dy, r.getWidth(),
