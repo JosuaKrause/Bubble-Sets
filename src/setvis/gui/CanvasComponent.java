@@ -101,7 +101,7 @@ public class CanvasComponent extends JComponent implements Canvas {
 				removeItem(x, y);
 				break;
 			}
-			invalidateOutlines();
+			invalidateOutlines(CanvasListener.ITEMS);
 		}
 
 		// the last mouse position
@@ -157,7 +157,7 @@ public class CanvasComponent extends JComponent implements Canvas {
 				for (final Position p : items) {
 					moveItem(p, dx, dy);
 				}
-				invalidateOutlines();
+				invalidateOutlines(CanvasListener.ITEMS);
 			}
 			repaint();
 		}
@@ -261,7 +261,7 @@ public class CanvasComponent extends JComponent implements Canvas {
 	@Override
 	public void setShapeCreator(final AbstractShapeCreator shaper) {
 		this.shaper = shaper;
-		invalidateOutlines();
+		invalidateOutlines(CanvasListener.GENERATORS);
 	}
 
 	@Override
@@ -273,6 +273,7 @@ public class CanvasComponent extends JComponent implements Canvas {
 	public void translateScene(final double dx, final double dy) {
 		this.dx += dx;
 		this.dy += dy;
+		notifyCanvasListeners(CanvasListener.TRANSLATION);
 	}
 
 	@Override
@@ -281,7 +282,7 @@ public class CanvasComponent extends JComponent implements Canvas {
 			throw new NullPointerException("listener");
 		}
 		canvasListeners.add(listener);
-		listener.canvasChanged();
+		listener.canvasChanged(CanvasListener.ALL);
 	}
 
 	@Override
@@ -291,20 +292,28 @@ public class CanvasComponent extends JComponent implements Canvas {
 
 	/**
 	 * Notifies all canvas listeners.
+	 * 
+	 * @param changes
+	 *            The changes of the canvas as defined in
+	 *            {@link CanvasListener#canvasChanged(int)}.
 	 */
-	protected void notifyCanvasListeners() {
+	protected void notifyCanvasListeners(final int changes) {
 		for (final CanvasListener cl : canvasListeners) {
-			cl.canvasChanged();
+			cl.canvasChanged(changes);
 		}
 	}
 
 	/**
 	 * Signalizes that something has changed. This results in clearing the
 	 * outline cache, notifying the parent and a call to {@link #repaint()}.
+	 * 
+	 * @param changes
+	 *            The changes of the canvas as defined in
+	 *            {@link CanvasListener#canvasChanged(int)}.
 	 */
-	protected void invalidateOutlines() {
+	protected void invalidateOutlines(final int changes) {
 		groupShapes = null;
-		notifyCanvasListeners();
+		notifyCanvasListeners(changes);
 		repaint();
 	}
 
@@ -312,7 +321,7 @@ public class CanvasComponent extends JComponent implements Canvas {
 	public void addGroup() {
 		curItemGroup = items.size();
 		items.add(new LinkedList<Rectangle2D>());
-		invalidateOutlines();
+		invalidateOutlines(CanvasListener.GROUPS);
 	}
 
 	@Override
@@ -325,7 +334,7 @@ public class CanvasComponent extends JComponent implements Canvas {
 		if (curItemGroup == last) {
 			curItemGroup = 0;
 		}
-		invalidateOutlines();
+		invalidateOutlines(CanvasListener.GROUPS);
 	}
 
 	@Override
@@ -338,12 +347,13 @@ public class CanvasComponent extends JComponent implements Canvas {
 		if (curItemGroup < 0) {
 			curItemGroup = 0;
 		}
-		invalidateOutlines();
+		invalidateOutlines(CanvasListener.GROUPS);
 	}
 
 	@Override
 	public void setCurrentGroup(final int curItemGroup) {
 		this.curItemGroup = curItemGroup;
+		notifyCanvasListeners(CanvasListener.GROUPS);
 	}
 
 	@Override
@@ -359,6 +369,7 @@ public class CanvasComponent extends JComponent implements Canvas {
 	@Override
 	public void setCurrentItemWidth(final int curItemWidth) {
 		this.curItemWidth = curItemWidth;
+		notifyCanvasListeners(CanvasListener.RECT_SIZE);
 	}
 
 	@Override
@@ -369,6 +380,7 @@ public class CanvasComponent extends JComponent implements Canvas {
 	@Override
 	public void setCurrentItemHeight(final int curItemHeight) {
 		this.curItemHeight = curItemHeight;
+		notifyCanvasListeners(CanvasListener.RECT_SIZE);
 	}
 
 	@Override
@@ -384,6 +396,7 @@ public class CanvasComponent extends JComponent implements Canvas {
 		final List<Rectangle2D> group = items.get(groupID);
 		group.add(new Rectangle2D.Double(x - width * 0.5, y - height * 0.5,
 				width, height));
+		notifyCanvasListeners(CanvasListener.ITEMS);
 	}
 
 	@Override
@@ -411,6 +424,7 @@ public class CanvasComponent extends JComponent implements Canvas {
 			final List<Rectangle2D> group = items.get(p.groupID);
 			group.remove(p.rect);
 		}
+		notifyCanvasListeners(CanvasListener.ITEMS);
 	}
 
 	@Override
@@ -418,6 +432,7 @@ public class CanvasComponent extends JComponent implements Canvas {
 		final Rectangle2D r = pos.rect;
 		r.setRect(r.getMinX() + dx, r.getMinY() + dy, r.getWidth(), r
 				.getHeight());
+		notifyCanvasListeners(CanvasListener.ITEMS);
 	}
 
 	@Override

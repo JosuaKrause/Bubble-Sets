@@ -32,6 +32,7 @@ public final class Main {
 		final AbstractShapeCreator shaper = new BezierShapeGenerator(setOutline);
 		final MainWindow mw = new MainWindow(shaper);
 		final Canvas canvas = mw.getCanvas();
+		// a simple example item set
 		final double w = canvas.getCurrentItemWidth();
 		final double h = canvas.getCurrentItemHeight();
 		canvas.addItem(0, 163.0, 141.0, w, h);
@@ -41,7 +42,6 @@ public final class Main {
 		canvas.addItem(1, 162.0, 219.0, w, h);
 		canvas.addItem(1, 373.0, 194.0, w, h);
 		canvas.addItem(1, 288.0, 328.0, w, h);
-		canvas.setCurrentGroup(0);
 		mw.setVisible(true);
 	}
 }

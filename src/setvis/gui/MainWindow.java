@@ -54,8 +54,8 @@ public class MainWindow extends JFrame implements CanvasListener {
 	}
 
 	@Override
-	public void canvasChanged() {
-		sideBar.invalidateGroupList();
+	public void canvasChanged(final int changes) {
+		sideBar.somethingChanged(changes);
 	}
 
 	/**

@@ -96,6 +96,21 @@ public class SideBar extends JPanel {
 	/** The canvas list model. */
 	private final CanvasListModel listModel;
 
+	/** The groups list. */
+	private final JList list;
+
+	/** The text field for the rectangle width. */
+	private final JTextField width;
+
+	/** The text field for the rectangle height. */
+	private final JTextField height;
+
+	/** The box for choosing the outline generator. */
+	private final JComboBox outlineBox;
+
+	/** The box for choosing the shape generator. */
+	private final JComboBox shapeBox;
+
 	/** The constraints for the layout. */
 	private final GridBagConstraints constraint;
 
@@ -115,11 +130,11 @@ public class SideBar extends JPanel {
 		final AbstractShapeCreator asc = cc.getShapeCreator();
 		final SetOutline so = asc.getSetOutline();
 		// the combo-box for outlines
-		final JComboBox outlineBox = new JComboBox(OutlineType.values());
+		outlineBox = new JComboBox(OutlineType.values());
 		outlineBox.setSelectedItem(OutlineType.getFor(so));
 		addHor(new JLabel("Outline:"), outlineBox);
 		// the combo-box for shape creators
-		final JComboBox shapeBox = new JComboBox(ShapeType.values());
+		shapeBox = new JComboBox(ShapeType.values());
 		shapeBox.setSelectedItem(ShapeType.getFor(asc));
 		addHor(new JLabel("Shape:"), shapeBox);
 		// interaction for the shape and outline combo-boxes
@@ -127,9 +142,9 @@ public class SideBar extends JPanel {
 
 			@Override
 			public void actionPerformed(final ActionEvent e) {
-				cc.setShapeAndOutline(
-						(OutlineType) outlineBox.getSelectedItem(),
-						(ShapeType) shapeBox.getSelectedItem());
+				cc.setShapeAndOutline((OutlineType) outlineBox
+						.getSelectedItem(), (ShapeType) shapeBox
+						.getSelectedItem());
 			}
 
 		};
@@ -137,7 +152,7 @@ public class SideBar extends JPanel {
 		shapeBox.addActionListener(shapeOutlineListener);
 		// the groups list
 		listModel = new CanvasListModel();
-		final JList list = new JList(listModel);
+		list = new JList(listModel);
 		list.setSelectedIndex(cc.getCurrentGroup());
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		list.setLayoutOrientation(JList.VERTICAL);
@@ -162,7 +177,6 @@ public class SideBar extends JPanel {
 				canvas.addGroup();
 				// select the newly created group
 				list.setSelectedIndex(canvas.getGroupCount() - 1);
-				invalidateGroupList();
 			}
 
 		});
@@ -174,9 +188,6 @@ public class SideBar extends JPanel {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				canvas.removeSelectedGroup();
-				// the current group may have changed
-				list.setSelectedIndex(canvas.getCurrentGroup());
-				invalidateGroupList();
 			}
 
 		});
@@ -190,8 +201,8 @@ public class SideBar extends JPanel {
 		add(empty, constraint);
 		constraint.weighty = 0.0;
 		// the rectangle width and height input fields
-		final JTextField width = new JTextField(4);
-		final JTextField height = new JTextField(4);
+		width = new JTextField(4);
+		height = new JTextField(4);
 		width.setMaximumSize(width.getPreferredSize());
 		height.setMaximumSize(height.getPreferredSize());
 		width.setText("" + canvas.getCurrentItemWidth());
@@ -254,10 +265,45 @@ public class SideBar extends JPanel {
 	}
 
 	/**
-	 * Advises the list to recheck its content.
+	 * Is called when something on the outside has changed.
+	 * 
+	 * @param changes
+	 *            The type of changes as defined in
+	 *            {@link CanvasListener#canvasChanged(int)}.
 	 */
-	public void invalidateGroupList() {
-		listModel.invalidate();
+	public void somethingChanged(final int changes) {
+		if ((changes & CanvasListener.GROUPS) != 0) {
+			list.setSelectedIndex(canvas.getCurrentGroup());
+			listModel.invalidate();
+		}
+		if ((changes & CanvasListener.GENERATORS) != 0) {
+			final AbstractShapeCreator asc = canvas.getShapeCreator();
+			final SetOutline so = asc.getSetOutline();
+			outlineBox.setSelectedItem(OutlineType.getFor(so));
+			shapeBox.setSelectedItem(ShapeType.getFor(asc));
+		}
+		if ((changes & CanvasListener.RECT_SIZE) != 0) {
+			final int cw = canvas.getCurrentItemWidth();
+			final String tw = "" + cw;
+			try {
+				final int w = Integer.parseInt(width.getText());
+				if (cw != w) {
+					width.setText(tw);
+				}
+			} catch (final NumberFormatException e) {
+				width.setText(tw);
+			}
+			final int ch = canvas.getCurrentItemHeight();
+			final String th = "" + ch;
+			try {
+				final int h = Integer.parseInt(height.getText());
+				if (ch != h) {
+					height.setText(th);
+				}
+			} catch (final NumberFormatException e) {
+				height.setText(th);
+			}
+		}
 	}
 
 }
