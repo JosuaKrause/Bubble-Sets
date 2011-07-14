@@ -16,25 +16,37 @@ import setvis.shape.PolygonShapeCreator;
 public enum ShapeType {
 
 	/** Direct line shape generator. */
-	LINES(PolygonShapeCreator.class),
+	LINES("Direct Lines", PolygonShapeCreator.class),
 
 	/** Bezier line shape generator. */
-	BEZIER(BezierShapeGenerator.class),
+	BEZIER("Bezier Curves", BezierShapeGenerator.class),
 
 	;
 
 	/** The associated class. */
 	private final Class<? extends AbstractShapeCreator> assocClass;
 
+	/** A readable name. */
+	private final String name;
+
 	/**
 	 * Creates an outline type.
 	 * 
+	 * @param name
+	 *            A readable name.
 	 * @param assocClass
 	 *            The associated class. It is used to reverse lookup types from
 	 *            {@link AbstractShapeCreator} objects.
 	 */
-	private ShapeType(final Class<? extends AbstractShapeCreator> assocClass) {
+	private ShapeType(final String name,
+			final Class<? extends AbstractShapeCreator> assocClass) {
+		this.name = name;
 		this.assocClass = assocClass;
+	}
+
+	@Override
+	public String toString() {
+		return name;
 	}
 
 	/** The lookup map. */

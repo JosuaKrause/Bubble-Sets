@@ -30,9 +30,12 @@ public interface Canvas {
 	void removeCanvasListener(CanvasListener listener);
 
 	/**
-	 * Repaints the canvas.
+	 * Fires canvas changes and repaint the canvas.
+	 * 
+	 * @param changes
+	 *            The changes as defined in {@link CanvasListener}.
 	 */
-	void repaint();
+	void fireCanvasChange(int changes);
 
 	/**
 	 * Sets the shape and outline generator by its type.

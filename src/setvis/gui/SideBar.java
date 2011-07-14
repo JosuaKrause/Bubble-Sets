@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.AbstractAction;
 import javax.swing.AbstractListModel;
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -116,6 +117,15 @@ public class SideBar extends JPanel {
 	/** The slider for the border size. */
 	private final JSlider borderSlider;
 
+	/** The label for the slider for the border size. */
+	private final JLabel borderSliderLabel;
+
+	/** The outline dependent panel. */
+	private final JPanel outlinePanel;
+
+	/** The content of the outline panel. */
+	private AbstractOutlineConfiguration outlineContent;
+
 	/** The constraints for the layout. */
 	private GridBagConstraints constraint;
 
@@ -199,6 +209,9 @@ public class SideBar extends JPanel {
 		// empty.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		add(empty, constraint);
 		constraint.weighty = 0.0;
+		// outline dependent content
+		outlinePanel = new JPanel();
+		add(outlinePanel, constraint);
 		// border slider
 		borderSlider = new JSlider(SwingConstants.HORIZONTAL, 0, 20, 10);
 		final ChangeListener borderListener = new ChangeListener() {
@@ -210,7 +223,8 @@ public class SideBar extends JPanel {
 
 		};
 		borderSlider.addChangeListener(borderListener);
-		addHor(new JLabel("Slider:"), borderSlider);
+		borderSliderLabel = new JLabel();
+		addHor(new JLabel("Border:"), borderSlider, borderSliderLabel);
 		// the rectangle width and height input fields
 		width = new JTextField(4);
 		height = new JTextField(4);
@@ -248,8 +262,9 @@ public class SideBar extends JPanel {
 		};
 		width.addActionListener(bounds);
 		height.addActionListener(bounds);
-		addHor(new JLabel("width:"), width);
-		addHor(new JLabel("height:"), height);
+		constraint.fill = GridBagConstraints.VERTICAL;
+		addHor(new JLabel("Width:"), width, new JLabel("Height:"), height);
+		constraint.fill = GridBagConstraints.BOTH;
 		constraint = null;
 	}
 
@@ -293,12 +308,36 @@ public class SideBar extends JPanel {
 		if ((changes & CanvasListener.GENERATORS) != 0) {
 			final AbstractShapeCreator asc = canvas.getShapeCreator();
 			final SetOutline so = asc.getSetOutline();
-			outlineBox.setSelectedItem(OutlineType.getFor(so));
+			final OutlineType outlineType = OutlineType.getFor(so);
+			outlineBox.setSelectedItem(outlineType);
 			shapeBox.setSelectedItem(ShapeType.getFor(asc));
 			final int oldValue = borderSlider.getValue();
 			final int newValue = (int) canvas.getShapeBorder();
+			borderSliderLabel.setText("" + newValue);
 			if (oldValue != newValue) {
 				borderSlider.setValue(newValue);
+			}
+			if (outlineContent == null || outlineContent.getOutline() != so) {
+				if (outlineContent == null
+						|| outlineContent.getType() != outlineType) {
+					if (outlineContent != null) {
+						outlinePanel.remove(outlineContent);
+					}
+					outlineContent = outlineType
+							.createOutlineConfiguration(canvas);
+					outlineContent.setOutline(so);
+					if (outlineContent != null) {
+						outlinePanel.add(outlineContent);
+						outlinePanel.setBorder(BorderFactory
+								.createTitledBorder("" + outlineType));
+					} else {
+						outlinePanel.setBorder(BorderFactory
+								.createEmptyBorder());
+					}
+				}
+			}
+			if (outlineContent != null) {
+				outlineContent.somethingChanged();
 			}
 		}
 		if ((changes & CanvasListener.RECT_SIZE) != 0) {

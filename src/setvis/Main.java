@@ -35,13 +35,14 @@ public final class Main {
 		// a simple example item set
 		final double w = canvas.getCurrentItemWidth();
 		final double h = canvas.getCurrentItemHeight();
-		canvas.addItem(0, 163.0, 141.0, w, h);
-		canvas.addItem(0, 130.0, 306.0, w, h);
-		canvas.addItem(0, 279.0, 256.0, w, h);
+		canvas.addItem(0, 86.0, 141.0, w, h);
+		canvas.addItem(0, 53.0, 306.0, w, h);
+		canvas.addItem(0, 202.0, 256.0, w, h);
 		canvas.addGroup();
-		canvas.addItem(1, 162.0, 219.0, w, h);
-		canvas.addItem(1, 373.0, 194.0, w, h);
-		canvas.addItem(1, 288.0, 328.0, w, h);
+		canvas.addItem(1, 85.0, 219.0, w, h);
+		canvas.addItem(1, 296.0, 194.0, w, h);
+		canvas.addItem(1, 211.0, 328.0, w, h);
+		canvas.translateScene(78.0, 51.0);
 		mw.setVisible(true);
 	}
 }

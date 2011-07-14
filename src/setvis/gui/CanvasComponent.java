@@ -312,6 +312,11 @@ public class CanvasComponent extends JComponent implements Canvas {
 		}
 	}
 
+	@Override
+	public void fireCanvasChange(final int changes) {
+		invalidateOutlines(changes);
+	}
+
 	/**
 	 * Signalizes that something has changed. This results in clearing the
 	 * outline cache, notifying the parent and a call to {@link #repaint()}.
