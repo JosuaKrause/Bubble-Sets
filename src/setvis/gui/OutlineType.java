@@ -172,7 +172,7 @@ public enum OutlineType {
 			private boolean textUpdate = true;
 
 			@Override
-			public void fillContent() {
+			protected void doFillContent() {
 				// definings the change listeners
 				final ChangeListener routeMarchListener = new ChangeListener() {
 
