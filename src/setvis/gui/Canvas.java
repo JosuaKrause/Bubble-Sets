@@ -59,6 +59,21 @@ public interface Canvas {
 	AbstractShapeCreator getShapeCreator();
 
 	/**
+	 * Sets the radius of the shape. You should prefer this method over
+	 * {@link AbstractShapeCreator#setRadius(double)}, because it automatically
+	 * refreshes the canvas and the other method does not.
+	 * 
+	 * @param border
+	 *            The new border size.
+	 */
+	void setShapeBorder(double border);
+
+	/**
+	 * @return The current shape border size.
+	 */
+	double getShapeBorder();
+
+	/**
 	 * Translates the whole scene.
 	 * 
 	 * @param dx

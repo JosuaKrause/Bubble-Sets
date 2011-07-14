@@ -270,6 +270,17 @@ public class CanvasComponent extends JComponent implements Canvas {
 	}
 
 	@Override
+	public void setShapeBorder(final double border) {
+		getShapeCreator().setRadius(border);
+		invalidateOutlines(CanvasListener.GENERATORS);
+	}
+
+	@Override
+	public double getShapeBorder() {
+		return getShapeCreator().getRadius();
+	}
+
+	@Override
 	public void translateScene(final double dx, final double dy) {
 		this.dx += dx;
 		this.dy += dy;
@@ -430,8 +441,8 @@ public class CanvasComponent extends JComponent implements Canvas {
 	@Override
 	public void moveItem(final Position pos, final double dx, final double dy) {
 		final Rectangle2D r = pos.rect;
-		r.setRect(r.getMinX() + dx, r.getMinY() + dy, r.getWidth(), r
-				.getHeight());
+		r.setRect(r.getMinX() + dx, r.getMinY() + dy, r.getWidth(),
+				r.getHeight());
 		notifyCanvasListeners(CanvasListener.ITEMS);
 	}
 

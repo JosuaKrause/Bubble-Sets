@@ -21,8 +21,12 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -111,6 +115,9 @@ public class SideBar extends JPanel {
 	/** The box for choosing the shape generator. */
 	private final JComboBox shapeBox;
 
+	/** The slider for the border size. */
+	private final JSlider borderSlider;
+
 	/** The constraints for the layout. */
 	private final GridBagConstraints constraint;
 
@@ -126,25 +133,20 @@ public class SideBar extends JPanel {
 		constraint = new GridBagConstraints();
 		constraint.gridx = 0;
 		constraint.fill = GridBagConstraints.BOTH;
-		// determine the current status
-		final AbstractShapeCreator asc = cc.getShapeCreator();
-		final SetOutline so = asc.getSetOutline();
 		// the combo-box for outlines
 		outlineBox = new JComboBox(OutlineType.values());
-		outlineBox.setSelectedItem(OutlineType.getFor(so));
 		addHor(new JLabel("Outline:"), outlineBox);
 		// the combo-box for shape creators
 		shapeBox = new JComboBox(ShapeType.values());
-		shapeBox.setSelectedItem(ShapeType.getFor(asc));
 		addHor(new JLabel("Shape:"), shapeBox);
 		// interaction for the shape and outline combo-boxes
 		final ActionListener shapeOutlineListener = new ActionListener() {
 
 			@Override
 			public void actionPerformed(final ActionEvent e) {
-				cc.setShapeAndOutline((OutlineType) outlineBox
-						.getSelectedItem(), (ShapeType) shapeBox
-						.getSelectedItem());
+				canvas.setShapeAndOutline(
+						(OutlineType) outlineBox.getSelectedItem(),
+						(ShapeType) shapeBox.getSelectedItem());
 			}
 
 		};
@@ -153,7 +155,6 @@ public class SideBar extends JPanel {
 		// the groups list
 		listModel = new CanvasListModel();
 		list = new JList(listModel);
-		list.setSelectedIndex(cc.getCurrentGroup());
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		list.setLayoutOrientation(JList.VERTICAL);
 		list.addListSelectionListener(new ListSelectionListener() {
@@ -161,7 +162,7 @@ public class SideBar extends JPanel {
 			@Override
 			public void valueChanged(final ListSelectionEvent e) {
 				// selection of groups
-				cc.setCurrentGroup(list.getSelectedIndex());
+				canvas.setCurrentGroup(list.getSelectedIndex());
 			}
 
 		});
@@ -200,13 +201,23 @@ public class SideBar extends JPanel {
 		// empty.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		add(empty, constraint);
 		constraint.weighty = 0.0;
+		// border slider
+		borderSlider = new JSlider(SwingConstants.HORIZONTAL, 0, 20, 10);
+		final ChangeListener borderListener = new ChangeListener() {
+
+			@Override
+			public void stateChanged(final ChangeEvent e) {
+				canvas.setShapeBorder(borderSlider.getValue());
+			}
+
+		};
+		borderSlider.addChangeListener(borderListener);
+		addHor(new JLabel("Slider:"), borderSlider);
 		// the rectangle width and height input fields
 		width = new JTextField(4);
 		height = new JTextField(4);
 		width.setMaximumSize(width.getPreferredSize());
 		height.setMaximumSize(height.getPreferredSize());
-		width.setText("" + canvas.getCurrentItemWidth());
-		height.setText("" + canvas.getCurrentItemHeight());
 		final ActionListener bounds = new ActionListener() {
 
 			@Override
@@ -281,6 +292,11 @@ public class SideBar extends JPanel {
 			final SetOutline so = asc.getSetOutline();
 			outlineBox.setSelectedItem(OutlineType.getFor(so));
 			shapeBox.setSelectedItem(ShapeType.getFor(asc));
+			final int oldValue = borderSlider.getValue();
+			final int newValue = (int) canvas.getShapeBorder();
+			if (oldValue != newValue) {
+				borderSlider.setValue(newValue);
+			}
 		}
 		if ((changes & CanvasListener.RECT_SIZE) != 0) {
 			final int cw = canvas.getCurrentItemWidth();
