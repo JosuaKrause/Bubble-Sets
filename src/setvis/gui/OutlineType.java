@@ -106,11 +106,23 @@ public enum OutlineType {
 
 			private static final long serialVersionUID = -4099593260786691472L;
 
+			private static final double GRANULARITY = 0.5;
+
 			private JSlider routingIt;
 
 			private JSlider marchingIt;
 
 			private JSlider pixelGroup;
+
+			private JSlider edgeR0;
+
+			private JSlider edgeR1;
+
+			private JSlider nodeR0;
+
+			private JSlider nodeR1;
+
+			private JSlider morphingSlider;
 
 			private JSlider skip;
 
@@ -120,22 +132,47 @@ public enum OutlineType {
 
 			private JLabel pixelGroupLabel;
 
+			private JLabel edgeR0Label;
+
+			private JLabel edgeR1Label;
+
+			private JLabel nodeR0Label;
+
+			private JLabel nodeR1Label;
+
+			private JLabel morphingSliderLabel;
+
 			private JLabel skipLabel;
+
+			private boolean textUpdate = true;
 
 			@Override
 			protected void fillContent() {
 				routingIt = new JSlider(10, 1000);
 				marchingIt = new JSlider(1, 100);
 				pixelGroup = new JSlider(1, 10);
+				edgeR0 = new JSlider(1, 200);
+				edgeR1 = new JSlider(1, 200);
+				nodeR0 = new JSlider(1, 200);
+				nodeR1 = new JSlider(1, 200);
+				morphingSlider = new JSlider(1, 200);
 				skip = new JSlider(1, 30);
 				pixelGroupLabel = new JLabel();
+				edgeR0Label = new JLabel();
+				edgeR1Label = new JLabel();
+				nodeR0Label = new JLabel();
+				nodeR1Label = new JLabel();
 				skipLabel = new JLabel();
 				routingItLabel = new JLabel();
 				marchingItLabel = new JLabel();
+				morphingSliderLabel = new JLabel();
 				final ChangeListener routeMarchListener = new ChangeListener() {
 
 					@Override
 					public void stateChanged(final ChangeEvent e) {
+						if (textUpdate) {
+							return;
+						}
 						final BubbleSet bubble = (BubbleSet) getOutline();
 						final BubbleSet newBubble = new BubbleSet(
 								routingIt.getValue(), marchingIt.getValue(),
@@ -154,24 +191,45 @@ public enum OutlineType {
 
 					@Override
 					public void stateChanged(final ChangeEvent e) {
+						if (textUpdate) {
+							return;
+						}
 						final BubbleSet bubble = (BubbleSet) getOutline();
 						bubble.setSkip(skip.getValue());
 						bubble.setPixelGroup(pixelGroup.getValue());
+						bubble.setMorphBuffer(morphingSlider.getValue()
+								* GRANULARITY);
+						bubble.setEdgeR0(edgeR0.getValue() * GRANULARITY);
+						bubble.setEdgeR1(edgeR1.getValue() * GRANULARITY);
+						bubble.setNodeR0(nodeR0.getValue() * GRANULARITY);
+						bubble.setNodeR1(nodeR1.getValue() * GRANULARITY);
 						changed();
 					}
 				};
 				skip.addChangeListener(change);
 				pixelGroup.addChangeListener(change);
+				morphingSlider.addChangeListener(change);
+				edgeR0.addChangeListener(change);
+				edgeR1.addChangeListener(change);
+				nodeR0.addChangeListener(change);
+				nodeR1.addChangeListener(change);
 				addHor(new JLabel("Routing Iterations:"), routingIt,
 						routingItLabel);
 				addHor(new JLabel("Marching Iterations:"), marchingIt,
 						marchingItLabel);
-				addHor(new JLabel("Grid size:"), pixelGroup, pixelGroupLabel);
+				addHor(new JLabel("Pixel Group:"), pixelGroup, pixelGroupLabel);
+				addHor(new JLabel("Edge Radius 0:"), edgeR0, edgeR0Label);
+				addHor(new JLabel("Edge Radius 1:"), edgeR1, edgeR1Label);
+				addHor(new JLabel("Node Radius 0:"), nodeR0, nodeR0Label);
+				addHor(new JLabel("Node Radius 1:"), nodeR1, nodeR1Label);
+				addHor(new JLabel("Morphing Buffer:"), morphingSlider,
+						morphingSliderLabel);
 				addHor(new JLabel("Skip points:"), skip, skipLabel);
 			}
 
 			@Override
 			public void somethingChanged() {
+				textUpdate = true;
 				final BubbleSet bubble = (BubbleSet) getOutline();
 				final int s = bubble.getSkip();
 				skip.setValue(s);
@@ -185,7 +243,24 @@ public enum OutlineType {
 				final int mit = bubble.getMaxMarchingIterations();
 				marchingIt.setValue(mit);
 				marchingItLabel.setText("" + mit);
+				final double mb = bubble.getMorphBuffer();
+				morphingSlider.setValue((int) (mb / GRANULARITY));
+				morphingSliderLabel.setText("" + mb);
+				final double e0 = bubble.getEdgeR0();
+				edgeR0.setValue((int) (e0 / GRANULARITY));
+				edgeR0Label.setText("" + e0);
+				final double e1 = bubble.getEdgeR1();
+				edgeR1.setValue((int) (e1 / GRANULARITY));
+				edgeR1Label.setText("" + e1);
+				final double n0 = bubble.getNodeR0();
+				nodeR0.setValue((int) (n0 / GRANULARITY));
+				nodeR0Label.setText("" + n0);
+				final double n1 = bubble.getNodeR1();
+				nodeR1.setValue((int) (n1 / GRANULARITY));
+				nodeR1Label.setText("" + n1);
+				textUpdate = false;
 			}
+
 		};
 	}
 }

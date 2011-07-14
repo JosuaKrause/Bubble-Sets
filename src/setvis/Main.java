@@ -42,7 +42,7 @@ public final class Main {
 		canvas.addItem(1, 85.0, 219.0, w, h);
 		canvas.addItem(1, 296.0, 194.0, w, h);
 		canvas.addItem(1, 211.0, 328.0, w, h);
-		canvas.translateScene(78.0, 51.0);
+		canvas.translateScene(112.0, 106.0);
 		mw.setVisible(true);
 	}
 }

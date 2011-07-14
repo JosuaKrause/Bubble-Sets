@@ -313,7 +313,7 @@ public class SideBar extends JPanel {
 			shapeBox.setSelectedItem(ShapeType.getFor(asc));
 			final int oldValue = borderSlider.getValue();
 			final int newValue = (int) canvas.getShapeBorder();
-			borderSliderLabel.setText("" + newValue);
+			borderSliderLabel.setText(newValue + "  ");
 			if (oldValue != newValue) {
 				borderSlider.setValue(newValue);
 			}

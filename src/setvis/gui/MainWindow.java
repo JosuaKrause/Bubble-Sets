@@ -47,7 +47,7 @@ public class MainWindow extends JFrame implements CanvasListener {
 		pane.add(canvas, BorderLayout.CENTER);
 		pane.add(sideBar, BorderLayout.EAST);
 		add(pane);
-		setPreferredSize(new Dimension(800, 600));
+		setPreferredSize(new Dimension(910, 700));
 		pack();
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(null);
