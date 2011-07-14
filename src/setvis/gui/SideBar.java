@@ -343,6 +343,14 @@ public class SideBar extends JPanel {
 		}
 	}
 
+	/**
+	 * Refreshes the outline specific pane.
+	 * 
+	 * @param outlineType
+	 *            The current outline type.
+	 * @param so
+	 *            The current set outline.
+	 */
 	private void refreshOutlineContent(final OutlineType outlineType,
 			final SetOutline so) {
 		if (outlineContent == null || outlineContent.getType() != outlineType) {

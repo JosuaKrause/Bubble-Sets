@@ -104,50 +104,78 @@ public enum OutlineType {
 			final Canvas canvas) {
 		return new AbstractOutlineConfiguration(canvas, this) {
 
+			// the serial version uid
 			private static final long serialVersionUID = -4099593260786691472L;
 
+			/** The granularity of floating point sliders. */
 			private static final double GRANULARITY = 0.5;
 
-			private JSlider routingIt;
+			/** The slider for the number of routing iterations. */
+			private final JSlider routingIt;
 
-			private JSlider marchingIt;
+			/** The slider for the number of marching iterations. */
+			private final JSlider marchingIt;
 
-			private JSlider pixelGroup;
+			/** The slider for the size of the pixel groups. */
+			private final JSlider pixelGroup;
 
-			private JSlider edgeR0;
+			/** The slider for edge radius number 0. */
+			private final JSlider edgeR0;
 
-			private JSlider edgeR1;
+			/** The slider for edge radius number 1. */
+			private final JSlider edgeR1;
 
-			private JSlider nodeR0;
+			/** The slider for node radius number 0. */
+			private final JSlider nodeR0;
 
-			private JSlider nodeR1;
+			/** The slider for node radius number 1. */
+			private final JSlider nodeR1;
 
-			private JSlider morphingSlider;
+			/** The slider for the morphing buffer. */
+			private final JSlider morphingSlider;
 
-			private JSlider skip;
+			/** The slider for skipped points. */
+			private final JSlider skip;
 
-			private JLabel routingItLabel;
+			/** The label for corresponding slider. */
+			private final JLabel routingItLabel;
 
-			private JLabel marchingItLabel;
+			/** The label for corresponding slider. */
+			private final JLabel marchingItLabel;
 
-			private JLabel pixelGroupLabel;
+			/** The label for corresponding slider. */
+			private final JLabel pixelGroupLabel;
 
-			private JLabel edgeR0Label;
+			/** The label for corresponding slider. */
+			private final JLabel edgeR0Label;
 
-			private JLabel edgeR1Label;
+			/** The label for corresponding slider. */
+			private final JLabel edgeR1Label;
 
-			private JLabel nodeR0Label;
+			/** The label for corresponding slider. */
+			private final JLabel nodeR0Label;
 
-			private JLabel nodeR1Label;
+			/** The label for corresponding slider. */
+			private final JLabel nodeR1Label;
 
-			private JLabel morphingSliderLabel;
+			/** The label for corresponding slider. */
+			private final JLabel morphingSliderLabel;
 
-			private JLabel skipLabel;
+			/** The label for corresponding slider. */
+			private final JLabel skipLabel;
 
+			/**
+			 * Whether this component is in update mode. When this component is
+			 * in the update mode, the changes are assumed to be outside and no
+			 * changes to the underlying bubble set are made.
+			 */
 			private boolean textUpdate = true;
 
-			@Override
-			protected void fillContent() {
+			/**
+			 * Creating the components in an initializer.
+			 */
+			{
+				// creating the slider
 				routingIt = new JSlider(10, 1000);
 				marchingIt = new JSlider(1, 100);
 				pixelGroup = new JSlider(1, 10);
@@ -157,6 +185,7 @@ public enum OutlineType {
 				nodeR1 = new JSlider(1, 200);
 				morphingSlider = new JSlider(1, 200);
 				skip = new JSlider(1, 30);
+				// creating the labels
 				pixelGroupLabel = new JLabel();
 				edgeR0Label = new JLabel();
 				edgeR1Label = new JLabel();
@@ -166,6 +195,11 @@ public enum OutlineType {
 				routingItLabel = new JLabel();
 				marchingItLabel = new JLabel();
 				morphingSliderLabel = new JLabel();
+			}
+
+			@Override
+			protected void fillContent() {
+				// definings the change listeners
 				final ChangeListener routeMarchListener = new ChangeListener() {
 
 					@Override
@@ -174,6 +208,8 @@ public enum OutlineType {
 							return;
 						}
 						final BubbleSet bubble = (BubbleSet) getOutline();
+						// for changing iterations we have to create a new
+						// bubble set object
 						final BubbleSet newBubble = new BubbleSet(
 								routingIt.getValue(), marchingIt.getValue(),
 								bubble.getPixelGroup(), bubble.getEdgeR0(),
@@ -194,6 +230,8 @@ public enum OutlineType {
 						if (textUpdate) {
 							return;
 						}
+						// it is enough to adjust the settings in the current
+						// bubble set object
 						final BubbleSet bubble = (BubbleSet) getOutline();
 						bubble.setSkip(skip.getValue());
 						bubble.setPixelGroup(pixelGroup.getValue());
@@ -213,6 +251,7 @@ public enum OutlineType {
 				edgeR1.addChangeListener(change);
 				nodeR0.addChangeListener(change);
 				nodeR1.addChangeListener(change);
+				// adding the components
 				addHor(new JLabel("Routing Iterations:"), routingIt,
 						routingItLabel);
 				addHor(new JLabel("Marching Iterations:"), marchingIt,
@@ -229,6 +268,9 @@ public enum OutlineType {
 
 			@Override
 			public void somethingChanged() {
+				// update all the components
+				// going into updating mode, that we get no interference with
+				// the change listeners
 				textUpdate = true;
 				final BubbleSet bubble = (BubbleSet) getOutline();
 				final int s = bubble.getSkip();
@@ -258,9 +300,11 @@ public enum OutlineType {
 				final double n1 = bubble.getNodeR1();
 				nodeR1.setValue((int) (n1 / GRANULARITY));
 				nodeR1Label.setText("" + n1);
+				// out of update mode
 				textUpdate = false;
 			}
 
 		};
 	}
+
 }
