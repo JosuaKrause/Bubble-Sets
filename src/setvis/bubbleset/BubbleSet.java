@@ -1571,6 +1571,20 @@ public class BubbleSet implements SetOutline {
 	// ///////////////////////
 
 	/**
+	 * @return the maximum number of routing iterations.
+	 */
+	public int getMaxRoutingIterations() {
+		return maxRoutingIterations;
+	}
+
+	/**
+	 * @return the maximum number of marching iterations.
+	 */
+	public int getMaxMarchingIterations() {
+		return maxMarchingIterations;
+	}
+
+	/**
 	 * @return the size of square super pixels used for calculations (larger
 	 *         results in lower resolution contours and faster calculations).
 	 */

@@ -232,7 +232,6 @@ public class CanvasComponent extends JComponent implements Canvas {
 		} else {
 			switch (outlineType) {
 			case BUBBLE_SETS:
-				// TODO: configurable
 				outline = new BubbleSet();
 				break;
 			case CONVEX_HULL:
@@ -242,6 +241,12 @@ public class CanvasComponent extends JComponent implements Canvas {
 				throw new InternalError("" + outlineType);
 			}
 		}
+		setShapeAndOutline(outline, shapeType);
+	}
+
+	@Override
+	public void setShapeAndOutline(final SetOutline outline,
+			final ShapeType shapeType) {
 		AbstractShapeCreator asc;
 		switch (shapeType) {
 		case LINES:

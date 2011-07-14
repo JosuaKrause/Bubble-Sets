@@ -106,9 +106,17 @@ public enum OutlineType {
 
 			private static final long serialVersionUID = -4099593260786691472L;
 
+			private JSlider routingIt;
+
+			private JSlider marchingIt;
+
 			private JSlider pixelGroup;
 
 			private JSlider skip;
+
+			private JLabel routingItLabel;
+
+			private JLabel marchingItLabel;
 
 			private JLabel pixelGroupLabel;
 
@@ -116,10 +124,32 @@ public enum OutlineType {
 
 			@Override
 			protected void fillContent() {
+				routingIt = new JSlider(10, 1000);
+				marchingIt = new JSlider(1, 100);
 				pixelGroup = new JSlider(1, 10);
 				skip = new JSlider(1, 30);
 				pixelGroupLabel = new JLabel();
 				skipLabel = new JLabel();
+				routingItLabel = new JLabel();
+				marchingItLabel = new JLabel();
+				final ChangeListener routeMarchListener = new ChangeListener() {
+
+					@Override
+					public void stateChanged(final ChangeEvent e) {
+						final BubbleSet bubble = (BubbleSet) getOutline();
+						final BubbleSet newBubble = new BubbleSet(
+								routingIt.getValue(), marchingIt.getValue(),
+								bubble.getPixelGroup(), bubble.getEdgeR0(),
+								bubble.getEdgeR1(), bubble.getNodeR0(),
+								bubble.getNodeR1(), bubble.getMorphBuffer(),
+								bubble.getSkip());
+						canvas.setShapeAndOutline(newBubble,
+								ShapeType.getFor(canvas.getShapeCreator()));
+					}
+
+				};
+				routingIt.addChangeListener(routeMarchListener);
+				marchingIt.addChangeListener(routeMarchListener);
 				final ChangeListener change = new ChangeListener() {
 
 					@Override
@@ -132,6 +162,10 @@ public enum OutlineType {
 				};
 				skip.addChangeListener(change);
 				pixelGroup.addChangeListener(change);
+				addHor(new JLabel("Routing Iterations:"), routingIt,
+						routingItLabel);
+				addHor(new JLabel("Marching Iterations:"), marchingIt,
+						marchingItLabel);
 				addHor(new JLabel("Grid size:"), pixelGroup, pixelGroupLabel);
 				addHor(new JLabel("Skip points:"), skip, skipLabel);
 			}
@@ -145,6 +179,12 @@ public enum OutlineType {
 				final int pg = bubble.getPixelGroup();
 				pixelGroup.setValue(pg);
 				pixelGroupLabel.setText("" + pg);
+				final int rit = bubble.getMaxRoutingIterations();
+				routingIt.setValue(rit);
+				routingItLabel.setText("" + rit);
+				final int mit = bubble.getMaxMarchingIterations();
+				marchingIt.setValue(mit);
+				marchingItLabel.setText("" + mit);
 			}
 		};
 	}

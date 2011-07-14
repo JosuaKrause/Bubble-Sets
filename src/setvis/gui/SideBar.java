@@ -317,28 +317,7 @@ public class SideBar extends JPanel {
 			if (oldValue != newValue) {
 				borderSlider.setValue(newValue);
 			}
-			if (outlineContent == null || outlineContent.getOutline() != so) {
-				if (outlineContent == null
-						|| outlineContent.getType() != outlineType) {
-					if (outlineContent != null) {
-						outlinePanel.remove(outlineContent);
-					}
-					outlineContent = outlineType
-							.createOutlineConfiguration(canvas);
-					outlineContent.setOutline(so);
-					if (outlineContent != null) {
-						outlinePanel.add(outlineContent);
-						outlinePanel.setBorder(BorderFactory
-								.createTitledBorder("" + outlineType));
-					} else {
-						outlinePanel.setBorder(BorderFactory
-								.createEmptyBorder());
-					}
-				}
-			}
-			if (outlineContent != null) {
-				outlineContent.somethingChanged();
-			}
+			refreshOutlineContent(outlineType, so);
 		}
 		if ((changes & CanvasListener.RECT_SIZE) != 0) {
 			final int cw = canvas.getCurrentItemWidth();
@@ -361,6 +340,29 @@ public class SideBar extends JPanel {
 			} catch (final NumberFormatException e) {
 				height.setText(th);
 			}
+		}
+	}
+
+	private void refreshOutlineContent(final OutlineType outlineType,
+			final SetOutline so) {
+		if (outlineContent == null || outlineContent.getType() != outlineType) {
+			if (outlineContent != null) {
+				outlinePanel.remove(outlineContent);
+			}
+			outlineContent = outlineType.createOutlineConfiguration(canvas);
+			if (outlineContent != null) {
+				outlinePanel.add(outlineContent);
+				outlinePanel.setBorder(BorderFactory.createTitledBorder(""
+						+ outlineType));
+			} else {
+				outlinePanel.setBorder(BorderFactory.createEmptyBorder());
+			}
+		}
+		if (outlineContent != null) {
+			if (so != outlineContent.getOutline()) {
+				outlineContent.setOutline(so);
+			}
+			outlineContent.somethingChanged();
 		}
 	}
 

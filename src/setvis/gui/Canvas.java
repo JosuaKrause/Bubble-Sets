@@ -2,6 +2,7 @@ package setvis.gui;
 
 import java.util.List;
 
+import setvis.SetOutline;
 import setvis.gui.CanvasComponent.Position;
 import setvis.shape.AbstractShapeCreator;
 
@@ -36,6 +37,16 @@ public interface Canvas {
 	 *            The changes as defined in {@link CanvasListener}.
 	 */
 	void fireCanvasChange(int changes);
+
+	/**
+	 * Sets the shape generator by its type and the outline by an object.
+	 * 
+	 * @param outline
+	 *            The outline generator.
+	 * @param shapeType
+	 *            The shape generator type.
+	 */
+	void setShapeAndOutline(final SetOutline outline, final ShapeType shapeType);
 
 	/**
 	 * Sets the shape and outline generator by its type.
