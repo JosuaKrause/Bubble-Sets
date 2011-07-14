@@ -30,9 +30,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import setvis.OutlineType;
 import setvis.SetOutline;
-import setvis.ShapeType;
 import setvis.shape.AbstractShapeCreator;
 
 /**
@@ -119,7 +117,7 @@ public class SideBar extends JPanel {
 	private final JSlider borderSlider;
 
 	/** The constraints for the layout. */
-	private final GridBagConstraints constraint;
+	private GridBagConstraints constraint;
 
 	/**
 	 * Creates a side bar for the given {@link Canvas}.
@@ -252,15 +250,20 @@ public class SideBar extends JPanel {
 		height.addActionListener(bounds);
 		addHor(new JLabel("width:"), width);
 		addHor(new JLabel("height:"), height);
+		constraint = null;
 	}
 
 	/**
-	 * Adds a series of components in a horizontal manner.
+	 * Adds a series of components in a horizontal manner. This method may not
+	 * be called outside the constructor.
 	 * 
 	 * @param comps
 	 *            The components.
 	 */
 	private void addHor(final JComponent... comps) {
+		if (constraint == null) {
+			throw new IllegalStateException("layouting already done");
+		}
 		final JPanel hor = new JPanel();
 		hor.setLayout(new BoxLayout(hor, BoxLayout.X_AXIS));
 		boolean first = true;

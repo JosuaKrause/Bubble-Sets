@@ -1,4 +1,4 @@
-package setvis;
+package setvis.gui;
 
 import java.util.HashMap;
 import java.util.Map;

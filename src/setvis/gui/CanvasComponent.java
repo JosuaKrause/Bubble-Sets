@@ -18,9 +18,7 @@ import java.util.List;
 
 import javax.swing.JComponent;
 
-import setvis.OutlineType;
 import setvis.SetOutline;
-import setvis.ShapeType;
 import setvis.bubbleset.BubbleSet;
 import setvis.ch.ConvexHull;
 import setvis.shape.AbstractShapeCreator;

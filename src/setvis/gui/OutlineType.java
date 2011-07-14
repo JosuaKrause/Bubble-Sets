@@ -1,8 +1,9 @@
-package setvis;
+package setvis.gui;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import setvis.SetOutline;
 import setvis.bubbleset.BubbleSet;
 import setvis.ch.ConvexHull;
 
