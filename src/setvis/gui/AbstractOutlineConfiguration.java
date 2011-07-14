@@ -9,6 +9,11 @@ import javax.swing.JPanel;
 
 import setvis.SetOutline;
 
+/**
+ * 
+ * @author Joschi <josua.krause@googlemail.com>
+ * 
+ */
 public abstract class AbstractOutlineConfiguration extends JPanel {
 
 	private static final long serialVersionUID = -5356999538568674877L;
@@ -24,10 +29,9 @@ public abstract class AbstractOutlineConfiguration extends JPanel {
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		this.canvas = canvas;
 		this.type = type;
-		fillContent();
 	}
 
-	protected abstract void fillContent();
+	public abstract void fillContent();
 
 	/**
 	 * Adds a series of components in a horizontal manner. This method may not

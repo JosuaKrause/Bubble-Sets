@@ -152,9 +152,9 @@ public class SideBar extends JPanel {
 
 			@Override
 			public void actionPerformed(final ActionEvent e) {
-				canvas.setShapeAndOutline(
-						(OutlineType) outlineBox.getSelectedItem(),
-						(ShapeType) shapeBox.getSelectedItem());
+				canvas.setShapeAndOutline((OutlineType) outlineBox
+						.getSelectedItem(), (ShapeType) shapeBox
+						.getSelectedItem());
 			}
 
 		};
@@ -359,6 +359,7 @@ public class SideBar extends JPanel {
 			}
 			outlineContent = outlineType.createOutlineConfiguration(canvas);
 			if (outlineContent != null) {
+				outlineContent.fillContent();
 				outlinePanel.add(outlineContent);
 				outlinePanel.setBorder(BorderFactory.createTitledBorder(""
 						+ outlineType));

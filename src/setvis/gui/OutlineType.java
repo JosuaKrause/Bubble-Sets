@@ -111,58 +111,58 @@ public enum OutlineType {
 			private static final double GRANULARITY = 0.5;
 
 			/** The slider for the number of routing iterations. */
-			private final JSlider routingIt;
+			private final JSlider routingIt = new JSlider(10, 1000);
 
 			/** The slider for the number of marching iterations. */
-			private final JSlider marchingIt;
+			private final JSlider marchingIt = new JSlider(1, 100);
 
 			/** The slider for the size of the pixel groups. */
-			private final JSlider pixelGroup;
+			private final JSlider pixelGroup = new JSlider(1, 10);
 
 			/** The slider for edge radius number 0. */
-			private final JSlider edgeR0;
+			private final JSlider edgeR0 = new JSlider(1, 200);
 
 			/** The slider for edge radius number 1. */
-			private final JSlider edgeR1;
+			private final JSlider edgeR1 = new JSlider(1, 200);
 
 			/** The slider for node radius number 0. */
-			private final JSlider nodeR0;
+			private final JSlider nodeR0 = new JSlider(1, 200);
 
 			/** The slider for node radius number 1. */
-			private final JSlider nodeR1;
+			private final JSlider nodeR1 = new JSlider(1, 200);
 
 			/** The slider for the morphing buffer. */
-			private final JSlider morphingSlider;
+			private final JSlider morphingSlider = new JSlider(1, 200);
 
 			/** The slider for skipped points. */
-			private final JSlider skip;
+			private final JSlider skip = new JSlider(1, 30);
 
 			/** The label for corresponding slider. */
-			private final JLabel routingItLabel;
+			private final JLabel routingItLabel = new JLabel();
 
 			/** The label for corresponding slider. */
-			private final JLabel marchingItLabel;
+			private final JLabel marchingItLabel = new JLabel();
 
 			/** The label for corresponding slider. */
-			private final JLabel pixelGroupLabel;
+			private final JLabel pixelGroupLabel = new JLabel();
 
 			/** The label for corresponding slider. */
-			private final JLabel edgeR0Label;
+			private final JLabel edgeR0Label = new JLabel();
 
 			/** The label for corresponding slider. */
-			private final JLabel edgeR1Label;
+			private final JLabel edgeR1Label = new JLabel();
 
 			/** The label for corresponding slider. */
-			private final JLabel nodeR0Label;
+			private final JLabel nodeR0Label = new JLabel();
 
 			/** The label for corresponding slider. */
-			private final JLabel nodeR1Label;
+			private final JLabel nodeR1Label = new JLabel();
 
 			/** The label for corresponding slider. */
-			private final JLabel morphingSliderLabel;
+			private final JLabel morphingSliderLabel = new JLabel();
 
 			/** The label for corresponding slider. */
-			private final JLabel skipLabel;
+			private final JLabel skipLabel = new JLabel();
 
 			/**
 			 * Whether this component is in update mode. When this component is
@@ -171,34 +171,8 @@ public enum OutlineType {
 			 */
 			private boolean textUpdate = true;
 
-			/**
-			 * Creating the components in an initializer.
-			 */
-			{
-				// creating the slider
-				routingIt = new JSlider(10, 1000);
-				marchingIt = new JSlider(1, 100);
-				pixelGroup = new JSlider(1, 10);
-				edgeR0 = new JSlider(1, 200);
-				edgeR1 = new JSlider(1, 200);
-				nodeR0 = new JSlider(1, 200);
-				nodeR1 = new JSlider(1, 200);
-				morphingSlider = new JSlider(1, 200);
-				skip = new JSlider(1, 30);
-				// creating the labels
-				pixelGroupLabel = new JLabel();
-				edgeR0Label = new JLabel();
-				edgeR1Label = new JLabel();
-				nodeR0Label = new JLabel();
-				nodeR1Label = new JLabel();
-				skipLabel = new JLabel();
-				routingItLabel = new JLabel();
-				marchingItLabel = new JLabel();
-				morphingSliderLabel = new JLabel();
-			}
-
 			@Override
-			protected void fillContent() {
+			public void fillContent() {
 				// definings the change listeners
 				final ChangeListener routeMarchListener = new ChangeListener() {
 
@@ -210,14 +184,14 @@ public enum OutlineType {
 						final BubbleSet bubble = (BubbleSet) getOutline();
 						// for changing iterations we have to create a new
 						// bubble set object
-						final BubbleSet newBubble = new BubbleSet(
-								routingIt.getValue(), marchingIt.getValue(),
-								bubble.getPixelGroup(), bubble.getEdgeR0(),
-								bubble.getEdgeR1(), bubble.getNodeR0(),
-								bubble.getNodeR1(), bubble.getMorphBuffer(),
-								bubble.getSkip());
-						canvas.setShapeAndOutline(newBubble,
-								ShapeType.getFor(canvas.getShapeCreator()));
+						final BubbleSet newBubble = new BubbleSet(routingIt
+								.getValue(), marchingIt.getValue(), bubble
+								.getPixelGroup(), bubble.getEdgeR0(), bubble
+								.getEdgeR1(), bubble.getNodeR0(), bubble
+								.getNodeR1(), bubble.getMorphBuffer(), bubble
+								.getSkip());
+						canvas.setShapeAndOutline(newBubble, ShapeType
+								.getFor(canvas.getShapeCreator()));
 					}
 
 				};
