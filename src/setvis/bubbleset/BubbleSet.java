@@ -232,6 +232,7 @@ public class BubbleSet implements SetOutline {
 	@Override
 	public Point2D[] createOutline(final Rectangle2D[] members,
 			final Rectangle2D[] nonMembers) {
+		activeRegion = null;
 
 		if (members.length == 0) {
 			return new Point2D[0];
