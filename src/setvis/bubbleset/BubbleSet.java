@@ -232,7 +232,6 @@ public class BubbleSet implements SetOutline {
 	@Override
 	public Point2D[] createOutline(final Rectangle2D[] members,
 			final Rectangle2D[] nonMembers) {
-		activeRegion = null;
 
 		if (members.length == 0) {
 			return new Point2D[0];
@@ -364,6 +363,11 @@ public class BubbleSet implements SetOutline {
 			fhull[j] = new Point2D.Double(surface.get(i).getX() + xcorner,
 					surface.get(i).getY() + ycorner);
 		}
+
+		// getting rid of unused memory
+		// preventing a memory leak
+		activeRegion = null;
+		potentialArea = null;
 
 		return fhull;
 	}
