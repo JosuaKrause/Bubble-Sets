@@ -23,7 +23,6 @@ public class BubbleSet implements SetOutline {
 	class Item implements Comparable<Item> {
 		Rectangle2D rectangle;
 		double centroidDistance;
-		Deque<Line2D> virtualEdges;
 
 		public double getX() {
 			return rectangle.getX();
@@ -203,6 +202,8 @@ public class BubbleSet implements SetOutline {
 	 */
 	private Rectangle2D activeRegion;
 
+	Deque<Line2D> virtualEdges = new ArrayDeque<Line2D>();
+
 	/**
 	 * The energy threshold value used to calculate the most recent contour.
 	 */
@@ -257,15 +258,12 @@ public class BubbleSet implements SetOutline {
 			} else {
 				activeRegion.add(memberItems[memberIndex].getBounds2D());
 			}
+		}
 
-			// add the bounds of the virtual edges to the active area
-			if (memberItems[memberIndex].virtualEdges != null) {
-				final Deque<Line2D> virtualMemberEdges = memberItems[memberIndex].virtualEdges;
-				final Iterator<Line2D> lines = virtualMemberEdges.iterator();
-				while (lines.hasNext()) {
-					activeRegion.add(lines.next().getBounds2D());
-				}
-			}
+		// add the bounds of the virtual edges to the active area
+		final Iterator<Line2D> lines = virtualEdges.iterator();
+		while (lines.hasNext()) {
+			activeRegion.add(lines.next().getBounds2D());
 		}
 
 		// bounds contains a rectangle with all the nodes in the aggregate
@@ -520,7 +518,7 @@ public class BubbleSet implements SetOutline {
 			for (final Item item : members) {
 				// add node energy
 				influenceFactor = nodeInfluenceFactor;
-				double a = 1 / (Math.pow(nodeR0 - nodeR1, 2));
+				final double a = 1 / (Math.pow(nodeR0 - nodeR1, 2));
 				calculateRectangleInfluence(
 						potentialArea,
 						a * influenceFactor,
@@ -528,18 +526,19 @@ public class BubbleSet implements SetOutline {
 						new Rectangle2D.Double(item.getX() - activeArea.getX(),
 								item.getY() - activeArea.getY(), item
 										.getWidth(), item.getHeight()));
-
-				// add the influence of all the virtual edges
-				final Deque<Line2D> scannedLines = item.virtualEdges;
-				influenceFactor = edgeInfluenceFactor;
-				a = 1 / ((edgeR0 - edgeR1) * (edgeR0 - edgeR1));
-
-				if (scannedLines.size() > 0) {
-					calculateLinesInfluence(potentialArea, a * influenceFactor,
-							edgeR1, scannedLines, activeArea);
-				}
 			} // end processing node items of this aggregate
 		} // end processing positive node energy
+
+		if (edgeInfluenceFactor != 0) {
+			// add the influence of all the virtual edges
+			influenceFactor = edgeInfluenceFactor;
+			final double a = 1 / ((edgeR0 - edgeR1) * (edgeR0 - edgeR1));
+
+			if (virtualEdges.size() > 0) {
+				calculateLinesInfluence(potentialArea, a * influenceFactor,
+						edgeR1, virtualEdges, activeArea);
+			}
+		}
 
 		// calculate negative energy contribution for all other visible items
 		// within bounds
@@ -598,19 +597,13 @@ public class BubbleSet implements SetOutline {
 	private void calculateVirtualEdges(final Item[] items,
 			final Rectangle2D[] nonMembers) {
 		final Deque<Item> visited = new ArrayDeque<Item>();
+		virtualEdges.clear();
 
 		calculateCentroidDistances(items);
 		Arrays.sort(items);
 
 		for (final Item item : items) {
-			final boolean itemConnected = false;
-
-			if (!itemConnected) {
-				item.virtualEdges = connectItem(items, nonMembers, item,
-						visited);
-			} else {
-				item.virtualEdges = new ArrayDeque<Line2D>();
-			}
+			virtualEdges.addAll(connectItem(items, nonMembers, item, visited));
 			visited.add(item);
 		}
 	}
@@ -1531,39 +1524,32 @@ public class BubbleSet implements SetOutline {
 				return new Point2D.Double(rectangle.getMinX() - rerouteBuffer,
 						rectangle.getMinY() - rerouteBuffer);
 			}
-			// else through top to bottom, calculate areas
-			final double totalArea = rectangle.getHeight()
-					* rectangle.getWidth();
-			final double leftArea = rectangle.getHeight()
-					* (((topIntersect.getX() - rectangle.getX()) + (rightIntersect
-							.getX() - rectangle.getX())) / 2);
-			if (leftArea < totalArea / 2) {
-				// go around right
-				if (topIntersect.getX() > bottomIntersect.getX()) {
-					// bottom right
-					return new Point2D.Double(rectangle.getMaxX()
-							+ rerouteBuffer, rectangle.getMaxY()
-							+ rerouteBuffer);
-				}
-				// top right
+		}
+		// else through top to bottom, calculate areas
+		final double totalArea = rectangle.getHeight() * rectangle.getWidth();
+		final double leftArea = rectangle.getHeight()
+				* (((topIntersect.getX() - rectangle.getX()) + (rightIntersect
+						.getX() - rectangle.getX())) / 2);
+		if (leftArea < totalArea / 2) {
+			// go around right
+			if (topIntersect.getX() > bottomIntersect.getX()) {
+				// bottom right
 				return new Point2D.Double(rectangle.getMaxX() + rerouteBuffer,
-						rectangle.getMinY() - rerouteBuffer);
-			}
-			// go around left
-			if (topIntersect.getX() < bottomIntersect.getX()) {
-				// bottom left
-				return new Point2D.Double(rectangle.getMinX() - rerouteBuffer,
 						rectangle.getMaxY() + rerouteBuffer);
 			}
-			// top left
-			return new Point2D.Double(rectangle.getMinX() - rerouteBuffer,
+			// top right
+			return new Point2D.Double(rectangle.getMaxX() + rerouteBuffer,
 					rectangle.getMinY() - rerouteBuffer);
-
 		}
-
-		// will only get here if intersection was along edge (parallel) or at a
-		// corner
-		return null;
+		// go around left
+		if (topIntersect.getX() < bottomIntersect.getX()) {
+			// bottom left
+			return new Point2D.Double(rectangle.getMinX() - rerouteBuffer,
+					rectangle.getMaxY() + rerouteBuffer);
+		}
+		// top left
+		return new Point2D.Double(rectangle.getMinX() - rerouteBuffer,
+				rectangle.getMinY() - rerouteBuffer);
 	}
 
 	// ///////////////////////
