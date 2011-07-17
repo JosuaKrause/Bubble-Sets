@@ -271,11 +271,10 @@ public class BubbleSet implements SetOutline {
 		// sides
 		activeRegion.setRect(activeRegion.getX() - Math.max(edgeR1, nodeR1)
 				- morphBuffer, activeRegion.getY() - Math.max(edgeR1, nodeR1)
-				- morphBuffer,
-				activeRegion.getWidth() + 2 * Math.max(edgeR1, nodeR1) + 2
-						* morphBuffer,
-				activeRegion.getHeight() + 2 * Math.max(edgeR1, nodeR1) + 2
-						* morphBuffer);
+				- morphBuffer, activeRegion.getWidth() + 2
+				* Math.max(edgeR1, nodeR1) + 2 * morphBuffer, activeRegion
+				.getHeight()
+				+ 2 * Math.max(edgeR1, nodeR1) + 2 * morphBuffer);
 		potentialArea = new double[(int) (Math.ceil(activeRegion.getWidth()
 				/ pixelGroup))][(int) (Math.ceil(activeRegion.getHeight()
 				/ pixelGroup))];
@@ -300,7 +299,8 @@ public class BubbleSet implements SetOutline {
 
 		// try to march, check if surface contains all items
 		while ((!calculateContour(surface, activeRegion, members, nonMembers,
-				potentialArea)) && (iterations < maxMarchingIterations)) {
+				potentialArea))
+				&& (iterations < maxMarchingIterations)) {
 			surface.clear();
 			iterations++;
 
@@ -518,14 +518,13 @@ public class BubbleSet implements SetOutline {
 			for (final Item item : members) {
 				// add node energy
 				influenceFactor = nodeInfluenceFactor;
-				final double a = 1 / (Math.pow(nodeR0 - nodeR1, 2));
-				calculateRectangleInfluence(
-						potentialArea,
-						a * influenceFactor,
-						nodeR1,
-						new Rectangle2D.Double(item.getX() - activeArea.getX(),
-								item.getY() - activeArea.getY(), item
-										.getWidth(), item.getHeight()));
+				final double nodeRDiff = nodeR0 - nodeR1;
+				// using inverse a for numerical stability
+				final double inva = nodeRDiff * nodeRDiff;
+				calculateRectangleInfluence(potentialArea, influenceFactor
+						/ inva, nodeR1, new Rectangle2D.Double(item.getX()
+						- activeArea.getX(), item.getY() - activeArea.getY(),
+						item.getWidth(), item.getHeight()));
 			} // end processing node items of this aggregate
 		} // end processing positive node energy
 
@@ -548,15 +547,14 @@ public class BubbleSet implements SetOutline {
 				if (activeArea.intersects(item.getBounds())) {
 					// subtract influence
 					influenceFactor = negativeNodeInfluenceFactor;
-					final double a = 1 / Math.pow(nodeR0 - nodeR1, 2);
-					calculateRectangleInfluence(
-							potentialArea,
-							a * influenceFactor,
-							nodeR1,
-							new Rectangle2D.Double(item.getX()
-									- activeArea.getX(), item.getY()
-									- activeArea.getY(), item.getWidth(), item
-									.getHeight()));
+					final double nodeRDiff = nodeR0 - nodeR1;
+					// using inverse a for numerical stability
+					final double inva = nodeRDiff * nodeRDiff;
+					calculateRectangleInfluence(potentialArea, influenceFactor
+							/ inva, nodeR1, new Rectangle2D.Double(item.getX()
+							- activeArea.getX(), item.getY()
+							- activeArea.getY(), item.getWidth(), item
+							.getHeight()));
 				}
 			}
 		}
@@ -577,9 +575,9 @@ public class BubbleSet implements SetOutline {
 		totaly /= nodeCount;
 
 		for (final Item item : items) {
-			item.centroidDistance = Math.sqrt(Math.pow(
-					totalx - item.getCenterX(), 2)
-					+ Math.pow(totaly - item.getCenterY(), 2));
+			final double diffX = totalx - item.getCenterX();
+			final double diffY = totaly - item.getCenterY();
+			item.centroidDistance = Math.sqrt(diffX * diffX + diffY * diffY);
 		}
 	}
 
@@ -639,9 +637,9 @@ public class BubbleSet implements SetOutline {
 		while (neighbourIterator.hasNext()) {
 			double numberInterferenceItems = 0;
 			final Item neighbourItem = neighbourIterator.next();
-			final double distance = Point2D.distance(item.getCenterX(),
-					item.getCenterY(), neighbourItem.getCenterX(),
-					neighbourItem.getCenterY());
+			final double distance = Point2D.distance(item.getCenterX(), item
+					.getCenterY(), neighbourItem.getCenterX(), neighbourItem
+					.getCenterY());
 
 			final Line2D completeLine = new Line2D.Double(item.getCenterX(),
 					item.getCenterY(), neighbourItem.getCenterX(),
@@ -690,8 +688,8 @@ public class BubbleSet implements SetOutline {
 						if (numIntersections == 2) {
 							double tempMorphBuffer = morphBuffer;
 
-							Point2D movePoint = rerouteLine(line,
-									closestItem.getBounds(), tempMorphBuffer,
+							Point2D movePoint = rerouteLine(line, closestItem
+									.getBounds(), tempMorphBuffer,
 									intersections, true);
 
 							// test the movePoint already exists
@@ -707,9 +705,9 @@ public class BubbleSet implements SetOutline {
 									&& (tempMorphBuffer >= 1)) {
 								// try a smaller buffer
 								tempMorphBuffer /= 1.5;
-								movePoint = rerouteLine(line,
-										closestItem.getBounds(),
-										tempMorphBuffer, intersections, true);
+								movePoint = rerouteLine(line, closestItem
+										.getBounds(), tempMorphBuffer,
+										intersections, true);
 								foundFirst = (pointExists(movePoint,
 										linesToCheck.iterator()) || pointExists(
 										movePoint, scannedLines.iterator()));
@@ -733,9 +731,9 @@ public class BubbleSet implements SetOutline {
 							if (!hasIntersection) {
 								tempMorphBuffer = morphBuffer;
 
-								movePoint = rerouteLine(line,
-										closestItem.getBounds(),
-										tempMorphBuffer, intersections, false);
+								movePoint = rerouteLine(line, closestItem
+										.getBounds(), tempMorphBuffer,
+										intersections, false);
 								boolean foundSecond = (pointExists(movePoint,
 										linesToCheck.iterator()) || pointExists(
 										movePoint, scannedLines.iterator()));
@@ -749,10 +747,9 @@ public class BubbleSet implements SetOutline {
 										&& (tempMorphBuffer >= 1)) {
 									// try a smaller buffer
 									tempMorphBuffer /= 1.5;
-									movePoint = rerouteLine(line,
-											closestItem.getBounds(),
-											tempMorphBuffer, intersections,
-											false);
+									movePoint = rerouteLine(line, closestItem
+											.getBounds(), tempMorphBuffer,
+											intersections, false);
 									foundSecond = (pointExists(movePoint,
 											linesToCheck.iterator()) || pointExists(
 											movePoint, scannedLines.iterator()));
@@ -892,8 +889,9 @@ public class BubbleSet implements SetOutline {
 				tempY = y * pixelGroup;
 				distance = Point2D.distance(tempX, tempY, pointx, pointy);
 				// only influence if less than r1
-				if (distance < r1) {
-					potentialArea[x][y] += factor * Math.pow(distance - r1, 2);
+				final double dr = distance - r1;
+				if (dr < 0) {
+					potentialArea[x][y] += factor * dr * dr;
 				}
 			}
 		}
@@ -921,11 +919,11 @@ public class BubbleSet implements SetOutline {
 		final Rectangle2D r = line.getBounds2D();
 		// calculate the subregion of potential area which may be affected by
 		// this line
-		final int startX = Math.min(
-				Math.max(0, (int) ((r.getX() - r1) / pixelGroup)),
-				potentialArea.length - 1);
-		final int startY = Math.min(
-				Math.max(0, (int) ((r.getY() - r1) / pixelGroup)),
+		final int startX = Math
+				.min(Math.max(0, (int) ((r.getX() - r1) / pixelGroup)),
+						potentialArea.length - 1);
+		final int startY = Math.min(Math.max(0,
+				(int) ((r.getY() - r1) / pixelGroup)),
 				potentialArea[startX].length - 1);
 		final int endX = Math.min(potentialArea.length - 1, Math.max(0,
 				(int) ((r.getX() + r.getWidth() + r1) / pixelGroup)));
@@ -943,9 +941,9 @@ public class BubbleSet implements SetOutline {
 				distance = line.ptSegDist(tempX, tempY);
 
 				// only influence if less than r1
-				if (distance <= r1) {
-					potentialArea[x][y] += influenceFactor
-							* Math.pow(distance - r1, 2);
+				final double dr = distance - r1;
+				if (dr <= 0) {
+					potentialArea[x][y] += influenceFactor * dr * dr;
 				}
 			}
 		}
@@ -987,8 +985,8 @@ public class BubbleSet implements SetOutline {
 		int count = 0;
 		for (final Rectangle2D interferenceItem : interferenceItems) {
 			if (interferenceItem.intersectsLine(testLine)) {
-				if (Intersection.fractionToLineCenter(
-						interferenceItem.getBounds(), testLine) != -1) {
+				if (Intersection.fractionToLineCenter(interferenceItem
+						.getBounds(), testLine) != -1) {
 					count++;
 				}
 			}
@@ -1037,15 +1035,15 @@ public class BubbleSet implements SetOutline {
 
 		// offset the rectangle by the bubble set bounds to put into 0,0 space
 		// for potentialArea
-		r.setFrame(r.getX() - activeRegion.getX(),
-				r.getY() - activeRegion.getY(), r.getWidth(), r.getHeight());
+		r.setFrame(r.getX() - activeRegion.getX(), r.getY()
+				- activeRegion.getY(), r.getWidth(), r.getHeight());
 
 		// find the affected subregion of potentialArea
-		final int startX = Math.min(
-				Math.max(0, (int) ((r.getX() - r1) / pixelGroup)),
-				potentialArea.length - 1);
-		final int startY = Math.min(
-				Math.max(0, (int) ((r.getY() - r1) / pixelGroup)),
+		final int startX = Math
+				.min(Math.max(0, (int) ((r.getX() - r1) / pixelGroup)),
+						potentialArea.length - 1);
+		final int startY = Math.min(Math.max(0,
+				(int) ((r.getY() - r1) / pixelGroup)),
 				potentialArea[startX].length - 1);
 		final int endX = Math.min(potentialArea.length - 1, Math.max(0,
 				(int) ((r.getX() + r.getWidth() + r1) / pixelGroup)));
@@ -1077,9 +1075,9 @@ public class BubbleSet implements SetOutline {
 				}
 
 				// only influence if less than r1
-				if (minDistance <= r1) {
-					potentialArea[x][y] += influenceFactor
-							* Math.pow(minDistance - r1, 2);
+				final double mdr = minDistance - r1;
+				if (mdr <= 0) {
+					potentialArea[x][y] += influenceFactor * mdr * mdr;
 				}
 			}
 		}
@@ -1106,11 +1104,11 @@ public class BubbleSet implements SetOutline {
 		double tempX, tempY, distance = 0;
 
 		// find the affected subregion of potentialArea
-		final int startX = Math.min(
-				Math.max(0, (int) ((rect.getX() - r1) / pixelGroup)),
+		final int startX = Math.min(Math.max(0,
+				(int) ((rect.getX() - r1) / pixelGroup)),
 				potentialArea.length - 1);
-		final int startY = Math.min(
-				Math.max(0, (int) ((rect.getY() - r1) / pixelGroup)),
+		final int startY = Math.min(Math.max(0,
+				(int) ((rect.getY() - r1) / pixelGroup)),
 				potentialArea[startX].length - 1);
 		final int endX = Math.min(potentialArea.length - 1, Math.max(0,
 				(int) ((rect.getX() + rect.getWidth() + r1) / pixelGroup)));
@@ -1144,19 +1142,19 @@ public class BubbleSet implements SetOutline {
 						// and left
 						if ((outcode & Rectangle2D.OUT_LEFT) == Rectangle2D.OUT_LEFT) {
 							// linear distance from upper left corner
-							distance = Point2D.distance(tempX, tempY,
-									rect.getMinX(), rect.getMinY());
+							distance = Point2D.distance(tempX, tempY, rect
+									.getMinX(), rect.getMinY());
 						} else {
 							// and right
 							if ((outcode & Rectangle2D.OUT_RIGHT) == Rectangle2D.OUT_RIGHT) {
 								// linear distance from upper right corner
-								distance = Point2D.distance(tempX, tempY,
-										rect.getMaxX(), rect.getMinY());
+								distance = Point2D.distance(tempX, tempY, rect
+										.getMaxX(), rect.getMinY());
 							} else {
 								// distance from top line segment
 								distance = Line2D.ptSegDist(rect.getMinX(),
-										rect.getMinY(), rect.getMaxX(),
-										rect.getMinY(), tempX, tempY);
+										rect.getMinY(), rect.getMaxX(), rect
+												.getMinY(), tempX, tempY);
 							}
 						}
 					} else {
@@ -1165,8 +1163,8 @@ public class BubbleSet implements SetOutline {
 							// and left
 							if ((outcode & Rectangle2D.OUT_LEFT) == Rectangle2D.OUT_LEFT) {
 								// linear distance from lower left corner
-								distance = Point2D.distance(tempX, tempY,
-										rect.getMinX(), rect.getMaxY());
+								distance = Point2D.distance(tempX, tempY, rect
+										.getMinX(), rect.getMaxY());
 							} else {
 								// and right
 								if ((outcode & Rectangle2D.OUT_RIGHT) == Rectangle2D.OUT_RIGHT) {
@@ -1185,8 +1183,8 @@ public class BubbleSet implements SetOutline {
 							if ((outcode & Rectangle2D.OUT_LEFT) == Rectangle2D.OUT_LEFT) {
 								// linear distance from left edge
 								distance = Line2D.ptSegDist(rect.getMinX(),
-										rect.getMinY(), rect.getMinX(),
-										rect.getMaxY(), tempX, tempY);
+										rect.getMinY(), rect.getMinX(), rect
+												.getMaxY(), tempX, tempY);
 							} else {
 								// right only
 								if ((outcode & Rectangle2D.OUT_RIGHT) == Rectangle2D.OUT_RIGHT) {
@@ -1200,9 +1198,9 @@ public class BubbleSet implements SetOutline {
 					}
 				}
 				// only influence if less than r1
-				if (distance <= r1) {
-					potentialArea[x][y] += influenceFactor
-							* Math.pow(distance - r1, 2);
+				final double dr = distance - r1;
+				if (dr <= 0) {
+					potentialArea[x][y] += influenceFactor * dr * dr;
 				}
 			}
 		}
@@ -1266,24 +1264,20 @@ public class BubbleSet implements SetOutline {
 		calculateLinesInfluence(potentialArea, influenceFactor, r1, lines,
 				activeArea);
 
-		final int startX = Math.min(
-				Math.max(0, (int) ((activeArea.getX() - r1) / pixelGroup)),
+		final int startX = Math.min(Math.max(0,
+				(int) ((activeArea.getX() - r1) / pixelGroup)),
 				potentialArea.length - 1);
-		final int startY = Math.min(
-				Math.max(0, (int) ((activeArea.getY() - r1) / pixelGroup)),
+		final int startY = Math.min(Math.max(0,
+				(int) ((activeArea.getY() - r1) / pixelGroup)),
 				potentialArea[startX].length - 1);
-		final int endX = Math
-				.min(potentialArea.length - 1,
-						Math.max(
-								0,
-								(int) ((activeArea.getX()
-										+ activeArea.getWidth() + r1) / pixelGroup)));
-		final int endY = Math
-				.min(potentialArea[startX].length,
-						Math.max(
-								0,
-								(int) ((activeArea.getY()
-										+ activeArea.getHeight() + r1) / pixelGroup)));
+		final int endX = Math.min(potentialArea.length - 1,
+				Math
+						.max(0, (int) ((activeArea.getX()
+								+ activeArea.getWidth() + r1) / pixelGroup)));
+		final int endY = Math.min(potentialArea[startX].length,
+				Math
+						.max(0, (int) ((activeArea.getY()
+								+ activeArea.getHeight() + r1) / pixelGroup)));
 
 		// for every point in potentialArea, calculate distance to nearest point
 		// on rectangle
@@ -1309,9 +1303,9 @@ public class BubbleSet implements SetOutline {
 					distance = Double.MAX_VALUE;
 				}
 				// only influence if less than r1
-				if (distance <= r1) {
-					potentialArea[x][y] += influenceFactor
-							* Math.pow(distance - r1, 2);
+				final double dr = distance - r1;
+				if (dr <= 0) {
+					potentialArea[x][y] += influenceFactor * dr * dr;
 				}
 			}
 		}
