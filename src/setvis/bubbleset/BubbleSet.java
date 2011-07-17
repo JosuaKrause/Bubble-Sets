@@ -942,7 +942,7 @@ public class BubbleSet implements SetOutline {
 
 				// only influence if less than r1
 				final double dr = distance - r1;
-				if (dr <= 0) {
+				if (dr < 0) {
 					potentialArea[x][y] += influenceFactor * dr * dr;
 				}
 			}
@@ -1076,7 +1076,7 @@ public class BubbleSet implements SetOutline {
 
 				// only influence if less than r1
 				final double mdr = minDistance - r1;
-				if (mdr <= 0) {
+				if (mdr < 0) {
 					potentialArea[x][y] += influenceFactor * mdr * mdr;
 				}
 			}
@@ -1199,7 +1199,7 @@ public class BubbleSet implements SetOutline {
 				}
 				// only influence if less than r1
 				final double dr = distance - r1;
-				if (dr <= 0) {
+				if (dr < 0) {
 					potentialArea[x][y] += influenceFactor * dr * dr;
 				}
 			}
@@ -1304,7 +1304,7 @@ public class BubbleSet implements SetOutline {
 				}
 				// only influence if less than r1
 				final double dr = distance - r1;
-				if (dr <= 0) {
+				if (dr < 0) {
 					potentialArea[x][y] += influenceFactor * dr * dr;
 				}
 			}
