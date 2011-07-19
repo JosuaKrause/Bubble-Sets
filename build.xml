@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="all" name="build the bubble set project">
+  <!-- important directories / files -->
+  <property name="src" location="src"/>
+  <property name="bin" location="bin"/>
+  <property name="example" location="example.jar"/>
+  <property name="examplesrc" location="example_src.zip"/>
+  <property name="bubbleset" location="bubbleset.jar"/>
+  <property name="bubblesrc" location="bubbleset_src.zip"/>
+  <!-- the actual targets -->
+  <target name="compile">
+    <mkdir dir="${bin}"/>
+    <!-- compile the whole source folder -->
+    <javac srcdir="${src}" destdir="${bin}" verbose="yes">
+    </javac>
+  </target>
+  <target name="jars">
+    <jar destfile="${example}">
+      <manifest>
+        <attribute name="Main-Class" value="setvis.Main"/>
+        <attribute name="Class-Path" value="."/>
+      </manifest>
+      <fileset dir="${bin}">
+      </fileset>
+    </jar>
+    <jar destfile="${bubbleset}">
+      <fileset dir="${bin}">
+        <exclude name="**/Main.class"/>
+        <exclude name="/setvis/gui/**"/>
+      </fileset>
+    </jar>
+  </target>
+  <target name="src">
+    <zip destfile="${examplesrc}">
+      <fileset dir="${src}">
+      </fileset>
+    </zip>
+    <zip destfile="${bubblesrc}">
+      <fileset dir="${src}">
+        <exclude name="**/Main.java"/>
+        <exclude name="/setvis/gui/**"/>
+      </fileset>
+    </zip>
+  </target>
+  <!-- builds the targets in the given order -->
+  <target name="all"
+    depends="compile,jars,src"
+    description="Build all jars"
+    />
+</project>
