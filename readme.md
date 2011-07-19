@@ -1,5 +1,5 @@
 
-This is an implementation of the [bubble sets] [1]
+This is an implementation of [bubble sets] [1]
 without the use of external libraries.
 
 To build the project, you can use the ANT-script
