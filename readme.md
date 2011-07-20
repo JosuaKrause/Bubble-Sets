@@ -29,6 +29,4 @@ To get started, you can use the following code:
     // as passed by a component's paint method
     Shape[] shapes = shapeCreator.createShapesForLists(items);
 
-[1]: http://faculty.uoit.ca/collins/research/bubblesets/ "Collins, Christopher; Penn, Gerald; Carpendale, Sheelagh.
-Bubble Sets: Revealing Set Relations over Existing Visualizations. In IEEE Transactions on Visualization and Computer Graphics
-(Proceedings of the IEEE Conference on Information Visualization (InfoVis '09)), 15(6): November-December, 2009."
+[1]: http://faculty.uoit.ca/collins/research/bubblesets/ "Collins, Christopher; Penn, Gerald; Carpendale, Sheelagh. Bubble Sets: Revealing Set Relations over Existing Visualizations. In IEEE Transactions on Visualization and Computer Graphics (Proceedings of the IEEE Conference on Information Visualization (InfoVis '09)), 15(6): November-December, 2009."
