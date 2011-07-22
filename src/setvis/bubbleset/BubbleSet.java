@@ -1070,7 +1070,7 @@ public class BubbleSet implements SetOutline {
 				tempX = x * pixelGroup + activeRegion.getX();
 				tempY = y * pixelGroup + activeRegion.getY();
 
-				minDistanceSq = Double.MAX_VALUE;
+				minDistanceSq = Double.POSITIVE_INFINITY;
 				for (final Line2D line : lines) {
 					// use squared distance for comparison
 					distanceSq = line.ptSegDistSq(tempX, tempY);
