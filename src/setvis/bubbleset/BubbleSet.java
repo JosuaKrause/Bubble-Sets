@@ -1019,8 +1019,8 @@ public class BubbleSet implements SetOutline {
 			final double influenceFactor, final double r1,
 			final Deque<Line2D> lines, final Rectangle2D activeRegion) {
 
-		double tempX, tempY, distance = 0;
-		double minDistance = Double.MAX_VALUE;
+		double tempX, tempY, distanceSq = 0;
+		double minDistanceSq = Double.MAX_VALUE;
 
 		Rectangle2D r = null;
 
@@ -1070,16 +1070,18 @@ public class BubbleSet implements SetOutline {
 				tempX = x * pixelGroup + activeRegion.getX();
 				tempY = y * pixelGroup + activeRegion.getY();
 
-				minDistance = Double.MAX_VALUE;
+				minDistanceSq = Double.MAX_VALUE;
 				for (final Line2D line : lines) {
-					distance = line.ptSegDist(tempX, tempY);
-					if (distance < minDistance) {
-						minDistance = distance;
+					// use squared distance for comparison
+					distanceSq = line.ptSegDistSq(tempX, tempY);
+					if (distanceSq < minDistanceSq) {
+						minDistanceSq = distanceSq;
 					}
 				}
 
+				// use the real minimal distance here (with Math.sqrt)
 				// only influence if less than r1
-				final double mdr = minDistance - r1;
+				final double mdr = Math.sqrt(minDistanceSq) - r1;
 				if (mdr < 0) {
 					potentialArea[x][y] += influenceFactor * mdr * mdr;
 				}
