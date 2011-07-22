@@ -66,11 +66,11 @@ public class BezierShapeGenerator extends RoundShapeGenerator {
 		final int len = points.length;
 		boolean first = true;
 		for (int i = 0; i < len; ++i) {
-			final Point2D a = points[i];
-			final Point2D b = points[getOtherIndex(i, len, false)];
-			final Point2D c = points[getOtherIndex(i, len, true)];
-			final Point2D[] vertices = hasMaxRadius ? getRestrictedBezier(
-					points, i) : getBezierForPoint(points, i);
+			final Point2D a = points[i]; // point
+			final Point2D b = points[getOtherIndex(i, len, false)]; // left
+			final Point2D c = points[getOtherIndex(i, len, true)]; // right
+			final Point2D[] vertices = hasMaxRadius ? getRestrictedBezier(a, b,
+					c) : getBezierForPoint(a, b, c);
 			final Point2D p = vertices[0];
 			if (first) {
 				res.moveTo(p.getX(), p.getY());
@@ -98,41 +98,55 @@ public class BezierShapeGenerator extends RoundShapeGenerator {
 	 * Creates bezier points by using the middle points of two points of the
 	 * outline as reference points.
 	 * 
-	 * @param points
-	 *            The array containing the outline.
-	 * @param index
-	 *            The current index in the outline.
+	 * @param point
+	 *            The current point.
+	 * @param left
+	 *            The point left of the current point.
+	 * @param right
+	 *            The point right of the current point.
 	 * @return The bezier reference points.
 	 */
-	private Point2D[] getBezierForPoint(final Point2D[] points, final int index) {
-		final int len = points.length;
-		final Point2D point = points[index];
-		final Point2D left = points[getOtherIndex(index, len, false)];
-		final Point2D right = points[getOtherIndex(index, len, true)];
+	private Point2D[] getBezierForPoint(final Point2D point,
+			final Point2D left, final Point2D right) {
 		return new Point2D[] { middleVec(point, left), point,
 				middleVec(point, right) };
+	}
+
+	/**
+	 * Cached radius helper for
+	 * {@link #getRestrictedBezier(Point2D, Point2D, Point2D)}.
+	 */
+	private double rad;
+
+	/**
+	 * Cached squared radius helper for
+	 * {@link #getRestrictedBezier(Point2D, Point2D, Point2D)}.
+	 */
+	private double qrad;
+
+	@Override
+	public void setRadius(final double radius) {
+		super.setRadius(radius);
+		// even with four times the radius the curve won't cut the original
+		// vertices
+		rad = radius * 4.0;
+		qrad = rad * rad;
 	}
 
 	/**
 	 * Creates bezier points by going a certain radius away from the current
 	 * point in the directions of the neighbors.
 	 * 
-	 * @param points
-	 *            The array containing the outline.
-	 * @param index
-	 *            The index of the current point.
+	 * @param point
+	 *            The current point.
+	 * @param left
+	 *            The point left of the current point.
+	 * @param right
+	 *            The point right of the current point.
 	 * @return The bezier reference points.
 	 */
-	private Point2D[] getRestrictedBezier(final Point2D[] points,
-			final int index) {
-		// even with four times the radius the curve won't cut the original
-		// vertices
-		final double rad = getRadius() * 4.0;
-		final double qrad = rad * rad;
-		final int len = points.length;
-		final Point2D point = points[index];
-		final Point2D left = points[getOtherIndex(index, len, false)];
-		final Point2D right = points[getOtherIndex(index, len, true)];
+	private Point2D[] getRestrictedBezier(final Point2D point,
+			final Point2D left, final Point2D right) {
 		Point2D lp = middleVec(point, left);
 		final Point2D dlp = subVec(lp, point);
 		if (vecLengthSqr(dlp) > qrad) {
