@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project default="all" name="build the bubble set project">
   <!-- important directories / files -->
+  <property name="license" location="LICENSE"/>	
   <property name="src" location="src"/>
   <property name="bin" location="bin"/>
   <property name="example" location="example.jar"/>
@@ -22,24 +23,28 @@
       </manifest>
       <fileset dir="${bin}">
       </fileset>
+      <fileset file="${license}" />
     </jar>
     <jar destfile="${bubbleset}">
       <fileset dir="${bin}">
         <exclude name="**/Main.class"/>
         <exclude name="/setvis/gui/**"/>
       </fileset>
+      <fileset file="${license}" />
     </jar>
   </target>
   <target name="src">
     <zip destfile="${examplesrc}">
       <fileset dir="${src}">
       </fileset>
+      <fileset file="${license}" />
     </zip>
     <zip destfile="${bubblesrc}">
       <fileset dir="${src}">
         <exclude name="**/Main.java"/>
         <exclude name="/setvis/gui/**"/>
       </fileset>
+      <fileset file="${license}" />
     </zip>
   </target>
   <!-- builds the targets in the given order -->
