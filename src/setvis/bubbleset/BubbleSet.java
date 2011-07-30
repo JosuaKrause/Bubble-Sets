@@ -115,6 +115,11 @@ public class BubbleSet implements SetOutline {
 	private int skip = 8;
 
 	/**
+	 * Whether to use optimized data structures.
+	 */
+	private boolean useOptimizedDataStructures = true;
+
+	/**
 	 * Create a new BubbleSet calculation instance with the given parameters.
 	 * 
 	 * @param routingIterations
@@ -281,9 +286,11 @@ public class BubbleSet implements SetOutline {
 
 		// estimate length of contour to be the perimeter of the rectangular
 		// aggregate bounds (tested, it's a good approx)
-		final ArrayList<Point2D> surface = new ArrayList<Point2D>(
-				(int) activeRegion.getWidth() * 2
-						+ (int) activeRegion.getHeight() * 2);
+		final int estLength = ((int) activeRegion.getWidth() + (int) activeRegion
+				.getHeight()) * 2;
+		final ArrayList<Point2D> surface = useOptimizedDataStructures ? new FastList<Point2D>(
+				estLength)
+				: new ArrayList<Point2D>(estLength);
 
 		// store defaults and adjust globals so that changes are visible to
 		// calculateSurface method
@@ -1015,8 +1022,8 @@ public class BubbleSet implements SetOutline {
 			final double influenceFactor, final double r1,
 			final Deque<Line2D> lines, final Rectangle2D activeRegion) {
 
-		double tempX, tempY, distance = 0;
-		double minDistance = Double.MAX_VALUE;
+		double tempX, tempY, distanceSq = 0;
+		double minDistanceSq = Double.MAX_VALUE;
 
 		Rectangle2D r = null;
 
@@ -1052,8 +1059,8 @@ public class BubbleSet implements SetOutline {
 
 		// for every point in active part of potentialArea, calculate distance
 		// to nearest point on line and add influence
-		for (int x = startX; x < endX; x++) {
-			for (int y = startY; y < endY; y++) {
+		for (int x = startX; x < endX; ++x) {
+			for (int y = startY; y < endY; ++y) {
 
 				// if we are adding negative energy, skip if not already
 				// positive; positives have already been added first, and adding
@@ -1066,16 +1073,18 @@ public class BubbleSet implements SetOutline {
 				tempX = x * pixelGroup + activeRegion.getX();
 				tempY = y * pixelGroup + activeRegion.getY();
 
-				minDistance = Double.MAX_VALUE;
+				minDistanceSq = Double.POSITIVE_INFINITY;
 				for (final Line2D line : lines) {
-					distance = line.ptSegDist(tempX, tempY);
-					if (distance < minDistance) {
-						minDistance = distance;
+					// use squared distance for comparison
+					distanceSq = line.ptSegDistSq(tempX, tempY);
+					if (distanceSq < minDistanceSq) {
+						minDistanceSq = distanceSq;
 					}
 				}
 
+				// use the real minimal distance here (with Math.sqrt)
 				// only influence if less than r1
-				final double mdr = minDistance - r1;
+				final double mdr = Math.sqrt(minDistanceSq) - r1;
 				if (mdr < 0) {
 					potentialArea[x][y] += influenceFactor * mdr * mdr;
 				}
@@ -1671,5 +1680,21 @@ public class BubbleSet implements SetOutline {
 	 */
 	public void setSkip(final int skip) {
 		this.skip = skip;
+	}
+
+	/**
+	 * @return whether this bubble set uses optimized data structures.
+	 */
+	public boolean useOptimizedDataStructures() {
+		return useOptimizedDataStructures;
+	}
+
+	/**
+	 * @param useOptimizedDataStructures
+	 *            whether to use optimized data structures
+	 */
+	public void setUseOptimizedDataStructures(
+			final boolean useOptimizedDataStructures) {
+		this.useOptimizedDataStructures = useOptimizedDataStructures;
 	}
 }

@@ -33,6 +33,8 @@ public abstract class AbstractShapeCreator {
 	 */
 	public AbstractShapeCreator(final SetOutline setOutline) {
 		this.setOutline = setOutline;
+		// proper initialization of the radius
+		setRadius(10.0);
 	}
 
 	/**
@@ -46,7 +48,7 @@ public abstract class AbstractShapeCreator {
 	 * The radius that should be added to the rectangles for the outline
 	 * creation.
 	 */
-	private double radius = 10.0;
+	private double radius;
 
 	/**
 	 * @param radius
