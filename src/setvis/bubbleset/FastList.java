@@ -21,7 +21,7 @@ import java.util.Set;
  * @param <E>
  *            The type parameter.
  */
-public class FastList<E> extends ArrayList<E> {
+public final class FastList<E> extends ArrayList<E> {
 
 	/** The serial version uid. */
 	private static final long serialVersionUID = 2901108923922468511L;

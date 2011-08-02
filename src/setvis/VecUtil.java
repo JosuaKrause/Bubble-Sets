@@ -27,7 +27,7 @@ public final class VecUtil {
 	 * @return {@code > 0} if {@code rel} is left of {@code from -> to} and
 	 *         {@code < 0} if {@code rel} is right of {@code from -> to}.
 	 */
-	public static int relTo(final Point2D from, final Point2D to,
+	public static final int relTo(final Point2D from, final Point2D to,
 			final Point2D rel) {
 		return (int) Math.signum((to.getX() - from.getX())
 				* (from.getY() - rel.getY()) - (rel.getX() - from.getX())
@@ -41,7 +41,7 @@ public final class VecUtil {
 	 *            The end point.
 	 * @return Whether the vector {@code from -> to} is the null vector.
 	 */
-	public static boolean isNull(final Point2D from, final Point2D to) {
+	public static final boolean isNull(final Point2D from, final Point2D to) {
 		return from.getX() == to.getX() && from.getY() == to.getY();
 	}
 
@@ -54,7 +54,7 @@ public final class VecUtil {
 	 *            The second point.
 	 * @return The resulting point.
 	 */
-	public static Point2D addVec(final Point2D a, final Point2D b) {
+	public static final Point2D addVec(final Point2D a, final Point2D b) {
 		return new Point2D.Double(a.getX() + b.getX(), a.getY() + b.getY());
 	}
 
@@ -67,7 +67,7 @@ public final class VecUtil {
 	 *            The scalar.
 	 * @return the scaled version.
 	 */
-	public static Point2D mulVec(final Point2D a, final double scalar) {
+	public static final Point2D mulVec(final Point2D a, final double scalar) {
 		return new Point2D.Double(a.getX() * scalar, a.getY() * scalar);
 	}
 
@@ -80,7 +80,7 @@ public final class VecUtil {
 	 *            The subtrahend.
 	 * @return The difference.
 	 */
-	public static Point2D subVec(final Point2D a, final Point2D b) {
+	public static final Point2D subVec(final Point2D a, final Point2D b) {
 		return new Point2D.Double(a.getX() - b.getX(), a.getY() - b.getY());
 	}
 
@@ -93,7 +93,7 @@ public final class VecUtil {
 	 *            The second vector.
 	 * @return The dot product.
 	 */
-	public static double dot(final Point2D a, final Point2D b) {
+	public static final double dot(final Point2D a, final Point2D b) {
 		return a.getX() * b.getX() + a.getY() * b.getY();
 	}
 
@@ -107,7 +107,7 @@ public final class VecUtil {
 	 *            The second vector.
 	 * @return The normalized dot product.
 	 */
-	public static double dotNorm(final Point2D a, final Point2D b) {
+	public static final double dotNorm(final Point2D a, final Point2D b) {
 		return dot(a, b) / (vecLength(a) * vecLength(b));
 	}
 
@@ -119,7 +119,7 @@ public final class VecUtil {
 	 *            The given vector.
 	 * @return The orthogonal vector of the left side.
 	 */
-	public static Point2D getOrthoLeft(final Point2D a) {
+	public static final Point2D getOrthoLeft(final Point2D a) {
 		return new Point2D.Double(-a.getY(), a.getX());
 	}
 
@@ -131,7 +131,7 @@ public final class VecUtil {
 	 *            The given vector.
 	 * @return The orthogonal vector of the right side.
 	 */
-	public static Point2D getOrthoRight(final Point2D a) {
+	public static final Point2D getOrthoRight(final Point2D a) {
 		return new Point2D.Double(a.getY(), -a.getX());
 	}
 
@@ -142,7 +142,7 @@ public final class VecUtil {
 	 *            The vector.
 	 * @return The inverse vector.
 	 */
-	public static Point2D invVec(final Point2D v) {
+	public static final Point2D invVec(final Point2D v) {
 		return mulVec(v, -1.0);
 	}
 
@@ -154,7 +154,7 @@ public final class VecUtil {
 	 *            The vector.
 	 * @return The length of the vector.
 	 */
-	public static double vecLength(final Point2D v) {
+	public static final double vecLength(final Point2D v) {
 		return Math.sqrt(vecLengthSqr(v));
 	}
 
@@ -165,7 +165,7 @@ public final class VecUtil {
 	 *            The vector.
 	 * @return A vector with the length {@code 1.0}.
 	 */
-	public static Point2D normVec(final Point2D v) {
+	public static final Point2D normVec(final Point2D v) {
 		return mulVec(v, 1.0 / vecLength(v));
 	}
 
@@ -177,7 +177,7 @@ public final class VecUtil {
 	 *            The vector.
 	 * @return The squared length.
 	 */
-	public static double vecLengthSqr(final Point2D v) {
+	public static final double vecLengthSqr(final Point2D v) {
 		return dot(v, v);
 	}
 
@@ -195,7 +195,7 @@ public final class VecUtil {
 	 *            The length of the result.
 	 * @return The vector in the middle of the two.
 	 */
-	public static Point2D middleVec(final Point2D from, final Point2D a,
+	public static final Point2D middleVec(final Point2D from, final Point2D a,
 			final Point2D b, final double len) {
 		return addVec(
 				mulVec(normVec(middleVec(subVec(a, from), subVec(b, from))),
@@ -214,7 +214,7 @@ public final class VecUtil {
 	 *            The second end point.
 	 * @return The vector in the middle of the two.
 	 */
-	public static Point2D middleVec(final Point2D from, final Point2D a,
+	public static final Point2D middleVec(final Point2D from, final Point2D a,
 			final Point2D b) {
 		return addVec(middleVec(subVec(a, from), subVec(b, from)), from);
 	}
@@ -228,7 +228,7 @@ public final class VecUtil {
 	 *            The second vector.
 	 * @return The middle vector.
 	 */
-	public static Point2D middleVec(final Point2D a, final Point2D b) {
+	public static final Point2D middleVec(final Point2D a, final Point2D b) {
 		return mulVec(addVec(a, b), 0.5);
 	}
 

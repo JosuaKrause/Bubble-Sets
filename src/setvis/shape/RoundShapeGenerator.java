@@ -46,7 +46,7 @@ public abstract class RoundShapeGenerator extends AbstractShapeCreator {
 	 *            Whether to return the next or previous index.
 	 * @return The next or previous index for an array with the given length.
 	 */
-	protected int getOtherIndex(final int index, final int len,
+	protected final int getOtherIndex(final int index, final int len,
 			final boolean next) {
 		return ((next ^ clockwise) ? (index + len - 1) : (index + 1)) % len;
 	}
