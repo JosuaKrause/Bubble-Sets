@@ -8,6 +8,7 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -74,13 +75,14 @@ public abstract class AbstractShapeCreator {
 	 * Creates shapes for all sets given by {@code items}.
 	 * 
 	 * @param items
-	 *            A list of sets. The sets are themselves a list of rectangles.
+	 *            A collection of sets. The sets are themselves a collection of
+	 *            rectangles.
 	 * @return The outline shapes for each set given.
 	 */
 	public final Shape[] createShapesForLists(
-			final List<List<Rectangle2D>> items) {
+			final Collection<? extends Collection<Rectangle2D>> items) {
 		final List<Rectangle2D[]> list = new LinkedList<Rectangle2D[]>();
-		for (final List<Rectangle2D> group : items) {
+		for (final Collection<Rectangle2D> group : items) {
 			list.add(group.toArray(new Rectangle2D[group.size()]));
 		}
 		return createShapesFor(list);
@@ -90,11 +92,11 @@ public abstract class AbstractShapeCreator {
 	 * Creates shapes for all sets given by {@code items}.
 	 * 
 	 * @param items
-	 *            A list of sets. The sets are themselves an array of
+	 *            A collection of sets. The sets are themselves an array of
 	 *            rectangles.
 	 * @return The outline shapes for each set given.
 	 */
-	public final Shape[] createShapesFor(final List<Rectangle2D[]> items) {
+	public final Shape[] createShapesFor(final Collection<Rectangle2D[]> items) {
 		final Shape[] res = new Shape[items.size()];
 		int i = 0;
 		for (final Rectangle2D[] group : items) {
@@ -104,7 +106,14 @@ public abstract class AbstractShapeCreator {
 		return res;
 	}
 
-	public final Shape[] createShapesForGroups(final List<Group> groups) {
+	/**
+	 * Creates shapes for all sets given by {@code groups}.
+	 * 
+	 * @param groups
+	 *            A collection of groups.
+	 * @return The outline shapes for each set given.
+	 */
+	public final Shape[] createShapesForGroups(final Collection<Group> groups) {
 		final Shape[] res = new Shape[groups.size()];
 		int i = 0;
 		for (final Group group : groups) {
@@ -118,16 +127,16 @@ public abstract class AbstractShapeCreator {
 	 * Finds all items not belonging to the given group.
 	 * 
 	 * @param items
-	 *            A list of sets. The sets are themselves a list of rectangles.
+	 *            A collection of sets. The sets are themselves an array of
+	 *            rectangles.
 	 * @param groupID
 	 *            The group.
 	 * @return All items not belonging to the group.
 	 */
-	private static Rectangle2D[] getNonMembers(final List<Rectangle2D[]> items,
-			final int groupID) {
+	private static Rectangle2D[] getNonMembers(
+			final Collection<Rectangle2D[]> items, final int groupID) {
 		final List<Rectangle2D> res = new LinkedList<Rectangle2D>();
 		int g = 0;
-
 		for (final Rectangle2D[] group : items) {
 			if (g++ == groupID) {
 				continue;
@@ -137,11 +146,19 @@ public abstract class AbstractShapeCreator {
 		return res.toArray(new Rectangle2D[res.size()]);
 	}
 
+	/**
+	 * Finds all rectangles not belonging to the given group.
+	 * 
+	 * @param items
+	 *            A collection of groups.
+	 * @param groupID
+	 *            The group.
+	 * @return All rectangles not belonging to the group.
+	 */
 	private static Rectangle2D[] getNonMembersForGroups(
-			final List<Group> items, final int groupID) {
+			final Collection<Group> items, final int groupID) {
 		final List<Rectangle2D> res = new LinkedList<Rectangle2D>();
 		int g = 0;
-
 		for (final Group group : items) {
 			if (g++ == groupID) {
 				continue;
@@ -168,7 +185,7 @@ public abstract class AbstractShapeCreator {
 
 	/**
 	 * Creates a shape for the given set avoiding the given items not contained
-	 * in the set and guided by the optional lines.
+	 * in the set and guided by optional lines.
 	 * 
 	 * @param members
 	 *            The items representing the set.
@@ -186,9 +203,19 @@ public abstract class AbstractShapeCreator {
 		return convertToShape(res);
 	}
 
-	public final Shape createShapeFor(final Group g,
+	/**
+	 * Creates a shape for the given set avoiding the given groups not contained
+	 * in the set.
+	 * 
+	 * @param group
+	 *            The group.
+	 * @param nonMembers
+	 *            The items excluded from the set.
+	 * @return The resulting shape.
+	 */
+	public final Shape createShapeFor(final Group group,
 			final Rectangle2D[] nonMembers) {
-		return createShapeFor(g.rects, nonMembers, g.lines);
+		return createShapeFor(group.rects, nonMembers, group.lines);
 	}
 
 	/**

@@ -12,14 +12,29 @@ import java.util.Collection;
  */
 public class Group {
 
+	/**
+	 * The list of rectangles.
+	 */
 	public final Rectangle2D[] rects;
 
+	/**
+	 * The list of guiding lines.
+	 */
 	public final Line2D[] lines;
 
+	/**
+	 * Creates a group consisting of rectangles and lines.
+	 * 
+	 * @param rects
+	 *            The rectangles.
+	 * @param lines
+	 *            The lines. May be <code>null</code>.
+	 */
 	public Group(final Collection<Rectangle2D> rects,
 			final Collection<Line2D> lines) {
 		this.rects = rects.toArray(new Rectangle2D[rects.size()]);
-		this.lines = lines.toArray(new Line2D[lines.size()]);
+		this.lines = lines != null ? lines.toArray(new Line2D[lines.size()])
+				: null;
 	}
 
 }
