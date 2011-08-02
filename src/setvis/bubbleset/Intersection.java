@@ -10,12 +10,12 @@ import java.awt.geom.Rectangle2D;
  * 
  * @author Christopher Collins
  */
-public class Intersection extends Point2D.Double {
+public final class Intersection extends Point2D.Double {
 
 	/** the serial version UID */
 	private static final long serialVersionUID = 8788447626238369821L;
 
-	public enum State {
+	public static enum State {
 		Point, Parallel, Coincident, None
 	}
 
@@ -38,13 +38,14 @@ public class Intersection extends Point2D.Double {
 	 * Calculate the intersection of two line segments.
 	 * 
 	 * @param a
-	 *            TODO
+	 *            The first line.
 	 * @param b
-	 *            TODO
+	 *            The second line.
 	 * @return an Intersection item storing the type of intersection and the
 	 *         exact point if any was found
 	 */
-	public static Intersection intersectLineLine(final Line2D a, final Line2D b) {
+	public static final Intersection intersectLineLine(final Line2D a,
+			final Line2D b) {
 		Intersection result;
 
 		final double ua_t = (b.getX2() - b.getX1()) * (a.getY1() - b.getY1())
@@ -82,13 +83,13 @@ public class Intersection extends Point2D.Double {
 	 * intersection coordinates.
 	 * 
 	 * @param a
-	 *            TODO
+	 *            The first line
 	 * @param b
-	 *            TODO
+	 *            The second line
 	 * @return the smallest fraction along the line that indicates an
 	 *         intersection point
 	 */
-	public static double fractionAlongLineA(final Line2D a, final Line2D b) {
+	public static final double fractionAlongLineA(final Line2D a, final Line2D b) {
 		final double ua_t = (b.getX2() - b.getX1()) * (a.getY1() - b.getY1())
 				- (b.getY2() - b.getY1()) * (a.getX1() - b.getX1());
 		final double ub_t = (a.getX2() - a.getX1()) * (a.getY1() - b.getY1())
@@ -113,13 +114,13 @@ public class Intersection extends Point2D.Double {
 	 * determining the actual intersection coordinates.
 	 * 
 	 * @param bounds
-	 *            TODO
+	 *            The rectangle
 	 * @param line
-	 *            TODO
+	 *            The line
 	 * @return the smallest fraction along the line that indicates an
 	 *         intersection point
 	 */
-	public static double fractionToLineCenter(final Rectangle2D bounds,
+	public static final double fractionToLineCenter(final Rectangle2D bounds,
 			final Line2D line) {
 		double minDistance = java.lang.Double.MAX_VALUE;
 		double testDistance = 0;
@@ -201,13 +202,13 @@ public class Intersection extends Point2D.Double {
 	 * actual intersection coordinates.
 	 * 
 	 * @param bounds
-	 *            TODO
+	 *            The rectangle
 	 * @param line
-	 *            TODO
+	 *            The line
 	 * @return the smallest fraction along the line that indicates an
 	 *         intersection point
 	 */
-	public static double fractionToLineEnd(final Rectangle2D bounds,
+	public static final double fractionToLineEnd(final Rectangle2D bounds,
 			final Line2D line) {
 		double minDistance = java.lang.Double.MAX_VALUE;
 		double testDistance = 0;
@@ -289,7 +290,7 @@ public class Intersection extends Point2D.Double {
 	 * @return the number of intersection points found (doesn't count
 	 *         coincidental lines)
 	 */
-	public static int testIntersection(final Line2D line,
+	public static final int testIntersection(final Line2D line,
 			final Rectangle2D bounds, final Intersection[] intersections) {
 
 		int countIntersections = 0;
@@ -336,4 +337,5 @@ public class Intersection extends Point2D.Double {
 
 		return countIntersections;
 	}
+
 }

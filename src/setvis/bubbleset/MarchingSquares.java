@@ -3,9 +3,17 @@ package setvis.bubbleset;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
-public class MarchingSquares {
+/**
+ * 
+ * @author Christopher Collins
+ */
+public final class MarchingSquares {
 
-	private enum Direction {
+	private MarchingSquares() {
+		// no constructor
+	}
+
+	private static enum Direction {
 		N, S, E, W
 	}
 
@@ -14,8 +22,9 @@ public class MarchingSquares {
 
 	private static double threshold;
 
-	public static boolean calculateContour(final ArrayList<Point2D> contour,
-			final double[][] potentialArea, final int step, final double t) {
+	public static final boolean calculateContour(
+			final ArrayList<Point2D> contour, final double[][] potentialArea,
+			final int step, final double t) {
 		// find a first point on the contour
 		boolean marched = false;
 
@@ -26,12 +35,11 @@ public class MarchingSquares {
 		threshold = t;
 
 		for (int x = 0; x < potentialArea.length && !marched; x++) {
-			for (int y = 0; y < potentialArea[x].length && !marched; y++) {
-				if (test(potentialArea[x][y])) {
-					// check invalid state condition
-					if (getState(potentialArea, x, y) != 15) {
-						marched = march(contour, potentialArea, x, y, step);
-					}
+			final double[] potLine = potentialArea[x];
+			for (int y = 0; y < potLine.length && !marched; y++) {
+				// check invalid state condition
+				if (test(potLine[y]) && getState(potentialArea, x, y) != 15) {
+					marched = march(contour, potentialArea, x, y, step);
 				}
 			}
 		}
@@ -55,7 +63,7 @@ public class MarchingSquares {
 	 * @return true iff a continuous contour is found
 	 * 
 	 */
-	private static boolean march(final ArrayList<Point2D> contour,
+	private static final boolean march(final ArrayList<Point2D> contour,
 			final double[][] potentialArea, final int x, final int y,
 			final int step) {
 		final Point2D p = new Point2D.Float(x * step, y * step);
@@ -134,7 +142,7 @@ public class MarchingSquares {
 	 *            the value to test
 	 * @return whether the test value passes
 	 */
-	private static boolean test(final double test) {
+	private static final boolean test(final double test) {
 		return (test > threshold);
 	}
 
@@ -151,8 +159,8 @@ public class MarchingSquares {
 	 *            the current y-position in the area
 	 * @return an int value representing a marching squares state
 	 */
-	private static int getState(final double[][] potentialArea, final int x,
-			final int y) {
+	private static final int getState(final double[][] potentialArea,
+			final int x, final int y) {
 		int dir = 0;
 		try {
 			dir += (test(potentialArea[x][y]) ? 1 << 0 : 0);
