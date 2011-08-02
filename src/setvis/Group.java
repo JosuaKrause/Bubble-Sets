@@ -28,13 +28,23 @@ public class Group {
 	 * @param rects
 	 *            The rectangles.
 	 * @param lines
-	 *            The lines. May be <code>null</code>.
+	 *            The lines guiding the set outlines. May be <code>null</code>.
 	 */
 	public Group(final Collection<Rectangle2D> rects,
 			final Collection<Line2D> lines) {
 		this.rects = rects.toArray(new Rectangle2D[rects.size()]);
 		this.lines = lines != null ? lines.toArray(new Line2D[lines.size()])
 				: null;
+	}
+
+	/**
+	 * Creates a group consisting of rectangles.
+	 * 
+	 * @param rects
+	 *            The rectangles.
+	 */
+	public Group(final Collection<Rectangle2D> rects) {
+		this(rects, null);
 	}
 
 }

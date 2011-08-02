@@ -45,4 +45,5 @@ public final class Main {
 		canvas.translateScene(112.0, 106.0);
 		mw.setVisible(true);
 	}
+
 }
