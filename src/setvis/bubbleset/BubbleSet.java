@@ -241,13 +241,19 @@ public class BubbleSet implements SetOutline {
 		return (p1.distance(p2) < delta);
 	}
 
+	@Override
+	public Point2D[] createOutline(final Rectangle2D[] members,
+			final Rectangle2D[] nonMembers) {
+		return createOutline(members, nonMembers, null);
+	}
+
 	/**
 	 * Calculate the Bubble Set using energy and marching squares with edge
 	 * routing.
 	 */
 	@Override
 	public Point2D[] createOutline(final Rectangle2D[] members,
-			final Rectangle2D[] nonMembers) {
+			final Rectangle2D[] nonMembers, final Line2D[] edges) {
 
 		if (members.length == 0) {
 			return new Point2D[0];
@@ -259,8 +265,13 @@ public class BubbleSet implements SetOutline {
 			memberItems[i].rectangle = members[i];
 		}
 
-		// calculate and store virtual edges
-		calculateVirtualEdges(memberItems, nonMembers);
+		if (edges == null) {
+			// calculate and store virtual edges
+			calculateVirtualEdges(memberItems, nonMembers);
+		} else {
+			virtualEdges.clear();
+			virtualEdges.addAll(Arrays.asList(edges));
+		}
 
 		// cycle through members of aggregate adding to bounds of influence
 		for (int memberIndex = 0; memberIndex < members.length; memberIndex++) {

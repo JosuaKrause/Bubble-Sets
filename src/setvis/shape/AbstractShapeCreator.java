@@ -4,11 +4,14 @@
 package setvis.shape;
 
 import java.awt.Shape;
+import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+import setvis.Group;
 import setvis.SetOutline;
 
 /**
@@ -74,7 +77,8 @@ public abstract class AbstractShapeCreator {
 	 *            A list of sets. The sets are themselves a list of rectangles.
 	 * @return The outline shapes for each set given.
 	 */
-	public Shape[] createShapesForLists(final List<List<Rectangle2D>> items) {
+	public final Shape[] createShapesForLists(
+			final List<List<Rectangle2D>> items) {
 		final List<Rectangle2D[]> list = new LinkedList<Rectangle2D[]>();
 		for (final List<Rectangle2D> group : items) {
 			list.add(group.toArray(new Rectangle2D[group.size()]));
@@ -90,11 +94,21 @@ public abstract class AbstractShapeCreator {
 	 *            rectangles.
 	 * @return The outline shapes for each set given.
 	 */
-	public Shape[] createShapesFor(final List<Rectangle2D[]> items) {
+	public final Shape[] createShapesFor(final List<Rectangle2D[]> items) {
 		final Shape[] res = new Shape[items.size()];
 		int i = 0;
 		for (final Rectangle2D[] group : items) {
 			res[i] = createShapeFor(group, getNonMembers(items, i));
+			i++;
+		}
+		return res;
+	}
+
+	public final Shape[] createShapesForGroups(final List<Group> groups) {
+		final Shape[] res = new Shape[groups.size()];
+		int i = 0;
+		for (final Group group : groups) {
+			res[i] = createShapeFor(group, getNonMembersForGroups(groups, i));
 			i++;
 		}
 		return res;
@@ -109,7 +123,7 @@ public abstract class AbstractShapeCreator {
 	 *            The group.
 	 * @return All items not belonging to the group.
 	 */
-	private Rectangle2D[] getNonMembers(final List<Rectangle2D[]> items,
+	private static Rectangle2D[] getNonMembers(final List<Rectangle2D[]> items,
 			final int groupID) {
 		final List<Rectangle2D> res = new LinkedList<Rectangle2D>();
 		int g = 0;
@@ -118,9 +132,21 @@ public abstract class AbstractShapeCreator {
 			if (g++ == groupID) {
 				continue;
 			}
-			for (final Rectangle2D r : group) {
-				res.add(r);
+			res.addAll(Arrays.asList(group));
+		}
+		return res.toArray(new Rectangle2D[res.size()]);
+	}
+
+	private static Rectangle2D[] getNonMembersForGroups(
+			final List<Group> items, final int groupID) {
+		final List<Rectangle2D> res = new LinkedList<Rectangle2D>();
+		int g = 0;
+
+		for (final Group group : items) {
+			if (g++ == groupID) {
+				continue;
 			}
+			res.addAll(Arrays.asList(group.rects));
 		}
 		return res.toArray(new Rectangle2D[res.size()]);
 	}
@@ -135,12 +161,34 @@ public abstract class AbstractShapeCreator {
 	 *            The items excluded from the set.
 	 * @return The resulting shape.
 	 */
-	public Shape createShapeFor(final Rectangle2D[] members,
+	public final Shape createShapeFor(final Rectangle2D[] members,
 			final Rectangle2D[] nonMembers) {
+		return createShapeFor(members, nonMembers, null);
+	}
+
+	/**
+	 * Creates a shape for the given set avoiding the given items not contained
+	 * in the set and guided by the optional lines.
+	 * 
+	 * @param members
+	 *            The items representing the set.
+	 * @param nonMembers
+	 *            The items excluded from the set.
+	 * @param lines
+	 *            Optional lines that may be ignored.
+	 * @return The resulting shape.
+	 */
+	public final Shape createShapeFor(final Rectangle2D[] members,
+			final Rectangle2D[] nonMembers, final Line2D[] lines) {
 		final Rectangle2D[] m = mapRects(members);
 		final Rectangle2D[] n = mapRects(nonMembers);
-		final Point2D[] res = setOutline.createOutline(m, n);
+		final Point2D[] res = setOutline.createOutline(m, n, lines);
 		return convertToShape(res);
+	}
+
+	public final Shape createShapeFor(final Group g,
+			final Rectangle2D[] nonMembers) {
+		return createShapeFor(g.rects, nonMembers, g.lines);
 	}
 
 	/**
@@ -151,7 +199,7 @@ public abstract class AbstractShapeCreator {
 	 *            The array to map.
 	 * @return A new array containing the mapped rectangles.
 	 */
-	protected Rectangle2D[] mapRects(final Rectangle2D[] rects) {
+	protected final Rectangle2D[] mapRects(final Rectangle2D[] rects) {
 		int i = rects.length;
 		final Rectangle2D[] res = new Rectangle2D[i];
 		while (--i >= 0) {
@@ -169,7 +217,7 @@ public abstract class AbstractShapeCreator {
 	 * @return The new mapped rectangle. This method has to guarantee that the
 	 *         returned rectangle is newly created.
 	 */
-	protected Rectangle2D mapRect(final Rectangle2D r) {
+	protected final Rectangle2D mapRect(final Rectangle2D r) {
 		final double radius = getRadius();
 		final double dblRad = radius * 2.0;
 		return new Rectangle2D.Double(r.getMinX() - radius, r.getMinY()
