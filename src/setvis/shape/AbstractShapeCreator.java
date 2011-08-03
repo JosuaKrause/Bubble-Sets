@@ -36,7 +36,7 @@ public abstract class AbstractShapeCreator {
 	/**
 	 * Whether to automatically use parallel set creation.
 	 */
-	public static boolean AUTO_PARALLEL = true;
+	public static boolean AUTO_PARALLEL = false;
 
 	/**
 	 * The generator for the vertices of the sets.
@@ -111,7 +111,7 @@ public abstract class AbstractShapeCreator {
 	 * @return The outline shapes for each set given.
 	 */
 	public final Shape[] createShapesFor(final Collection<Rectangle2D[]> items) {
-		if (AUTO_PARALLEL) {
+		if (AUTO_PARALLEL && THREAD_COUNT > 1) {
 			return createShapesInParallel(items);
 		}
 		final Shape[] res = new Shape[items.size()];
@@ -132,7 +132,7 @@ public abstract class AbstractShapeCreator {
 	 */
 	public final Shape[] createShapesForGroups(final Collection<Group> groups) {
 		final int size = groups.size();
-		if (AUTO_PARALLEL) {
+		if (AUTO_PARALLEL && THREAD_COUNT > 1) {
 			return createShapesInParallel(groups.toArray(new Group[size]));
 		}
 		final Shape[] res = new Shape[size];
@@ -142,6 +142,17 @@ public abstract class AbstractShapeCreator {
 			i++;
 		}
 		return res;
+	}
+
+	/**
+	 * Creates shapes for all sets given by {@code groups}.
+	 * 
+	 * @param groups
+	 *            An array of groups.
+	 * @return The outline shapes for each set given.
+	 */
+	public final Shape[] createShapesForGroups(final Group[] groups) {
+		return createShapesForGroups(Arrays.asList(groups));
 	}
 
 	/**
@@ -191,6 +202,13 @@ public abstract class AbstractShapeCreator {
 	 * @return The outline shapes for each set given.
 	 */
 	public final Shape[] createShapesInParallel(final Group[] groups) {
+		if (THREAD_COUNT < 2) {
+			if (THREAD_COUNT < 1) {
+				throw new IllegalArgumentException(
+						"invalid number of threads: " + THREAD_COUNT);
+			}
+			return createShapesForGroups(groups);
+		}
 		final Collection<Group> list = Arrays.asList(groups);
 		final int count = THREAD_COUNT;
 		final Thread[] workers = new Thread[count];

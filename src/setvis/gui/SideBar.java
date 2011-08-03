@@ -16,6 +16,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -117,6 +118,9 @@ public class SideBar extends JPanel {
 	/** The slider for the border size. */
 	private final JSlider borderSlider;
 
+	/** The check box to activate parallel outlne creation. */
+	private final JCheckBox autoParallel;
+
 	/** The label for the slider for the border size. */
 	private final JLabel borderSliderLabel;
 
@@ -212,6 +216,20 @@ public class SideBar extends JPanel {
 		// outline dependent content
 		outlinePanel = new JPanel();
 		add(outlinePanel, constraint);
+		// the auto parallel checkbox
+		autoParallel = new JCheckBox(new AbstractAction(
+				"Create outlines in parallel") {
+
+			/** the serial version uid */
+			private static final long serialVersionUID = 1445008896310046164L;
+
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				AbstractShapeCreator.AUTO_PARALLEL = autoParallel.isSelected();
+				canvas.fireCanvasChange(CanvasListener.GENERATORS);
+			}
+		});
+		addHor(autoParallel);
 		// border slider
 		borderSlider = new JSlider(SwingConstants.HORIZONTAL, 0, 20, 10);
 		final ChangeListener borderListener = new ChangeListener() {
@@ -306,6 +324,7 @@ public class SideBar extends JPanel {
 			listModel.invalidate();
 		}
 		if ((changes & CanvasListener.GENERATORS) != 0) {
+			autoParallel.setSelected(AbstractShapeCreator.AUTO_PARALLEL);
 			final AbstractShapeCreator asc = canvas.getShapeCreator();
 			final SetOutline so = asc.getSetOutline();
 			final OutlineType outlineType = OutlineType.getFor(so);
