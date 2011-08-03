@@ -25,6 +25,20 @@ import setvis.SetOutline;
 public abstract class AbstractShapeCreator {
 
 	/**
+	 * The number of threads used by the parallel shape creation methods.
+	 * 
+	 * @see #createShapesInParallel(Collection)
+	 * @see #createShapesInParallel(Group[])
+	 * @see #createShapesForListsInParallel(Collection)
+	 */
+	public static int THREAD_COUNT = Runtime.getRuntime().availableProcessors();
+
+	/**
+	 * Whether to automatically use parallel set creation.
+	 */
+	public static boolean AUTO_PARALLEL = true;
+
+	/**
 	 * The generator for the vertices of the sets.
 	 */
 	private final SetOutline setOutline;
@@ -97,6 +111,9 @@ public abstract class AbstractShapeCreator {
 	 * @return The outline shapes for each set given.
 	 */
 	public final Shape[] createShapesFor(final Collection<Rectangle2D[]> items) {
+		if (AUTO_PARALLEL) {
+			return createShapesInParallel(items);
+		}
 		final Shape[] res = new Shape[items.size()];
 		int i = 0;
 		for (final Rectangle2D[] group : items) {
@@ -114,13 +131,93 @@ public abstract class AbstractShapeCreator {
 	 * @return The outline shapes for each set given.
 	 */
 	public final Shape[] createShapesForGroups(final Collection<Group> groups) {
-		final Shape[] res = new Shape[groups.size()];
+		final int size = groups.size();
+		if (AUTO_PARALLEL) {
+			return createShapesInParallel(groups.toArray(new Group[size]));
+		}
+		final Shape[] res = new Shape[size];
 		int i = 0;
 		for (final Group group : groups) {
 			res[i] = createShapeFor(group, getNonMembersForGroups(groups, i));
 			i++;
 		}
 		return res;
+	}
+
+	/**
+	 * Creates shapes for all sets given by {@code rects} in parallel using
+	 * {@link #THREAD_COUNT} number of threads.
+	 * 
+	 * @param rects
+	 *            A collection of groups. The sets are themselves an array of
+	 *            rectangles.
+	 * @return The outline shapes for each set given.
+	 */
+	public final Shape[] createShapesForListsInParallel(
+			final Collection<? extends Collection<Rectangle2D>> rects) {
+		final Group[] groups = new Group[rects.size()];
+		int i = 0;
+		for (final Collection<Rectangle2D> group : rects) {
+			groups[i++] = new Group(group);
+		}
+		return createShapesInParallel(groups);
+	}
+
+	/**
+	 * Creates shapes for all sets given by {@code rects} in parallel using
+	 * {@link #THREAD_COUNT} number of threads.
+	 * 
+	 * @param rects
+	 *            A collection of groups. The sets are themselves a collection
+	 *            of rectangles.
+	 * @return The outline shapes for each set given.
+	 */
+	public final Shape[] createShapesInParallel(
+			final Collection<Rectangle2D[]> rects) {
+		final Group[] groups = new Group[rects.size()];
+		int i = 0;
+		for (final Rectangle2D[] group : rects) {
+			groups[i++] = new Group(Arrays.asList(group));
+		}
+		return createShapesInParallel(groups);
+	}
+
+	/**
+	 * Creates shapes for all sets given by {@code groups} in parallel using
+	 * {@link #THREAD_COUNT} number of threads.
+	 * 
+	 * @param groups
+	 *            An array of groups.
+	 * @return The outline shapes for each set given.
+	 */
+	public final Shape[] createShapesInParallel(final Group[] groups) {
+		final Collection<Group> list = Arrays.asList(groups);
+		final int count = THREAD_COUNT;
+		final Thread[] workers = new Thread[count];
+		final Shape[] shapes = new Shape[groups.length];
+		int tc = count;
+		while (--tc >= 0) {
+			final int i = tc;
+			final Thread w = new Thread() {
+				@Override
+				public void run() {
+					for (int pos = i; pos < groups.length; pos += count) {
+						shapes[pos] = createShapeFor(groups[pos],
+								getNonMembersForGroups(list, pos));
+					}
+				}
+			};
+			workers[i] = w;
+			w.start();
+		}
+		try {
+			for (final Thread w : workers) {
+				w.join();
+			}
+		} catch (final InterruptedException e) {
+			Thread.currentThread().interrupt();
+		}
+		return shapes;
 	}
 
 	/**
