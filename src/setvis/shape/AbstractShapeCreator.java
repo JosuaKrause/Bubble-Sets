@@ -210,16 +210,17 @@ public abstract class AbstractShapeCreator {
 			return createShapesForGroups(groups);
 		}
 		final Collection<Group> list = Arrays.asList(groups);
-		final int count = THREAD_COUNT;
+		final int groupCount = groups.length;
+		final int count = Math.min(THREAD_COUNT, groupCount);
 		final Thread[] workers = new Thread[count];
-		final Shape[] shapes = new Shape[groups.length];
+		final Shape[] shapes = new Shape[groupCount];
 		int tc = count;
 		while (--tc >= 0) {
 			final int i = tc;
 			final Thread w = new Thread() {
 				@Override
 				public void run() {
-					for (int pos = i; pos < groups.length; pos += count) {
+					for (int pos = i; pos < groupCount; pos += count) {
 						shapes[pos] = createShapeFor(groups[pos],
 								getNonMembersForGroups(list, pos));
 					}
