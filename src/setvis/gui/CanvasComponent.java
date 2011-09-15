@@ -24,6 +24,7 @@ import setvis.ch.ConvexHull;
 import setvis.shape.AbstractShapeCreator;
 import setvis.shape.BezierShapeGenerator;
 import setvis.shape.PolygonShapeCreator;
+import setvis.shape.SmoothShapeGenerator;
 
 /**
  * The component for maintaining and displaying the rectangles.
@@ -254,6 +255,9 @@ public class CanvasComponent extends JComponent implements Canvas {
 			break;
 		case BEZIER:
 			asc = new BezierShapeGenerator(outline);
+			break;
+		case SMOOTH:
+			asc = new SmoothShapeGenerator(outline);
 			break;
 		default:
 			throw new InternalError("" + shapeType);
