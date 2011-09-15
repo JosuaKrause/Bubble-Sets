@@ -7,7 +7,7 @@ import setvis.bubbleset.BubbleSet;
 import setvis.gui.Canvas;
 import setvis.gui.MainWindow;
 import setvis.shape.AbstractShapeCreator;
-import setvis.shape.BezierShapeGenerator;
+import setvis.shape.SmoothShapeGenerator;
 
 /**
  * Starts the main application.
@@ -29,7 +29,7 @@ public final class Main {
 	 */
 	public static void main(final String[] args) {
 		final SetOutline setOutline = new BubbleSet();
-		final AbstractShapeCreator shaper = new BezierShapeGenerator(setOutline);
+		final AbstractShapeCreator shaper = new SmoothShapeGenerator(setOutline);
 		final MainWindow mw = new MainWindow(shaper);
 		final Canvas canvas = mw.getCanvas();
 		// a simple example item set

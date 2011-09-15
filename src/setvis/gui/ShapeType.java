@@ -6,6 +6,7 @@ import java.util.Map;
 import setvis.shape.AbstractShapeCreator;
 import setvis.shape.BezierShapeGenerator;
 import setvis.shape.PolygonShapeCreator;
+import setvis.shape.SmoothShapeGenerator;
 
 /**
  * Enumerates the types of shape generators.
@@ -20,6 +21,9 @@ public enum ShapeType {
 
 	/** Bezier line shape generator. */
 	BEZIER("Bezier Curves", BezierShapeGenerator.class),
+
+	/** Smoothened line shape generator. */
+	SMOOTH("Smooth Curves", SmoothShapeGenerator.class),
 
 	;
 
