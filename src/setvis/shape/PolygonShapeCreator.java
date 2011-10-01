@@ -31,7 +31,7 @@ public class PolygonShapeCreator extends AbstractShapeCreator {
 	}
 
 	@Override
-	protected Shape convertToShape(final Point2D[] points) {
+	public Shape convertToShape(final Point2D[] points, final boolean closed) {
 		final GeneralPath res = new GeneralPath();
 		boolean first = true;
 		for (final Point2D pos : points) {
@@ -44,7 +44,7 @@ public class PolygonShapeCreator extends AbstractShapeCreator {
 				res.lineTo(x, y);
 			}
 		}
-		if (!first) {
+		if (!first && closed) {
 			res.closePath();
 		}
 		return res;

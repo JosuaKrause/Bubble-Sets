@@ -200,7 +200,7 @@ public abstract class AbstractShapeCreator {
 		final Rectangle2D[] m = mapRects(members);
 		final Rectangle2D[] n = mapRects(nonMembers);
 		final Point2D[] res = setOutline.createOutline(m, n, lines);
-		return convertToShape(res);
+		return convertToShape(res, true);
 	}
 
 	/**
@@ -256,8 +256,10 @@ public abstract class AbstractShapeCreator {
 	 * 
 	 * @param points
 	 *            The sorted vertices representing the outlines of a set.
+	 * @param closed
+	 *            If the shape should be closed upon creation.
 	 * @return The resulting shape.
 	 */
-	protected abstract Shape convertToShape(Point2D[] points);
+	public abstract Shape convertToShape(Point2D[] points, boolean closed);
 
 }

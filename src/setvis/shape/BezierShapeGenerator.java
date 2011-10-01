@@ -61,11 +61,14 @@ public class BezierShapeGenerator extends RoundShapeGenerator {
 	}
 
 	@Override
-	protected Shape convertToShape(final Point2D[] points) {
+	public Shape convertToShape(final Point2D[] points, final boolean closed) {
 		final GeneralPath res = new GeneralPath();
 		final int len = points.length;
 		boolean first = true;
 		for (int i = 0; i < len; ++i) {
+			if (!closed && !hasMaxRadius && i >= len - 1) {
+				continue;
+			}
 			final Point2D a = points[i]; // point
 			final Point2D b = points[getOtherIndex(i, len, false)]; // left
 			final Point2D c = points[getOtherIndex(i, len, true)]; // right
@@ -88,7 +91,7 @@ public class BezierShapeGenerator extends RoundShapeGenerator {
 			res.curveTo(s0.getX(), s0.getY(), s0.getX(), s0.getY(), s1.getX(),
 					s1.getY());
 		}
-		if (!first && hasMaxRadius) {
+		if (!first && hasMaxRadius && closed) {
 			res.closePath();
 		}
 		return res;
