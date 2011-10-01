@@ -106,7 +106,7 @@ public class BezierShapeGenerator extends RoundShapeGenerator {
 	 *            The point right of the current point.
 	 * @return The bezier reference points.
 	 */
-	private Point2D[] getBezierForPoint(final Point2D point,
+	private static Point2D[] getBezierForPoint(final Point2D point,
 			final Point2D left, final Point2D right) {
 		return new Point2D[] { middleVec(point, left), point,
 				middleVec(point, right) };

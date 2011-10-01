@@ -589,7 +589,7 @@ public class BubbleSet implements SetOutline {
 		}
 	}
 
-	private void calculateCentroidDistances(final Item[] items) {
+	private static void calculateCentroidDistances(final Item[] items) {
 		double totalx = 0;
 		double totaly = 0;
 		double nodeCount = 0;
@@ -851,7 +851,7 @@ public class BubbleSet implements SetOutline {
 	 * @return true if this point is within the rectangular bounding box of at
 	 *         least one tuple; false otherwise
 	 */
-	private boolean isPointInsideNonMember(final Point2D point,
+	private static boolean isPointInsideNonMember(final Point2D point,
 			final Rectangle2D[] nonMembers) {
 		for (final Rectangle2D testRectangle : nonMembers) {
 			if (testRectangle.contains(point)) {
@@ -1010,8 +1010,8 @@ public class BubbleSet implements SetOutline {
 		return closestItem;
 	}
 
-	private int countInterferenceItems(final Rectangle2D[] interferenceItems,
-			final Line2D testLine) {
+	private static int countInterferenceItems(
+			final Rectangle2D[] interferenceItems, final Line2D testLine) {
 		int count = 0;
 		for (final Rectangle2D interferenceItem : interferenceItems) {
 			if (interferenceItem.intersectsLine(testLine)) {

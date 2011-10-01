@@ -62,7 +62,7 @@ public class ConvexHull implements SetOutline {
 	 * @param ref
 	 *            The reference point for the polar coordinates.
 	 */
-	private void sortPolar(final Point2D[] all, final Point2D ref) {
+	private static void sortPolar(final Point2D[] all, final Point2D ref) {
 		final Comparator<Point2D> cmp = new Comparator<Point2D>() {
 			@Override
 			public int compare(final Point2D o1, final Point2D o2) {
@@ -85,7 +85,7 @@ public class ConvexHull implements SetOutline {
 	 *            The sorted array.
 	 * @return The convex hull vertices.
 	 */
-	private Point2D[] grahamScan(final Point2D[] all) {
+	private static Point2D[] grahamScan(final Point2D[] all) {
 		final LinkedList<Point2D> res = new LinkedList<Point2D>();
 		res.addFirst(all[0]);
 		res.addFirst(all[1]);
