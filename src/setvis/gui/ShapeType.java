@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import setvis.shape.AbstractShapeCreator;
+import setvis.shape.BSplineShapeGenerator;
 import setvis.shape.BezierShapeGenerator;
 import setvis.shape.PolygonShapeCreator;
 
@@ -20,6 +21,9 @@ public enum ShapeType {
 
 	/** Bezier line shape generator. */
 	BEZIER("Bezier Curves", BezierShapeGenerator.class),
+
+	/** B-Splines shape generator. */
+	BSPLINE("B-Splines", BSplineShapeGenerator.class),
 
 	;
 
