@@ -7,7 +7,7 @@ import setvis.bubbleset.BubbleSet;
 import setvis.gui.Canvas;
 import setvis.gui.MainWindow;
 import setvis.shape.AbstractShapeCreator;
-import setvis.shape.BezierShapeGenerator;
+import setvis.shape.BSplineShapeGenerator;
 
 /**
  * Starts the main application.
@@ -17,33 +17,34 @@ import setvis.shape.BezierShapeGenerator;
  */
 public final class Main {
 
-	private Main() {
-		// no constructor
-	}
+    private Main() {
+        // no constructor
+    }
 
-	/**
-	 * Starts the main application.
-	 * 
-	 * @param args
-	 *            Arguments are ignored.
-	 */
-	public static void main(final String[] args) {
-		final SetOutline setOutline = new BubbleSet();
-		final AbstractShapeCreator shaper = new BezierShapeGenerator(setOutline);
-		final MainWindow mw = new MainWindow(shaper);
-		final Canvas canvas = mw.getCanvas();
-		// a simple example item set
-		final double w = canvas.getCurrentItemWidth();
-		final double h = canvas.getCurrentItemHeight();
-		canvas.addItem(0, 86.0, 141.0, w, h);
-		canvas.addItem(0, 53.0, 306.0, w, h);
-		canvas.addItem(0, 202.0, 256.0, w, h);
-		canvas.addGroup();
-		canvas.addItem(1, 85.0, 219.0, w, h);
-		canvas.addItem(1, 296.0, 194.0, w, h);
-		canvas.addItem(1, 211.0, 328.0, w, h);
-		canvas.translateScene(112.0, 106.0);
-		mw.setVisible(true);
-	}
+    /**
+     * Starts the main application.
+     * 
+     * @param args
+     *            Arguments are ignored.
+     */
+    public static void main(final String[] args) {
+        final SetOutline setOutline = new BubbleSet();
+        final AbstractShapeCreator shaper = new BSplineShapeGenerator(
+                setOutline);
+        final MainWindow mw = new MainWindow(shaper);
+        final Canvas canvas = mw.getCanvas();
+        // a simple example item set
+        final double w = canvas.getCurrentItemWidth();
+        final double h = canvas.getCurrentItemHeight();
+        canvas.addItem(0, 86.0, 141.0, w, h);
+        canvas.addItem(0, 53.0, 306.0, w, h);
+        canvas.addItem(0, 202.0, 256.0, w, h);
+        canvas.addGroup();
+        canvas.addItem(1, 85.0, 219.0, w, h);
+        canvas.addItem(1, 296.0, 194.0, w, h);
+        canvas.addItem(1, 211.0, 328.0, w, h);
+        canvas.translateScene(112.0, 106.0);
+        mw.setVisible(true);
+    }
 
 }

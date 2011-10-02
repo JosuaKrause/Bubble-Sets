@@ -22,7 +22,7 @@ To get started, you can use the following code:
     SetOutline setOutline = new BubbleSet();
 
     // make the outlines smooth
-    AbstractShapeCreator shapeCreator = new BezierShapeGenerator(setOutline);
+    AbstractShapeCreator shapeCreator = new BSplineShapeGenerator(setOutline);
 
     // generate shapes for each group
     // the shapes can be drawn by a Graphics object
@@ -42,7 +42,7 @@ a possible use within a paint method:
         List<Group> items = null;
 
         // make the outlines smooth and use bubble sets
-        AbstractShapeCreator shapeCreator = new BezierShapeGenerator(new BubbleSet());
+        AbstractShapeCreator shapeCreator = new BSplineShapeGenerator(new BubbleSet());
 
         // generate shapes for each group
         Shape[] shapes = shapeCreator.createShapesForGroups(items);
