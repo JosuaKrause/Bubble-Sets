@@ -3,10 +3,10 @@ package setvis.gui;
 import java.util.HashMap;
 import java.util.Map;
 
-import setvis.shape.AbstractShapeCreator;
+import setvis.shape.AbstractShapeGenerator;
 import setvis.shape.BSplineShapeGenerator;
 import setvis.shape.BezierShapeGenerator;
-import setvis.shape.PolygonShapeCreator;
+import setvis.shape.PolygonShapeGenerator;
 
 /**
  * Enumerates the types of shape generators.
@@ -17,7 +17,7 @@ import setvis.shape.PolygonShapeCreator;
 public enum ShapeType {
 
 	/** Direct line shape generator. */
-	LINES("Direct Lines", PolygonShapeCreator.class),
+	LINES("Direct Lines", PolygonShapeGenerator.class),
 
 	/** Bezier line shape generator. */
 	BEZIER("Bezier Curves", BezierShapeGenerator.class),
@@ -28,7 +28,7 @@ public enum ShapeType {
 	;
 
 	/** The associated class. */
-	private final Class<? extends AbstractShapeCreator> assocClass;
+	private final Class<? extends AbstractShapeGenerator> assocClass;
 
 	/** A readable name. */
 	private final String name;
@@ -40,10 +40,10 @@ public enum ShapeType {
 	 *            A readable name.
 	 * @param assocClass
 	 *            The associated class. It is used to reverse lookup types from
-	 *            {@link AbstractShapeCreator} objects.
+	 *            {@link AbstractShapeGenerator} objects.
 	 */
 	private ShapeType(final String name,
-			final Class<? extends AbstractShapeCreator> assocClass) {
+			final Class<? extends AbstractShapeGenerator> assocClass) {
 		this.name = name;
 		this.assocClass = assocClass;
 	}
@@ -70,7 +70,7 @@ public enum ShapeType {
 	 *            The shape generator object to find the type for.
 	 * @return The type of the given object.
 	 */
-	public static ShapeType getFor(final AbstractShapeCreator shaper) {
+	public static ShapeType getFor(final AbstractShapeGenerator shaper) {
 		return MAP.get(shaper.getClass());
 	}
 

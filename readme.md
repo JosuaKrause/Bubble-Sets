@@ -22,12 +22,12 @@ To get started, you can use the following code:
     SetOutline setOutline = new BubbleSet();
 
     // make the outlines smooth
-    AbstractShapeCreator shapeCreator = new BSplineShapeGenerator(setOutline);
+    AbstractShapeGenerator shapeGenerator = new BSplineShapeGenerator(setOutline);
 
     // generate shapes for each group
     // the shapes can be drawn by a Graphics object
     // as passed by a component's paint method
-    Shape[] shapes = shapeCreator.createShapesFor(items);
+    Shape[] shapes = shapeGenerator.createShapesFor(items);
 
 A more advanced example uses groups which can also
 define lines that guide the iso-contour. It also shows
@@ -42,10 +42,10 @@ a possible use within a paint method:
         List<Group> items = null;
 
         // make the outlines smooth and use bubble sets
-        AbstractShapeCreator shapeCreator = new BSplineShapeGenerator(new BubbleSet());
+        AbstractShapeGenerator shapeGenerator = new BSplineShapeGenerator(new BubbleSet());
 
         // generate shapes for each group
-        Shape[] shapes = shapeCreator.createShapesForGroups(items);
+        Shape[] shapes = shapeGenerator.createShapesForGroups(items);
 
         for (Shape shape : shapes) {
             // drawing the content

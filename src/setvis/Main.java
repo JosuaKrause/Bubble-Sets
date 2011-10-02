@@ -6,7 +6,7 @@ package setvis;
 import setvis.bubbleset.BubbleSet;
 import setvis.gui.Canvas;
 import setvis.gui.MainWindow;
-import setvis.shape.AbstractShapeCreator;
+import setvis.shape.AbstractShapeGenerator;
 import setvis.shape.BSplineShapeGenerator;
 
 /**
@@ -29,7 +29,7 @@ public final class Main {
      */
     public static void main(final String[] args) {
         final SetOutline setOutline = new BubbleSet();
-        final AbstractShapeCreator shaper = new BSplineShapeGenerator(
+        final AbstractShapeGenerator shaper = new BSplineShapeGenerator(
                 setOutline);
         final MainWindow mw = new MainWindow(shaper);
         final Canvas canvas = mw.getCanvas();

@@ -4,7 +4,7 @@ import java.util.List;
 
 import setvis.SetOutline;
 import setvis.gui.CanvasComponent.Position;
-import setvis.shape.AbstractShapeCreator;
+import setvis.shape.AbstractShapeGenerator;
 
 /**
  * Canvas is a direct interface to the visible canvas. The complete interaction
@@ -63,16 +63,16 @@ public interface Canvas {
 	 * @param shaper
 	 *            Directly sets the shape generator.
 	 */
-	void setShapeCreator(final AbstractShapeCreator shaper);
+	void setShapeCreator(final AbstractShapeGenerator shaper);
 
 	/**
 	 * @return The current shape generator.
 	 */
-	AbstractShapeCreator getShapeCreator();
+	AbstractShapeGenerator getShapeCreator();
 
 	/**
 	 * Sets the radius of the shape. You should prefer this method over
-	 * {@link AbstractShapeCreator#setRadius(double)}, because it automatically
+	 * {@link AbstractShapeGenerator#setRadius(double)}, because it automatically
 	 * refreshes the canvas and the other method does not.
 	 * 
 	 * @param border

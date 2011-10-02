@@ -4,7 +4,7 @@
 package setvis.gui;
 
 import setvis.SetOutline;
-import setvis.shape.AbstractShapeCreator;
+import setvis.shape.AbstractShapeGenerator;
 
 /**
  * A canvas listener gets notified each time something changes on the canvas.
@@ -15,7 +15,7 @@ import setvis.shape.AbstractShapeCreator;
 public interface CanvasListener {
 
 	/**
-	 * Indicates that one of the generators ({@link AbstractShapeCreator} or
+	 * Indicates that one of the generators ({@link AbstractShapeGenerator} or
 	 * {@link SetOutline}) has changed.
 	 */
 	static int GENERATORS = 0x01;

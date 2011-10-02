@@ -17,16 +17,16 @@ import setvis.SetOutline;
  * @author Joschi <josua.krause@googlemail.com>
  * 
  */
-public class PolygonShapeCreator extends AbstractShapeCreator {
+public class PolygonShapeGenerator extends AbstractShapeGenerator {
 
 	/**
-	 * Creates a new {@link PolygonShapeCreator} with the given set outline
+	 * Creates a new {@link PolygonShapeGenerator} with the given set outline
 	 * creator.
 	 * 
 	 * @param outline
 	 *            The set outline generator.
 	 */
-	public PolygonShapeCreator(final SetOutline outline) {
+	public PolygonShapeGenerator(final SetOutline outline) {
 		super(outline);
 	}
 

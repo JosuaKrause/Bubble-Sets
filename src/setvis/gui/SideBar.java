@@ -32,7 +32,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import setvis.SetOutline;
-import setvis.shape.AbstractShapeCreator;
+import setvis.shape.AbstractShapeGenerator;
 
 /**
  * The side bar for controlling the input to the {@link CanvasComponent}.
@@ -306,7 +306,7 @@ public class SideBar extends JPanel {
 			listModel.invalidate();
 		}
 		if ((changes & CanvasListener.GENERATORS) != 0) {
-			final AbstractShapeCreator asc = canvas.getShapeCreator();
+			final AbstractShapeGenerator asc = canvas.getShapeCreator();
 			final SetOutline so = asc.getSetOutline();
 			final OutlineType outlineType = OutlineType.getFor(so);
 			outlineBox.setSelectedItem(outlineType);

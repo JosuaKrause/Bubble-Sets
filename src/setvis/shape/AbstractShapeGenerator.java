@@ -22,7 +22,7 @@ import setvis.SetOutline;
  * @author Joschi <josua.krause@googlemail.com>
  * 
  */
-public abstract class AbstractShapeCreator {
+public abstract class AbstractShapeGenerator {
 
 	/**
 	 * The generator for the vertices of the sets.
@@ -30,12 +30,12 @@ public abstract class AbstractShapeCreator {
 	private final SetOutline setOutline;
 
 	/**
-	 * Creates an {@link AbstractShapeCreator} with a given set outline creator.
+	 * Creates an {@link AbstractShapeGenerator} with a given set outline creator.
 	 * 
 	 * @param setOutline
 	 *            The creator of the set outlines.
 	 */
-	public AbstractShapeCreator(final SetOutline setOutline) {
+	public AbstractShapeGenerator(final SetOutline setOutline) {
 		this.setOutline = setOutline;
 		// proper initialization of the radius
 		setRadius(10.0);

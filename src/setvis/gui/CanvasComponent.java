@@ -21,10 +21,10 @@ import javax.swing.JComponent;
 import setvis.SetOutline;
 import setvis.bubbleset.BubbleSet;
 import setvis.ch.ConvexHull;
-import setvis.shape.AbstractShapeCreator;
+import setvis.shape.AbstractShapeGenerator;
 import setvis.shape.BSplineShapeGenerator;
 import setvis.shape.BezierShapeGenerator;
-import setvis.shape.PolygonShapeCreator;
+import setvis.shape.PolygonShapeGenerator;
 
 /**
  * The component for maintaining and displaying the rectangles.
@@ -166,7 +166,7 @@ public class CanvasComponent extends JComponent implements Canvas {
     /**
      * The generator of the shapes of the sets.
      */
-    private AbstractShapeCreator shaper;
+    private AbstractShapeGenerator shaper;
 
     /**
      * The cached shapes of the outlines.
@@ -204,7 +204,7 @@ public class CanvasComponent extends JComponent implements Canvas {
      * @param shaper
      *            The shape generator for the outlines.
      */
-    public CanvasComponent(final AbstractShapeCreator shaper) {
+    public CanvasComponent(final AbstractShapeGenerator shaper) {
         this.shaper = shaper;
         canvasListeners = new LinkedList<CanvasListener>();
         items = new ArrayList<List<Rectangle2D>>();
@@ -248,10 +248,10 @@ public class CanvasComponent extends JComponent implements Canvas {
     @Override
     public void setShapeAndOutline(final SetOutline outline,
             final ShapeType shapeType) {
-        AbstractShapeCreator asc;
+        AbstractShapeGenerator asc;
         switch (shapeType) {
         case LINES:
-            asc = new PolygonShapeCreator(outline);
+            asc = new PolygonShapeGenerator(outline);
             break;
         case BEZIER:
             asc = new BezierShapeGenerator(outline);
@@ -266,13 +266,13 @@ public class CanvasComponent extends JComponent implements Canvas {
     }
 
     @Override
-    public void setShapeCreator(final AbstractShapeCreator shaper) {
+    public void setShapeCreator(final AbstractShapeGenerator shaper) {
         this.shaper = shaper;
         invalidateOutlines(CanvasListener.GENERATORS);
     }
 
     @Override
-    public AbstractShapeCreator getShapeCreator() {
+    public AbstractShapeGenerator getShapeCreator() {
         return shaper;
     }
 

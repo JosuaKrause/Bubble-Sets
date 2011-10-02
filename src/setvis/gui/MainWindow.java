@@ -9,7 +9,7 @@ import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import setvis.shape.AbstractShapeCreator;
+import setvis.shape.AbstractShapeGenerator;
 
 /**
  * The main window of the application.
@@ -38,7 +38,7 @@ public class MainWindow extends JFrame implements CanvasListener {
 	 * @param shaper
 	 *            The shape generator for the outlines.
 	 */
-	public MainWindow(final AbstractShapeCreator shaper) {
+	public MainWindow(final AbstractShapeGenerator shaper) {
 		super("Set visualization");
 		canvas = new CanvasComponent(shaper);
 		sideBar = new SideBar(canvas);

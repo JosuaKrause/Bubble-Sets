@@ -15,7 +15,7 @@ import setvis.SetOutline;
  * @author Joschi <josua.krause@googlemail.com>
  * 
  */
-public abstract class RoundShapeGenerator extends AbstractShapeCreator {
+public abstract class RoundShapeGenerator extends AbstractShapeGenerator {
 
     /**
      * Whether the result of the set outlines are interpreted in clockwise
