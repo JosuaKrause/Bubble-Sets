@@ -22,7 +22,7 @@ To get started, you can use the following code:
     SetOutline setOutline = new BubbleSet();
 
     // make the outlines smooth
-    AbstractShapeGenerator shapeGenerator = new BSplineShapeGenerator(setOutline);
+    AbstractShapeGenerator shapeGenerator = new BezierShapeGenerator(setOutline);
 
     // generate shapes for each group
     // the shapes can be drawn by a Graphics object
@@ -57,5 +57,16 @@ a possible use within a paint method:
             g.draw(shape);
         }
     }
+
+The following set outlines are available:
+
+- setvis.ch.ConvexHull
+- setvis.bubbleset.BubbleSet
+
+And the following shape generators:
+
+- setvis.shape.PolygonShapeGenerator
+- setvis.shape.BezierShapeGenerator
+- setvis.shape.BSplineShapeGenerator
 
 [1]: http://faculty.uoit.ca/collins/research/bubblesets/ "Collins, Christopher; Penn, Gerald; Carpendale, Sheelagh. Bubble Sets: Revealing Set Relations over Existing Visualizations. In IEEE Transactions on Visualization and Computer Graphics (Proceedings of the IEEE Conference on Information Visualization (InfoVis '09)), 15(6): November-December, 2009."

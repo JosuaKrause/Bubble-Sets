@@ -47,6 +47,30 @@ public class BSplineShapeGenerator extends RoundShapeGenerator {
     @Override
     public Shape convertToShape(final Point2D[] points, final boolean closed) {
         final GeneralPath res = new GeneralPath();
+        // covering special cases
+        switch (points.length) {
+        case 0:
+            return res;
+        case 1: {
+            final Point2D p0 = points[0];
+            res.moveTo(p0.getX(), p0.getY());
+            res.lineTo(p0.getX(), p0.getY());
+            return res;
+        }
+        case 2: {
+            if (closed) {
+                break;
+            }
+            final Point2D p0 = points[0];
+            final Point2D p1 = points[1];
+            res.moveTo(p0.getX(), p0.getY());
+            res.lineTo(p1.getX(), p1.getY());
+            return res;
+        }
+        default:
+            break;
+        }
+        // actual b-spline calculation
         final int count = (closed ? points.length + ORDER : points.length) - 1;
         final double g = granularity;
         final Point2D start = calcPoint(points, START_INDEX, 0);
