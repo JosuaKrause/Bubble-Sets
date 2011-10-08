@@ -7,7 +7,11 @@ import java.awt.geom.Point2D;
 import setvis.SetOutline;
 
 /**
- * Generates a {@link Shape} with a b-spline generated outline.
+ * Generates a {@link Shape} with a b-spline generated outline. The generated
+ * shapes may be a bit exactly defined, causing performance issues. Setting the
+ * granularity can work against this but can also lead to not smooth results.
+ * When performance is an issue and the outlines do not have to be very smooth
+ * {@link BezierShapeGenerator} are a better alternative.
  * 
  * @author Joschi <josua.krause@googlemail.com>
  * 
@@ -36,10 +40,19 @@ public class BSplineShapeGenerator extends RoundShapeGenerator {
         super(outline, true);
     }
 
+    /**
+     * Sets the granularity.
+     * 
+     * @param granularity
+     *            The granularity is the number of line segments per base point.
+     */
     public void setGranularity(final int granularity) {
         this.granularity = granularity;
     }
 
+    /**
+     * @return The granularity is the number of line segments per base point.
+     */
     public int getGranularity() {
         return granularity;
     }
