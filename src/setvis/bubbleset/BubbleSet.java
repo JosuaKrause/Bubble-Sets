@@ -283,8 +283,18 @@ public class BubbleSet implements SetOutline {
             if ((edgeCreationBitMask & NO_DOUBLE_EDGES) == 0) {
                 virtualEdges.addAll(Arrays.asList(edges));
             } else {
-                // TODO: NO_DOUBLE_EDGES
+                final Collection<Line2D> tmp = EdgeCreator.createLines(members,
+                        Arrays.asList(edges), virtualEdges);
+                virtualEdges.clear();
+                virtualEdges.addAll(tmp);
             }
+        }
+
+        if ((edgeCreationBitMask & FULL_EXTEND_EDGES) != 0) {
+            final Collection<Line2D> tmp = EdgeCreator.extendFull(members,
+                    virtualEdges);
+            virtualEdges.clear();
+            virtualEdges.addAll(tmp);
         }
 
         // cycle through members of aggregate adding to bounds of influence
@@ -645,7 +655,6 @@ public class BubbleSet implements SetOutline {
         Arrays.sort(items);
 
         for (final Item item : items) {
-            // TODO: FULL_EXTEND_EDGES
             virtualEdges.addAll(connectItem(items, nonMembers, item, visited));
             visited.add(item);
         }
