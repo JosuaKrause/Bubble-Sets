@@ -11,6 +11,8 @@ import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.PathIterator;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -25,6 +27,7 @@ import setvis.shape.AbstractShapeGenerator;
 import setvis.shape.BSplineShapeGenerator;
 import setvis.shape.BezierShapeGenerator;
 import setvis.shape.PolygonShapeGenerator;
+import setvis.shape.ShapeSimplifier;
 
 /**
  * The component for maintaining and displaying the rectangles.
@@ -466,7 +469,8 @@ public class CanvasComponent extends JComponent implements Canvas {
         final int count = getGroupCount();
         if (groupShapes == null) {
             // the cache needs to be recreated
-            groupShapes = shaper.createShapesForLists(items);
+            groupShapes = new ShapeSimplifier(shaper, 10.0)
+                    .createShapesForLists(items);
         }
         // draw background
         g2d.setColor(Color.WHITE);
@@ -487,6 +491,16 @@ public class CanvasComponent extends JComponent implements Canvas {
                 g2d.fill(gs);
                 g2d.setColor(c);
                 g2d.draw(gs);
+                g2d.setColor(Color.BLACK);
+                final PathIterator pi = gs
+                        .getPathIterator(new AffineTransform());
+                final double[] coords = new double[6];
+                while (!pi.isDone()) {
+                    pi.currentSegment(coords);
+                    g2d.fill(new Rectangle2D.Double(coords[0] - 0.5,
+                            coords[1] - 0.5, 1, 1));
+                    pi.next();
+                }
             }
             hue += step;
             ++pos;
@@ -511,5 +525,4 @@ public class CanvasComponent extends JComponent implements Canvas {
             ++pos;
         }
     }
-
 }
