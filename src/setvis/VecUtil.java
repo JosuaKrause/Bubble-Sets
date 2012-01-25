@@ -233,12 +233,37 @@ public final class VecUtil {
 		return mulVec(addVec(a, b), 0.5);
 	}
 
+	/**
+	 * Measures the squared distance of a point to a line segment.
+	 * 
+	 * @param start
+	 *            The start point of the line segment.
+	 * @param end
+	 *            The end point of the line segment.
+	 * @param p
+	 *            The point to calculate the distance for.
+	 * @return The squared distance.
+	 */
 	public static final double distPointLineSqr(final Point2D start,
 			final Point2D end, final Point2D p) {
 		final Line2D line = new Line2D.Double(start, end);
 		return line.ptSegDistSq(p);
 	}
 
+	/**
+	 * Measures the distance of a point to a line segment. If you just want to
+	 * check if a point lies beneath a line, use
+	 * {@link #distPointLineSqr(Point2D, Point2D, Point2D)} instead and check
+	 * against the square of the maximum distance.
+	 * 
+	 * @param start
+	 *            The start point of the line segment.
+	 * @param end
+	 *            The end point of the line segment.
+	 * @param p
+	 *            The point to calculate the distance for.
+	 * @return The distance.
+	 */
 	public static final double distPointLine(final Point2D start,
 			final Point2D end, final Point2D p) {
 		return Math.sqrt(distPointLineSqr(start, end, p));
