@@ -260,7 +260,9 @@ public class CanvasComponent extends JComponent implements Canvas {
             asc = new BezierShapeGenerator(outline);
             break;
         case BSPLINE:
-            asc = new BSplineShapeGenerator(outline);
+			// TODO: add slider
+			asc = new BSplineShapeGenerator(new ShapeSimplifier(
+					new PolygonShapeGenerator(outline), 0.6));
             break;
         default:
             throw new InternalError("" + shapeType);
