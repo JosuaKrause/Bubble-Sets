@@ -260,9 +260,9 @@ public class CanvasComponent extends JComponent implements Canvas {
             asc = new BezierShapeGenerator(outline);
             break;
         case BSPLINE:
-			// TODO: add slider
-			asc = new BSplineShapeGenerator(new ShapeSimplifier(
-					new PolygonShapeGenerator(outline), 0.6));
+            // TODO: add own slider
+            asc = new BSplineShapeGenerator(new ShapeSimplifier(
+                    new PolygonShapeGenerator(outline), simplifyTolerance));
             break;
         default:
             throw new InternalError("" + shapeType);
@@ -435,7 +435,7 @@ public class CanvasComponent extends JComponent implements Canvas {
         int groupID = 0;
         for (final List<Rectangle2D> group : items) {
             for (final Rectangle2D r : group.toArray(new Rectangle2D[group
-                    .size()])) {
+                                                                     .size()])) {
                 if (r.contains(x, y)) {
                     res.add(new Position(groupID, r));
                 }
@@ -463,6 +463,22 @@ public class CanvasComponent extends JComponent implements Canvas {
         notifyCanvasListeners(CanvasListener.ITEMS);
     }
 
+    // the java creation code
+    private String javaText = "";
+
+    @Override
+    public String getCreationText() {
+        return javaText;
+    }
+
+    // the info text
+    private String infoText = "";
+
+    @Override
+    public String getInfoText() {
+        return infoText;
+    }
+
     @Override
     public void paint(final Graphics gfx) {
         final Graphics2D g2d = (Graphics2D) gfx;
@@ -472,7 +488,9 @@ public class CanvasComponent extends JComponent implements Canvas {
         if (groupShapes == null) {
             // the cache needs to be recreated
             groupShapes = new ShapeSimplifier(shaper, simplifyTolerance)
-                    .createShapesForLists(items);
+            .createShapesForLists(items);
+            // FIXME: correct java code
+            javaText = groupShapes.toString();
         }
         // draw background
         g2d.setColor(Color.WHITE);
@@ -483,6 +501,7 @@ public class CanvasComponent extends JComponent implements Canvas {
         final float step = 1f / count;
         float hue = 0f;
         int pos = 0;
+        int controlPoints = 0;
         // draw the outlines
         for (int i = 0; i < items.size(); ++i) {
             final Color c = new Color(Color.HSBtoRGB(hue, 0.7f, 1f));
@@ -503,6 +522,7 @@ public class CanvasComponent extends JComponent implements Canvas {
                         g2d.fill(new Rectangle2D.Double(coords[0] - 0.5,
                                 coords[1] - 0.5, 1, 1));
                         pi.next();
+                        ++controlPoints;
                     }
                 }
             }
@@ -511,6 +531,7 @@ public class CanvasComponent extends JComponent implements Canvas {
         }
         hue = 0f;
         pos = 0;
+        int rects = 0;
         // draw the items
         for (final List<Rectangle2D> group : items) {
             final Color c = new Color(Color.HSBtoRGB(hue, 0.7f, 1f));
@@ -527,6 +548,13 @@ public class CanvasComponent extends JComponent implements Canvas {
             }
             hue += step;
             ++pos;
+            rects += group.size();
+        }
+        final String info = "Groups: " + items.size() + " Items: " + rects
+                + (controlPoints > 0 ? " Points: " + controlPoints : "");
+        if (!infoText.equals(info)) {
+            infoText = info;
+            fireCanvasChange(CanvasListener.NOTHING);
         }
     }
 

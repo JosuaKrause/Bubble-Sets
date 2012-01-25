@@ -113,6 +113,16 @@ public interface Canvas {
     double getTolerance();
 
     /**
+     * @return Informative text about the current display.
+     */
+    String getInfoText();
+
+    /**
+     * @return Java creation text.
+     */
+    String getCreationText();
+
+    /**
      * Translates the whole scene.
      * 
      * @param dx

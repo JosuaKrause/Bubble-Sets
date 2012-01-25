@@ -53,6 +53,12 @@ public interface CanvasListener {
     static int ALL = -1;
 
     /**
+     * Indicates that nothing special has been changed, but that some
+     * informations should be polled.
+     */
+    static int NOTHING = 0;
+
+    /**
      * Is automatically called when the canvas changes. This method may be
      * called multiple times for the same event, so be sure to re-check if
      * something actually has been changed.

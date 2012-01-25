@@ -136,6 +136,12 @@ public class SideBar extends JPanel {
     /** The tolerance slider label. */
     private final JLabel simplifyLabel;
 
+    /** The information label. */
+    private final JLabel infoLabel;
+
+    /** The Java creation text. */
+    private final JTextField javaText;
+
     /** The content of the outline panel. */
     private AbstractOutlineConfiguration outlineContent;
 
@@ -302,6 +308,12 @@ public class SideBar extends JPanel {
         height.addActionListener(bounds);
         constraint.fill = GridBagConstraints.VERTICAL;
         addHor(new JLabel("Width:"), width, new JLabel("Height:"), height);
+        // texts
+        infoLabel = new JLabel();
+        javaText = new JTextField(20);
+        javaText.setEditable(false);
+        addHor(new JLabel("Java-Code:"), javaText);
+        addHor(infoLabel);
         constraint.fill = GridBagConstraints.BOTH;
         constraint = null;
     }
@@ -328,7 +340,7 @@ public class SideBar extends JPanel {
         return Math
                 .min(
                         Math.max((int) (fromTolerance / MAX_TOLERANCE * 1000.0), 0),
-                1000);
+                        1000);
     }
 
     /**
@@ -392,6 +404,7 @@ public class SideBar extends JPanel {
             final String text = (calcTolerance(simplifyTolerance.getValue()) + "0000")
                     .substring(0, 4);
             simplifyLabel.setText(text);
+            javaText.setText(canvas.getCreationText());
             refreshOutlineContent(outlineType, so);
         }
         if ((changes & CanvasListener.SCREEN) != 0) {
@@ -419,6 +432,7 @@ public class SideBar extends JPanel {
                 height.setText(th);
             }
         }
+        infoLabel.setText(canvas.getInfoText());
     }
 
     /**
