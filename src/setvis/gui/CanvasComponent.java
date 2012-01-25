@@ -260,7 +260,9 @@ public class CanvasComponent extends JComponent implements Canvas {
 			asc = new BezierShapeGenerator(outline);
 			break;
 		case BSPLINE:
-			asc = new BSplineShapeGenerator(outline);
+			// TODO: add slider
+			asc = new BSplineShapeGenerator(new ShapeSimplifier(
+					new PolygonShapeGenerator(outline), 0.6));
 			break;
 		default:
 			throw new InternalError("" + shapeType);
@@ -469,6 +471,7 @@ public class CanvasComponent extends JComponent implements Canvas {
 		final int count = getGroupCount();
 		if (groupShapes == null) {
 			// the cache needs to be recreated
+			// TODO add slider
 			groupShapes = new ShapeSimplifier(shaper, 0.0)
 					.createShapesForLists(items);
 		}

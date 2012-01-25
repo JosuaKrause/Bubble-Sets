@@ -220,7 +220,7 @@ public class ShapeSimplifier extends AbstractShapeGenerator {
 
 	@Override
 	public Shape convertToShape(final Point2D[] points, final boolean closed) {
-		if (points.length < 3) {
+		if (tolerance < 0.0 || points.length < 3) {
 			return parent.convertToShape(points, closed);
 		}
 		final List<State> states = new LinkedList<State>();
