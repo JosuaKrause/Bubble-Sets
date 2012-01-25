@@ -469,7 +469,7 @@ public class CanvasComponent extends JComponent implements Canvas {
         final int count = getGroupCount();
         if (groupShapes == null) {
             // the cache needs to be recreated
-            groupShapes = new ShapeSimplifier(shaper, 10.0)
+            groupShapes = new ShapeSimplifier(shaper, simplifyTolerance)
                     .createShapesForLists(items);
         }
         // draw background
@@ -491,15 +491,17 @@ public class CanvasComponent extends JComponent implements Canvas {
                 g2d.fill(gs);
                 g2d.setColor(c);
                 g2d.draw(gs);
-                g2d.setColor(Color.BLACK);
-                final PathIterator pi = gs
-                        .getPathIterator(new AffineTransform());
-                final double[] coords = new double[6];
-                while (!pi.isDone()) {
-                    pi.currentSegment(coords);
-                    g2d.fill(new Rectangle2D.Double(coords[0] - 0.5,
-                            coords[1] - 0.5, 1, 1));
-                    pi.next();
+                if (drawPoints) {
+                    g2d.setColor(Color.BLACK);
+                    final PathIterator pi = gs
+                            .getPathIterator(new AffineTransform());
+                    final double[] coords = new double[6];
+                    while (!pi.isDone()) {
+                        pi.currentSegment(coords);
+                        g2d.fill(new Rectangle2D.Double(coords[0] - 0.5,
+                                coords[1] - 0.5, 1, 1));
+                        pi.next();
+                    }
                 }
             }
             hue += step;
@@ -525,4 +527,36 @@ public class CanvasComponent extends JComponent implements Canvas {
             ++pos;
         }
     }
+
+    // whether to draw points
+    private boolean drawPoints;
+
+    @Override
+    public boolean isDrawingPoints() {
+        return drawPoints;
+    }
+
+    @Override
+    public void setDrawPoints(final boolean drawPoints) {
+        this.drawPoints = drawPoints;
+        invalidateOutlines(CanvasListener.SCREEN);
+    }
+
+    // the tolerance of simplification
+    private double simplifyTolerance;
+
+    @Override
+    public double getTolerance() {
+        return simplifyTolerance;
+    }
+
+    @Override
+    public void setTolerance(final double tolerance) {
+        final boolean chg = simplifyTolerance != tolerance;
+        simplifyTolerance = tolerance;
+        if (chg) {
+            invalidateOutlines(CanvasListener.GENERATORS);
+        }
+    }
+
 }
