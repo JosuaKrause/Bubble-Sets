@@ -236,7 +236,7 @@ public final class VecUtil {
 	public static final double distPointLineSqr(final Point2D start,
 			final Point2D end, final Point2D p) {
 		final Line2D line = new Line2D.Double(start, end);
-		return line.ptLineDistSq(p);
+		return line.ptSegDistSq(p);
 	}
 
 	public static final double distPointLine(final Point2D start,
