@@ -404,7 +404,6 @@ public class SideBar extends JPanel {
             final String text = (calcTolerance(simplifyTolerance.getValue()) + "0000")
                     .substring(0, 4);
             simplifyLabel.setText(text);
-            javaText.setText(canvas.getCreationText());
             refreshOutlineContent(outlineType, so);
         }
         if ((changes & CanvasListener.SCREEN) != 0) {
@@ -432,7 +431,10 @@ public class SideBar extends JPanel {
                 height.setText(th);
             }
         }
-        infoLabel.setText(canvas.getInfoText());
+        if ((changes & CanvasListener.TEXT) != 0) {
+            infoLabel.setText(canvas.getInfoText());
+            javaText.setText(canvas.getCreationText());
+        }
     }
 
     /**

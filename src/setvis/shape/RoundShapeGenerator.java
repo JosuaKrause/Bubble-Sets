@@ -55,4 +55,9 @@ public abstract class RoundShapeGenerator extends AbstractShapeGenerator {
             final int len) {
         return (index + (clockwise ? relIndex : -relIndex)) % len;
     }
+
+    public boolean isClockwise() {
+        return clockwise;
+    }
+
 }

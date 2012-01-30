@@ -261,8 +261,12 @@ public class CanvasComponent extends JComponent implements Canvas {
             break;
         case BSPLINE:
             // TODO: add own slider
-            asc = new BSplineShapeGenerator(new ShapeSimplifier(
-                    new PolygonShapeGenerator(outline), simplifyTolerance));
+            if (simplifyTolerance < 0.0) {
+                asc = new BSplineShapeGenerator(outline);
+            } else {
+                asc = new BSplineShapeGenerator(new ShapeSimplifier(
+                        new PolygonShapeGenerator(outline), simplifyTolerance));
+            }
             break;
         default:
             throw new InternalError("" + shapeType);
@@ -481,16 +485,19 @@ public class CanvasComponent extends JComponent implements Canvas {
 
     @Override
     public void paint(final Graphics gfx) {
+        boolean textChanged = false;
         final Graphics2D g2d = (Graphics2D) gfx;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
         final int count = getGroupCount();
         if (groupShapes == null) {
             // the cache needs to be recreated
-            groupShapes = new ShapeSimplifier(shaper, simplifyTolerance)
-            .createShapesForLists(items);
-            // FIXME: correct java code
-            javaText = groupShapes.toString();
+            final AbstractShapeGenerator shaping = new ShapeSimplifier(shaper,
+                    simplifyTolerance);
+            groupShapes = shaping
+                    .createShapesForLists(items);
+            javaText = "new " + shaping.toString();
+            textChanged = true;
         }
         // draw background
         g2d.setColor(Color.WHITE);
@@ -554,7 +561,10 @@ public class CanvasComponent extends JComponent implements Canvas {
                 + (controlPoints > 0 ? " Points: " + controlPoints : "");
         if (!infoText.equals(info)) {
             infoText = info;
-            fireCanvasChange(CanvasListener.NOTHING);
+            textChanged = true;
+        }
+        if (textChanged) {
+            notifyCanvasListeners(CanvasListener.TEXT);
         }
     }
 
