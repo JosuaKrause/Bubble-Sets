@@ -136,6 +136,10 @@ public class BezierShapeGenerator extends RoundShapeGenerator {
         qrad = rad * rad;
     }
 
+    public boolean hasMaxRadius() {
+        return hasMaxRadius;
+    }
+
     /**
      * Creates bezier points by going a certain radius away from the current
      * point in the directions of the neighbors.
@@ -161,15 +165,6 @@ public class BezierShapeGenerator extends RoundShapeGenerator {
             rp = addVec(mulVec(normVec(drp), rad), point);
         }
         return new Point2D[] { lp, point, rp };
-    }
-
-    @Override
-    public String toString() {
-        if (hasMaxRadius && isClockwise()) {
-            return super.toString();
-        }
-        return getClass().getSimpleName() + "(" + getSetOutline().toString()
-                + ", " + isClockwise() + ", " + hasMaxRadius + ")";
     }
 
 }

@@ -90,6 +90,10 @@ public class ShapeSimplifier extends AbstractShapeGenerator {
         return tolerance;
     }
 
+    public boolean isDisabled() {
+        return tolerance < 0.0;
+    }
+
     @Override
     public SetOutline getSetOutline() {
         return parent.getSetOutline();
@@ -220,7 +224,7 @@ public class ShapeSimplifier extends AbstractShapeGenerator {
 
     @Override
     public Shape convertToShape(final Point2D[] points, final boolean closed) {
-        if (tolerance < 0.0 || points.length < 3) {
+        if (isDisabled() || points.length < 3) {
             return parent.convertToShape(points, closed);
         }
         final List<State> states = new LinkedList<State>();
@@ -236,14 +240,8 @@ public class ShapeSimplifier extends AbstractShapeGenerator {
         return parent.convertToShape(createArrayFrom(states), closed);
     }
 
-    @Override
-    public String toString() {
-        if (tolerance < 0.0) {
-            return parent.toString();
-        }
-        final boolean showTolerance = tolerance != 0.0;
-        return getClass().getSimpleName() + "(new " + parent.toString()
-                + (showTolerance ? ", " + tolerance : "") + ")";
+    public AbstractShapeGenerator getParent() {
+        return parent;
     }
 
 }

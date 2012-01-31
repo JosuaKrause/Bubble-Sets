@@ -262,10 +262,4 @@ public abstract class AbstractShapeGenerator {
      */
     public abstract Shape convertToShape(Point2D[] points, boolean closed);
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "(new " + setOutline.toString()
-                + ")";
-    }
-
 }

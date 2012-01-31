@@ -107,9 +107,4 @@ public class ConvexHull implements SetOutline {
         return res.toArray(new Point2D[res.size()]);
     }
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "()";
-    }
-
 }

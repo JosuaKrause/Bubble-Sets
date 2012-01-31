@@ -1743,19 +1743,4 @@ public class BubbleSet implements SetOutline {
         this.useOptimizedDataStructures = useOptimizedDataStructures;
     }
 
-    @Override
-    public String toString() {
-        if (defaultEdgeR0 == edgeR0 && defaultEdgeR1 == edgeR1
-                && defaultMaxMarchingIterations == maxMarchingIterations
-                && defaultMaxRoutingIterations == maxRoutingIterations
-                && defaultMorphBuffer == morphBuffer && defaultNodeR0 == nodeR0
-                && defaultNodeR1 == nodeR1 && defaultPixelGroup == pixelGroup
-                && defaultSkip == skip) {
-            return getClass().getSimpleName() + "()";
-        }
-        return getClass().getSimpleName() + "(" + maxRoutingIterations + ", "
-        + maxMarchingIterations + ", " + pixelGroup + ", " + edgeR0
-        + ", " + edgeR1 + ", " + nodeR0 + ", " + nodeR1 + ", "
-                + morphBuffer + ", " + skip + ")";
-    }
 }

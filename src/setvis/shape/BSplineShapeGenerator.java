@@ -123,12 +123,8 @@ public class BSplineShapeGenerator extends RoundShapeGenerator {
         return new Point2D.Double(px, py);
     }
 
-    @Override
-    public String toString() {
-        if (parent instanceof PolygonShapeGenerator) {
-            return super.toString();
-        }
-        return getClass().getSimpleName() + "(new " + parent.toString() + ")";
+    public AbstractShapeGenerator getParent() {
+        return parent;
     }
 
 }

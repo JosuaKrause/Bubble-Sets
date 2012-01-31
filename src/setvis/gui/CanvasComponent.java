@@ -496,7 +496,10 @@ public class CanvasComponent extends JComponent implements Canvas {
                     simplifyTolerance);
             groupShapes = shaping
                     .createShapesForLists(items);
-            javaText = "new " + shaping.toString();
+            final StringBuilder sb = new StringBuilder();
+            sb.append("new ");
+            ShapeType.creationText(shaping, sb);
+            javaText = sb.toString();
             textChanged = true;
         }
         // draw background
