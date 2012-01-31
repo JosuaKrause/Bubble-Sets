@@ -283,47 +283,46 @@ public enum OutlineType {
 
     public static void creationText(final SetOutline outline,
             final StringBuilder sb) {
+        sb.append("new ");
+        sb.append(outline.getClass().getSimpleName());
+        sb.append("(");
         if (outline instanceof BubbleSet) {
             final BubbleSet b = (BubbleSet) outline;
             if (BubbleSet.defaultEdgeR0 == b.getEdgeR0()
                     && BubbleSet.defaultEdgeR1 == b.getEdgeR1()
                     && BubbleSet.defaultMaxMarchingIterations == b
-                            .getMaxMarchingIterations()
+                    .getMaxMarchingIterations()
                     && BubbleSet.defaultMaxRoutingIterations == b
-                            .getMaxRoutingIterations()
+                    .getMaxRoutingIterations()
                     && BubbleSet.defaultMorphBuffer == b.getMorphBuffer()
                     && BubbleSet.defaultNodeR0 == b.getNodeR0()
                     && BubbleSet.defaultNodeR1 == b.getNodeR1()
                     && BubbleSet.defaultPixelGroup == b.getPixelGroup()
                     && BubbleSet.defaultSkip == b.getSkip()) {
-                sb.append(b.getClass().getSimpleName());
-                sb.append("()");
+                sb.append(")");
                 return;
             }
-            sb.append(b.getClass().getSimpleName());
-            sb.append("(");
             sb.append(b.getMaxRoutingIterations());
-            sb.append(", ");
+            sb.append(CREATION_SEPARATOR);
             sb.append(b.getMaxMarchingIterations());
-            sb.append(", ");
+            sb.append(CREATION_SEPARATOR);
             sb.append(b.getPixelGroup());
-            sb.append(", ");
+            sb.append(CREATION_SEPARATOR);
             sb.append(b.getEdgeR0());
-            sb.append(", ");
+            sb.append(CREATION_SEPARATOR);
             sb.append(b.getEdgeR1());
-            sb.append(", ");
+            sb.append(CREATION_SEPARATOR);
             sb.append(b.getNodeR0());
-            sb.append(", ");
+            sb.append(CREATION_SEPARATOR);
             sb.append(b.getNodeR1());
-            sb.append(", ");
+            sb.append(CREATION_SEPARATOR);
             sb.append(b.getMorphBuffer());
-            sb.append(", ");
+            sb.append(CREATION_SEPARATOR);
             sb.append(b.getSkip());
-            sb.append(")");
-        } else {
-            sb.append(outline.getClass().getSimpleName());
-            sb.append("()");
         }
+        sb.append(")");
     }
+
+    private static final String CREATION_SEPARATOR = ", ";
 
 }

@@ -497,7 +497,6 @@ public class CanvasComponent extends JComponent implements Canvas {
             groupShapes = shaping
                     .createShapesForLists(items);
             final StringBuilder sb = new StringBuilder();
-            sb.append("new ");
             ShapeType.creationText(shaping, sb);
             javaText = sb.toString();
             textChanged = true;

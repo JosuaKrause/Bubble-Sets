@@ -79,27 +79,26 @@ public enum ShapeType {
             final StringBuilder sb) {
         if (shaper instanceof BezierShapeGenerator) {
             final BezierShapeGenerator b = (BezierShapeGenerator) shaper;
+            creationPrefix(shaper, sb);
+            OutlineType.creationText(shaper.getSetOutline(), sb);
             if (b.hasMaxRadius() && b.isClockwise()) {
-                creationPrefix(b, sb);
                 creationPostfix(sb);
                 return;
             }
-            creationPrefix(b, sb);
-            sb.append(", ");
+            creationSeparator(sb);
             sb.append(b.isClockwise());
-            sb.append(", ");
+            creationSeparator(sb);
             sb.append(b.hasMaxRadius());
             creationPostfix(sb);
         } else if (shaper instanceof BSplineShapeGenerator) {
             final BSplineShapeGenerator b = (BSplineShapeGenerator) shaper;
             final AbstractShapeGenerator parent = b.getParent();
+            creationPrefix(shaper, sb);
             if (parent instanceof PolygonShapeGenerator) {
-                creationPrefix(b, sb);
+                OutlineType.creationText(shaper.getSetOutline(), sb);
                 creationPostfix(sb);
                 return;
             }
-            sb.append(b.getClass().getSimpleName());
-            sb.append("(new ");
             creationText(parent, sb);
             creationPostfix(sb);
         } else if (shaper instanceof ShapeSimplifier) {
@@ -109,26 +108,30 @@ public enum ShapeType {
                 creationText(parent, sb);
                 return;
             }
-            sb.append(s.getClass().getSimpleName());
-            sb.append("(new ");
+            creationPrefix(shaper, sb);
             creationText(parent, sb);
             if (s.getTolerance() != 0.0) {
-                sb.append(", ");
+                creationSeparator(sb);
                 sb.append(s.getTolerance());
             }
             creationPostfix(sb);
             return;
         } else {
             creationPrefix(shaper, sb);
+            OutlineType.creationText(shaper.getSetOutline(), sb);
             creationPostfix(sb);
         }
     }
 
     private static void creationPrefix(final AbstractShapeGenerator shaper,
             final StringBuilder sb) {
+        sb.append("new ");
         sb.append(shaper.getClass().getSimpleName());
-        sb.append("(new ");
-        OutlineType.creationText(shaper.getSetOutline(), sb);
+        sb.append("(");
+    }
+
+    private static void creationSeparator(final StringBuilder sb) {
+        sb.append(", ");
     }
 
     private static void creationPostfix(final StringBuilder sb) {
