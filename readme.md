@@ -41,8 +41,11 @@ a possible use within a paint method:
         // the list of groups
         List<Group> items = null;
 
-        // make the outlines smooth and use bubble sets
-        AbstractShapeGenerator shapeGenerator = new BSplineShapeGenerator(new BubbleSet());
+        // use bubble sets and make the outlines smooth and less complex
+        // to draw by simplifying the raw points
+        AbstractShapeGenerator shapeGenerator = new ShapeSimplifier(
+                new BSplineShapeGenerator(new ShapeSimplifier(
+                        new PolygonShapeGenerator(new BubbleSet()))), 2.0);
 
         // generate shapes for each group
         Shape[] shapes = shapeGenerator.createShapesForGroups(items);
@@ -68,5 +71,6 @@ And the following shape generators:
 - setvis.shape.PolygonShapeGenerator
 - setvis.shape.BezierShapeGenerator
 - setvis.shape.BSplineShapeGenerator
+- setvis.shape.ShapeSimplifier (reduces the shape complexity)
 
 [1]: http://faculty.uoit.ca/collins/research/bubblesets/ "Collins, Christopher; Penn, Gerald; Carpendale, Sheelagh. Bubble Sets: Revealing Set Relations over Existing Visualizations. In IEEE Transactions on Visualization and Computer Graphics (Proceedings of the IEEE Conference on Information Visualization (InfoVis '09)), 15(6): November-December, 2009."
