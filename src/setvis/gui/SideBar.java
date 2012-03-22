@@ -219,8 +219,18 @@ public class SideBar extends JPanel {
             }
 
         });
+        final JButton center = new JButton(new AbstractAction("Center View") {
+
+            private static final long serialVersionUID = -996182815730540464L;
+
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                canvas.defaultView();
+            }
+
+        });
         constraint.fill = GridBagConstraints.VERTICAL;
-        addHor(addGroup, remGroup);
+        addHor(addGroup, remGroup, center);
         constraint.fill = GridBagConstraints.BOTH;
         // add empty filling space
         final JPanel empty = new JPanel();
