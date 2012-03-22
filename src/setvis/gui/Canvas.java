@@ -47,7 +47,7 @@ public interface Canvas {
      * @param shapeType
      *            The shape generator type.
      */
-    void setShapeAndOutline(final SetOutline outline, final ShapeType shapeType);
+    void setShapeAndOutline(SetOutline outline, ShapeType shapeType);
 
     /**
      * Sets the shape and outline generator by its type.
@@ -57,14 +57,13 @@ public interface Canvas {
      * @param shapeType
      *            The shape generator type.
      */
-    void setShapeAndOutline(final OutlineType outlineType,
-            final ShapeType shapeType);
+    void setShapeAndOutline(OutlineType outlineType, ShapeType shapeType);
 
     /**
      * @param shaper
      *            Directly sets the shape generator.
      */
-    void setShapeCreator(final AbstractShapeGenerator shaper);
+    void setShapeCreator(AbstractShapeGenerator shaper);
 
     /**
      * @return The current shape generator.
@@ -130,7 +129,37 @@ public interface Canvas {
      * @param dy
      *            The translation on the y axis.
      */
-    void translateScene(final double dx, final double dy);
+    void translateScene(double dx, double dy);
+
+    /**
+     * Zooms to the on screen (in components coordinates) position.
+     * 
+     * @param x
+     *            The x coordinate.
+     * @param y
+     *            The y coordinate.
+     * @param factor
+     *            The factor to alter the zoom level.
+     */
+    void zoomTo(double x, double y, double factor);
+
+    /**
+     * Zooms towards the center of the display area.
+     * 
+     * @param factor
+     *            The zoom factor.
+     */
+    void zoom(double factor);
+
+    /**
+     * Returns the view-port to the default position.
+     */
+    void defaultView();
+
+    /**
+     * Sets the current view-port as the default position.
+     */
+    void setDefaultView();
 
     /**
      * Adds a new empty group.
@@ -153,7 +182,7 @@ public interface Canvas {
      * @param curItemGroup
      *            The new group id.
      */
-    void setCurrentGroup(final int curItemGroup);
+    void setCurrentGroup(int curItemGroup);
 
     /**
      * @return The current group id. It determines the group of newly created
@@ -172,7 +201,7 @@ public interface Canvas {
      * @param curItemWidth
      *            The new width.
      */
-    void setCurrentItemWidth(final int curItemWidth);
+    void setCurrentItemWidth(int curItemWidth);
 
     /**
      * @return The width newly created items will get.
@@ -185,7 +214,7 @@ public interface Canvas {
      * @param curItemHeight
      *            The new height.
      */
-    void setCurrentItemHeight(final int curItemHeight);
+    void setCurrentItemHeight(int curItemHeight);
 
     /**
      * @return The height newly created items will get.
@@ -206,8 +235,7 @@ public interface Canvas {
      * @param height
      *            The height.
      */
-    void addItem(final int groupID, final double tx, final double ty,
-            final double width, final double height);
+    void addItem(int groupID, double tx, double ty, double width, double height);
 
     /**
      * Generates a list of all items at the position {@code (tx, ty)}.
@@ -218,7 +246,7 @@ public interface Canvas {
      *            The y value in component coordinates.
      * @return A list of {@link Position}s.
      */
-    List<Position> getItemsAt(final double tx, final double ty);
+    List<Position> getItemsAt(double tx, double ty);
 
     /**
      * Removes all items at the given position.
@@ -228,7 +256,7 @@ public interface Canvas {
      * @param y
      *            The y value in component coordinates.
      */
-    void removeItem(final double x, final double y);
+    void removeItem(double x, double y);
 
     /**
      * Moves the item given by {@code pos}.
@@ -240,6 +268,6 @@ public interface Canvas {
      * @param dy
      *            The translation on the y axis.
      */
-    void moveItem(final Position pos, final double dx, final double dy);
+    void moveItem(Position pos, double dx, double dy);
 
 }

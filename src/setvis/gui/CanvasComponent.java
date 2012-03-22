@@ -4,6 +4,7 @@
 package setvis.gui;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -11,6 +12,7 @@ import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Rectangle2D;
@@ -164,6 +166,11 @@ public class CanvasComponent extends JComponent implements Canvas {
             repaint();
         }
 
+        @Override
+        public void mouseWheelMoved(final MouseWheelEvent e) {
+            zoomTo(e.getX(), e.getY(), e.getWheelRotation());
+        }
+
     };
 
     /**
@@ -202,6 +209,11 @@ public class CanvasComponent extends JComponent implements Canvas {
     private double dy;
 
     /**
+     * The scene zoom factor.
+     */
+    private double zoom;
+
+    /**
      * Creates a canvas component.
      * 
      * @param shaper
@@ -214,11 +226,13 @@ public class CanvasComponent extends JComponent implements Canvas {
         addGroup();
         dx = 0.0;
         dy = 0.0;
+        zoom = 1.0;
         curItemGroup = 0;
         curItemWidth = 50;
         curItemHeight = 30;
         addMouseListener(mouse);
         addMouseMotionListener(mouse);
+        addMouseWheelListener(mouse);
     }
 
     @Override
@@ -301,6 +315,69 @@ public class CanvasComponent extends JComponent implements Canvas {
         this.dx += dx;
         this.dy += dy;
         notifyCanvasListeners(CanvasListener.TRANSLATION);
+    }
+
+    /**
+     * Zooms to the on screen (in components coordinates) position.
+     * 
+     * @param x
+     *            The x coordinate.
+     * @param y
+     *            The y coordinate.
+     * @param zooming
+     *            The amount of zooming.
+     */
+    public void zoomTo(final double x, final double y, final int zooming) {
+        zoomTo(x, y, Math.pow(1.1, -zooming));
+    }
+
+    @Override
+    public void zoomTo(final double x, final double y, final double factor) {
+        // P = (off - mouse) / zoom
+        // P = (newOff - mouse) / newZoom
+        // newOff = (off - mouse) / zoom * newZoom + mouse
+        // newOff = (off - mouse) * factor + mouse
+        zoom *= factor;
+        // set the offset directly
+        dx = (dx - x) * factor + x;
+        dy = (dy - y) * factor + y;
+        invalidateOutlines(CanvasListener.SCREEN);
+    }
+
+    @Override
+    public void zoom(final double factor) {
+        final Dimension dim = getSize();
+        zoomTo(dim.width / 2.0, dim.height / 2.0, factor);
+    }
+
+    /**
+     * The default x offset.
+     */
+    private double defaultDx = 0.0;
+
+    /**
+     * The default y offset.
+     */
+    private double defaultDy = 0.0;
+
+    /**
+     * The default zoom.
+     */
+    private double defaultZoom = 1.0;
+
+    @Override
+    public void defaultView() {
+        dx = defaultDx;
+        dy = defaultDy;
+        zoom = defaultZoom;
+        invalidateOutlines(CanvasListener.SCREEN);
+    }
+
+    @Override
+    public void setDefaultView() {
+        defaultDx = dx;
+        defaultDy = dy;
+        defaultZoom = zoom;
     }
 
     @Override
@@ -420,11 +497,33 @@ public class CanvasComponent extends JComponent implements Canvas {
         return curItemHeight;
     }
 
+    /**
+     * Calculates the real coordinate from the components coordinate.
+     * 
+     * @param x
+     *            The components x coordinate.
+     * @return The real coordinate.
+     */
+    protected double getXForScreen(final double x) {
+        return (x - dx) / zoom;
+    }
+
+    /**
+     * Calculates the real coordinate from the components coordinate.
+     * 
+     * @param y
+     *            The components y coordinate.
+     * @return The real coordinate.
+     */
+    protected double getYForScreen(final double y) {
+        return (y - dy) / zoom;
+    }
+
     @Override
     public void addItem(final int groupID, final double tx, final double ty,
             final double width, final double height) {
-        final double x = tx - dx;
-        final double y = ty - dy;
+        final double x = getXForScreen(tx);
+        final double y = getYForScreen(ty);
         final List<Rectangle2D> group = items.get(groupID);
         group.add(new Rectangle2D.Double(x - width * 0.5, y - height * 0.5,
                 width, height));
@@ -433,8 +532,8 @@ public class CanvasComponent extends JComponent implements Canvas {
 
     @Override
     public List<Position> getItemsAt(final double tx, final double ty) {
-        final double x = tx - dx;
-        final double y = ty - dy;
+        final double x = getXForScreen(tx);
+        final double y = getYForScreen(ty);
         final List<Position> res = new LinkedList<Position>();
         int groupID = 0;
         for (final List<Rectangle2D> group : items) {
@@ -462,7 +561,8 @@ public class CanvasComponent extends JComponent implements Canvas {
     @Override
     public void moveItem(final Position pos, final double dx, final double dy) {
         final Rectangle2D r = pos.rect;
-        r.setRect(r.getMinX() + dx, r.getMinY() + dy, r.getWidth(),
+        r.setRect(r.getMinX() + dx / zoom, r.getMinY() + dy / zoom,
+                r.getWidth(),
                 r.getHeight());
         notifyCanvasListeners(CanvasListener.ITEMS);
     }
@@ -507,6 +607,8 @@ public class CanvasComponent extends JComponent implements Canvas {
         g2d.fillRect(0, 0, (int) r.getWidth() - 1, (int) r.getHeight() - 1);
         // translate the scene
         g2d.translate(dx, dy);
+        // zoom the scene
+        g2d.scale(zoom, zoom);
         final float step = 1f / count;
         float hue = 0f;
         int pos = 0;
