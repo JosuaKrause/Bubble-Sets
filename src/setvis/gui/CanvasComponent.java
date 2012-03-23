@@ -498,6 +498,18 @@ public class CanvasComponent extends JComponent implements Canvas {
     }
 
     /**
+     * Calculates the real coordinate of the given input in screen coordinates.
+     * 
+     * @param s
+     *            The coordinate in screen coordinates. Due to uniform zooming
+     *            both horizontal and vertical coordinates can be converted.
+     * @return In real coordinates.
+     */
+    protected double inReal(final double s) {
+        return s / zoom;
+    }
+
+    /**
      * Calculates the real coordinate from the components coordinate.
      * 
      * @param x
@@ -505,7 +517,7 @@ public class CanvasComponent extends JComponent implements Canvas {
      * @return The real coordinate.
      */
     protected double getXForScreen(final double x) {
-        return (x - dx) / zoom;
+        return inReal(x - dx);
     }
 
     /**
@@ -516,7 +528,7 @@ public class CanvasComponent extends JComponent implements Canvas {
      * @return The real coordinate.
      */
     protected double getYForScreen(final double y) {
-        return (y - dy) / zoom;
+        return inReal(y - dy);
     }
 
     @Override
@@ -561,7 +573,7 @@ public class CanvasComponent extends JComponent implements Canvas {
     @Override
     public void moveItem(final Position pos, final double dx, final double dy) {
         final Rectangle2D r = pos.rect;
-        r.setRect(r.getMinX() + dx / zoom, r.getMinY() + dy / zoom,
+        r.setRect(r.getMinX() + inReal(dx), r.getMinY() + inReal(dy),
                 r.getWidth(),
                 r.getHeight());
         notifyCanvasListeners(CanvasListener.ITEMS);
