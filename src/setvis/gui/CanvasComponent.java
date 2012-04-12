@@ -29,6 +29,7 @@ import setvis.shape.AbstractShapeGenerator;
 import setvis.shape.BSplineShapeGenerator;
 import setvis.shape.BezierShapeGenerator;
 import setvis.shape.CardinalSplineGenerator;
+import setvis.shape.KochanekBartelsSplineGenerator;
 import setvis.shape.PolygonShapeGenerator;
 import setvis.shape.ShapeSimplifier;
 
@@ -285,6 +286,9 @@ public class CanvasComponent extends JComponent implements Canvas {
             break;
         case CARDINAL:
             asc = new CardinalSplineGenerator(outline);
+            break;
+        case KOCHANEK:
+            asc = new KochanekBartelsSplineGenerator(outline);
             break;
         default:
             throw new InternalError("" + shapeType);

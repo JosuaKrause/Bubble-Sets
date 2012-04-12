@@ -49,12 +49,17 @@ public abstract class HermiteShapeGenerator extends RoundShapeGenerator {
         final List<Point2D> list = new LinkedList<Point2D>();
         final int count = points.length - (closed ? 0 : 1);
         final double g = granularity;
-        if (!closed) {
-            list.add(calcPoint(points, 0, 0, closed));
-        }
         for (int i = 0; i < count; ++i) {
-            for (int j = 1; j <= granularity; ++j) {
-                list.add(calcPoint(points, i, j / g, closed));
+            final int j = getPointIndex(points, closed, i, 1);
+            final Point2D p0 = points[i];
+            final Point2D p1 = points[j];
+            final Point2D t0 = getTangentFor(points, closed, i, false);
+            final Point2D t1 = getTangentFor(points, closed, j, true);
+            if (!closed && i == 0) {
+                list.add(calcPoint(p0, p1, t0, t1, 0));
+            }
+            for (int s = 1; s <= granularity; ++s) {
+                list.add(calcPoint(p0, p1, t0, t1, s / g));
             }
         }
         return parent.convertToShape(list.toArray(new Point2D[list.size()]),
@@ -86,13 +91,8 @@ public abstract class HermiteShapeGenerator extends RoundShapeGenerator {
     }
 
     // evaluates a point on the hermite curve
-    private Point2D calcPoint(final Point2D[] points, final int i,
-            final double s, final boolean closed) {
-        final int j = getPointIndex(points, closed, i, 1);
-        final Point2D p0 = points[i];
-        final Point2D p1 = points[j];
-        final Point2D t0 = getMaybeCachedTangentFor(points, closed, i);
-        final Point2D t1 = getMaybeCachedTangentFor(points, closed, j);
+    private static Point2D calcPoint(final Point2D p0, final Point2D p1,
+            final Point2D t0, final Point2D t1, final double s) {
         final double s2 = s * s;
         final double s3 = s * s2;
         final double h1 = 2 * s3 - 3 * s2 + 1;
@@ -106,38 +106,8 @@ public abstract class HermiteShapeGenerator extends RoundShapeGenerator {
         return new Point2D.Double(x, y);
     }
 
-    private int tIndexCache;
-
-    private Point2D tPointCache0;
-
-    private Point2D tPointCache1;
-
-    private Point2D getMaybeCachedTangentFor(final Point2D[] points,
-            final boolean closed, final int i) {
-        if (i == tIndexCache) {
-            if (tPointCache0 == null) {
-                tPointCache0 = getTangentFor(points, closed, i);
-            }
-            return tPointCache0;
-        } else if (i == bound(tIndexCache + 1, points.length)) {
-            if (tPointCache1 == null) {
-                tPointCache1 = getTangentFor(points, closed, i);
-            }
-            return tPointCache1;
-        }
-        final int oldIndexCache = tIndexCache;
-        tIndexCache = bound(i - 1, points.length);
-        if (bound(oldIndexCache + 1, points.length) == tIndexCache) {
-            tPointCache0 = tPointCache1;
-        } else {
-            tPointCache0 = null;
-        }
-        tPointCache1 = getTangentFor(points, closed, i);
-        return tPointCache1;
-    }
-
     protected abstract Point2D getTangentFor(Point2D[] points, boolean closed,
-            int i);
+            int i, boolean incoming);
 
     public AbstractShapeGenerator getParent() {
         return parent;

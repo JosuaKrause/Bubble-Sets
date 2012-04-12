@@ -7,6 +7,7 @@ import setvis.shape.AbstractShapeGenerator;
 import setvis.shape.BSplineShapeGenerator;
 import setvis.shape.BezierShapeGenerator;
 import setvis.shape.CardinalSplineGenerator;
+import setvis.shape.KochanekBartelsSplineGenerator;
 import setvis.shape.PolygonShapeGenerator;
 import setvis.shape.ShapeSimplifier;
 
@@ -28,6 +29,8 @@ public enum ShapeType {
     BSPLINE("B-Splines", BSplineShapeGenerator.class),
 
     CARDINAL("Cardinal Splines", CardinalSplineGenerator.class),
+
+    KOCHANEK("Kochanek-Bartels Splines", KochanekBartelsSplineGenerator.class),
 
     ;
 

@@ -26,7 +26,8 @@ public class CardinalSplineGenerator extends HermiteShapeGenerator {
     }
 
     @Override
-    protected Point2D getTangentFor(final Point2D[] points, final boolean closed, final int i) {
+    protected Point2D getTangentFor(final Point2D[] points,
+            final boolean closed, final int i, final boolean incoming) {
         final Point2D m1 = getPoint(points, closed, i, -1);
         final Point2D p1 = getPoint(points, closed, i, 1);
         return VecUtil.mulVec(VecUtil.subVec(p1, m1), a);
