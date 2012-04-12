@@ -7,11 +7,11 @@ import setvis.VecUtil;
 
 public class KochanekBartelsSplineGenerator extends HermiteShapeGenerator {
 
-    private double t = 0.4;
+    private double t = -0.5;
 
-    private double c = 0.3;
+    private double c = 0;
 
-    private double b = 0.6;
+    private double b = -0.5;
 
     public KochanekBartelsSplineGenerator(final SetOutline out) {
         super(out);
