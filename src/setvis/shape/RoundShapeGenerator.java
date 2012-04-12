@@ -48,12 +48,20 @@ public abstract class RoundShapeGenerator extends AbstractShapeGenerator {
      */
     protected final int getOtherIndex(final int index, final int len,
             final boolean next) {
-        return ((next ^ clockwise) ? (index + len - 1) : (index + 1)) % len;
+        return bound((next ^ clockwise) ? (index + len - 1) : (index + 1), len);
     }
 
     protected final int getRelativeIndex(final int index, final int relIndex,
             final int len) {
-        return (index + (clockwise ? relIndex : -relIndex)) % len;
+        return bound(index + (clockwise ? relIndex : -relIndex), len);
+    }
+
+    protected static final int bound(int i, final int len) {
+        i %= len;
+        if (i < 0) {
+            i += len;
+        }
+        return i;
     }
 
     public boolean isClockwise() {

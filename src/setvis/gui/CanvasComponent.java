@@ -28,6 +28,7 @@ import setvis.ch.ConvexHull;
 import setvis.shape.AbstractShapeGenerator;
 import setvis.shape.BSplineShapeGenerator;
 import setvis.shape.BezierShapeGenerator;
+import setvis.shape.CardinalSplineGenerator;
 import setvis.shape.PolygonShapeGenerator;
 import setvis.shape.ShapeSimplifier;
 
@@ -281,6 +282,9 @@ public class CanvasComponent extends JComponent implements Canvas {
                 asc = new BSplineShapeGenerator(new ShapeSimplifier(
                         new PolygonShapeGenerator(outline), simplifyTolerance));
             }
+            break;
+        case CARDINAL:
+            asc = new CardinalSplineGenerator(outline);
             break;
         default:
             throw new InternalError("" + shapeType);

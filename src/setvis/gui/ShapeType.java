@@ -6,6 +6,7 @@ import java.util.Map;
 import setvis.shape.AbstractShapeGenerator;
 import setvis.shape.BSplineShapeGenerator;
 import setvis.shape.BezierShapeGenerator;
+import setvis.shape.CardinalSplineGenerator;
 import setvis.shape.PolygonShapeGenerator;
 import setvis.shape.ShapeSimplifier;
 
@@ -25,6 +26,8 @@ public enum ShapeType {
 
     /** B-Splines shape generator. */
     BSPLINE("B-Splines", BSplineShapeGenerator.class),
+
+    CARDINAL("Cardinal Splines", CardinalSplineGenerator.class),
 
     ;
 
