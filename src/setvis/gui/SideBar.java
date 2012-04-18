@@ -48,17 +48,17 @@ public class SideBar extends JPanel {
   /**
    * The color to indicate an invalid number.
    */
-  private static final Color ERROR = new Color(Color.HSBtoRGB(0f, 0.6f, 1f));
+  public static final Color ERROR = new Color(Color.HSBtoRGB(0f, 0.6f, 1f));
 
   /**
    * The normal input background.
    */
-  private static final Color NORMAL = Color.WHITE;
+  public static final Color NORMAL = Color.WHITE;
 
   /**
    * The minimal rectangle size.
    */
-  private static final int MIN_SIZE = 10;
+  public static final int MIN_SIZE = 10;
 
   /**
    * The underlying canvas.
@@ -79,7 +79,7 @@ public class SideBar extends JPanel {
    * 
    * @author Joschi <josua.krause@googlemail.com>
    */
-  private class CanvasListModel extends AbstractListModel {
+  protected class CanvasListModel extends AbstractListModel {
 
     // serial version uid
     private static final long serialVersionUID = 3431270899264849193L;
@@ -167,18 +167,20 @@ public class SideBar extends JPanel {
     constraint.fill = GridBagConstraints.BOTH;
     // the combo-box for outlines
     outlineBox = new JComboBox(OutlineType.values());
+    final JComboBox ob = outlineBox;
     addHor(new JLabel("Outline:"), outlineBox);
     // the combo-box for shape creators
     shapeBox = new JComboBox(ShapeType.values());
+    final JComboBox sb = shapeBox;
     addHor(new JLabel("Shape:"), shapeBox);
     // interaction for the shape and outline combo-boxes
     final ActionListener shapeOutlineListener = new ActionListener() {
 
       @Override
       public void actionPerformed(final ActionEvent e) {
-        canvas.setShapeAndOutline(
-            (OutlineType) outlineBox.getSelectedItem(),
-            (ShapeType) shapeBox.getSelectedItem());
+        cc.setShapeAndOutline(
+            (OutlineType) ob.getSelectedItem(),
+            (ShapeType) sb.getSelectedItem());
       }
 
     };
@@ -187,18 +189,19 @@ public class SideBar extends JPanel {
     // the groups list
     listModel = new CanvasListModel();
     list = new JList(listModel);
-    list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    list.setLayoutOrientation(JList.VERTICAL);
-    list.addListSelectionListener(new ListSelectionListener() {
+    final JList ll = list;
+    ll.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    ll.setLayoutOrientation(JList.VERTICAL);
+    ll.addListSelectionListener(new ListSelectionListener() {
 
       @Override
       public void valueChanged(final ListSelectionEvent e) {
         // selection of groups
-        canvas.setCurrentGroup(list.getSelectedIndex());
+        cc.setCurrentGroup(ll.getSelectedIndex());
       }
 
     });
-    add(new JScrollPane(list), constraint);
+    add(new JScrollPane(ll), constraint);
     // adding and removing groups
     final JButton addGroup = new JButton(new AbstractAction("+") {
 
@@ -207,9 +210,9 @@ public class SideBar extends JPanel {
 
       @Override
       public void actionPerformed(final ActionEvent e) {
-        canvas.addGroup();
+        cc.addGroup();
         // select the newly created group
-        list.setSelectedIndex(canvas.getGroupCount() - 1);
+        ll.setSelectedIndex(cc.getGroupCount() - 1);
       }
 
     });
@@ -220,7 +223,7 @@ public class SideBar extends JPanel {
 
       @Override
       public void actionPerformed(final ActionEvent e) {
-        canvas.removeSelectedGroup();
+        cc.removeSelectedGroup();
       }
 
     });
@@ -230,7 +233,7 @@ public class SideBar extends JPanel {
 
       @Override
       public void actionPerformed(final ActionEvent e) {
-        canvas.defaultView();
+        cc.defaultView();
       }
 
     });
@@ -248,25 +251,26 @@ public class SideBar extends JPanel {
     add(outlinePanel, constraint);
     // draw points and simplify tolerance
     drawPoints = new JCheckBox("Show points");
+    final JCheckBox dp = drawPoints;
     drawPoints.addChangeListener(new ChangeListener() {
 
       @Override
       public void stateChanged(final ChangeEvent e) {
-        canvas.setDrawPoints(drawPoints.isSelected());
+        cc.setDrawPoints(dp.isSelected());
       }
 
     });
     addHor(drawPoints);
     simplifyShape = new JCheckBox("Simplify shapes");
+    final JCheckBox sis = simplifyShape;
     simplifyTolerance = new JSlider(0, 1000);
+    final JSlider sit = simplifyTolerance;
     simplifyLabel = new JLabel();
     final ChangeListener simplifyListener = new ChangeListener() {
 
       @Override
       public void stateChanged(final ChangeEvent e) {
-        canvas.setTolerance(simplifyShape.isSelected()
-            ? calcTolerance(simplifyTolerance
-                .getValue()) : -1.0);
+        cc.setTolerance(sis.isSelected() ? calcTolerance(sit.getValue()) : -1.0);
       }
     };
     simplifyShape.addChangeListener(simplifyListener);
@@ -274,11 +278,12 @@ public class SideBar extends JPanel {
     addHor(simplifyShape, simplifyTolerance, simplifyLabel, null);
     // border slider
     borderSlider = new JSlider(SwingConstants.HORIZONTAL, 0, 20, 10);
+    final JSlider bs = borderSlider;
     final ChangeListener borderListener = new ChangeListener() {
 
       @Override
       public void stateChanged(final ChangeEvent e) {
-        canvas.setShapeBorder(borderSlider.getValue());
+        cc.setShapeBorder(bs.getValue());
       }
 
     };
@@ -286,8 +291,10 @@ public class SideBar extends JPanel {
     borderSliderLabel = new JLabel();
     addHor(new JLabel("Border:"), borderSlider, borderSliderLabel);
     // the rectangle width and height input fields
-    width = new JTextField(4);
-    height = new JTextField(4);
+    final JTextField width = new JTextField(4);
+    final JTextField height = new JTextField(4);
+    this.width = width;
+    this.height = height;
     width.setMaximumSize(width.getPreferredSize());
     height.setMaximumSize(height.getPreferredSize());
     final ActionListener bounds = new ActionListener() {
@@ -311,12 +318,12 @@ public class SideBar extends JPanel {
         if(w < MIN_SIZE) {
           width.setBackground(ERROR);
         } else {
-          canvas.setCurrentItemWidth(w);
+          cc.setCurrentItemWidth(w);
         }
         if(h < MIN_SIZE) {
           height.setBackground(ERROR);
         } else {
-          canvas.setCurrentItemHeight(h);
+          cc.setCurrentItemHeight(h);
         }
       }
     };
@@ -335,26 +342,28 @@ public class SideBar extends JPanel {
   }
 
   // the maximal tolerance reachable with the slider
-  private final double MAX_TOLERANCE = 10.0;
+  private static final double MAX_TOLERANCE = 10.0;
 
   /**
+   * Getter.
+   * 
    * @param from The slider position.
    * @return The tolerance for the slider position, i.e. a value between 0 and
    *         1000.
    */
-  private double calcTolerance(final int from) {
+  public static final double calcTolerance(final int from) {
     return from / 1000.0 * MAX_TOLERANCE;
   }
 
   /**
+   * Getter.
+   * 
    * @param fromTolerance The tolerance.
    * @return The slider position for the given tolerance.
    */
-  private int calcFromTolerance(final double fromTolerance) {
-    return Math
-        .min(
-            Math.max((int) (fromTolerance / MAX_TOLERANCE * 1000.0), 0),
-            1000);
+  public static final int calcFromTolerance(final double fromTolerance) {
+    return Math.min(
+        Math.max((int) (fromTolerance / MAX_TOLERANCE * 1000.0), 0), 1000);
   }
 
   /**
@@ -413,8 +422,7 @@ public class SideBar extends JPanel {
         simplifyTolerance.setValue(calcFromTolerance(tolerance));
       }
       final String text =
-          (calcTolerance(simplifyTolerance.getValue()) + "0000")
-              .substring(0, 4);
+          (calcTolerance(simplifyTolerance.getValue()) + "0000").substring(0, 4);
       simplifyLabel.setText(text);
       refreshOutlineContent(outlineType, so);
     }
