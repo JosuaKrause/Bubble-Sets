@@ -18,7 +18,7 @@ import setvis.SetOutline;
  * 
  * @author Joschi <josua.krause@googlemail.com>
  */
-public class BSplineShapeGenerator extends RoundShapeGenerator {
+public class BSplineShapeGenerator extends RoundShapeDecorator {
 
   // since the basic function is fixed this value should not be changed
   private static final int ORDER = 3;
@@ -28,8 +28,6 @@ public class BSplineShapeGenerator extends RoundShapeGenerator {
   private static final int REL_END = 1;
 
   private static final int REL_START = REL_END - ORDER;
-
-  private final AbstractShapeGenerator parent;
 
   private int granularity = 6;
 
@@ -49,8 +47,7 @@ public class BSplineShapeGenerator extends RoundShapeGenerator {
    * @param parent The parent to decorate.
    */
   public BSplineShapeGenerator(final AbstractShapeGenerator parent) {
-    super(parent.getSetOutline(), true);
-    this.parent = parent;
+    super(parent, true);
   }
 
   /**
@@ -73,9 +70,9 @@ public class BSplineShapeGenerator extends RoundShapeGenerator {
   }
 
   @Override
-  public Shape convertToShape(final Point2D[] points, final boolean closed) {
+  public Point2D[] convert(final Point2D[] points, final boolean closed) {
     // covering special cases
-    if(points.length < 3) return parent.convertToShape(points, closed);
+    if(points.length < 3) return points;
     // actual b-spline calculation
     final List<Point2D> list = new LinkedList<Point2D>();
     final int count = points.length + ORDER - 1;
@@ -89,8 +86,7 @@ public class BSplineShapeGenerator extends RoundShapeGenerator {
         list.add(calcPoint(points, i, j / g, closed));
       }
     }
-    return parent.convertToShape(list.toArray(new Point2D[list.size()]),
-        closed);
+    return list.toArray(new Point2D[list.size()]);
   }
 
   private static double basicFunction(final int i, final double t) {
@@ -123,15 +119,6 @@ public class BSplineShapeGenerator extends RoundShapeGenerator {
       py += bf * p.getY();
     }
     return new Point2D.Double(px, py);
-  }
-
-  /**
-   * Getter.
-   * 
-   * @return The parent.
-   */
-  public AbstractShapeGenerator getParent() {
-    return parent;
   }
 
 }

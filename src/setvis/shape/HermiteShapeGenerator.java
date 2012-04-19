@@ -1,24 +1,39 @@
 package setvis.shape;
 
-import java.awt.Shape;
 import java.awt.geom.Point2D;
 import java.util.LinkedList;
 import java.util.List;
 
 import setvis.SetOutline;
 
-public abstract class HermiteShapeGenerator extends RoundShapeGenerator {
+/**
+ * A generic hermite shape generator. The tangent calculation must be done by a
+ * subclass.
+ * 
+ * @author Joschi <josua.krause@googlemail.com>
+ */
+public abstract class HermiteShapeGenerator extends RoundShapeDecorator {
 
   private final AbstractShapeGenerator parent;
 
   private int granularity = 6;
 
+  /**
+   * Creates a hermite shape generator for a set outline.
+   * 
+   * @param outline The outline.
+   */
   public HermiteShapeGenerator(final SetOutline outline) {
     this(new PolygonShapeGenerator(outline));
   }
 
+  /**
+   * Creates an hermite shape generator.
+   * 
+   * @param parent The parent.
+   */
   public HermiteShapeGenerator(final AbstractShapeGenerator parent) {
-    super(parent.getSetOutline(), true);
+    super(parent, true);
     this.parent = parent;
   }
 
@@ -33,6 +48,8 @@ public abstract class HermiteShapeGenerator extends RoundShapeGenerator {
   }
 
   /**
+   * Getter.
+   * 
    * @return The granularity is the number of line segments per base point.
    */
   public int getGranularity() {
@@ -40,9 +57,9 @@ public abstract class HermiteShapeGenerator extends RoundShapeGenerator {
   }
 
   @Override
-  public Shape convertToShape(final Point2D[] points, final boolean closed) {
+  public Point2D[] convert(final Point2D[] points, final boolean closed) {
     // covering special cases
-    if(points.length < 3) return parent.convertToShape(points, closed);
+    if(points.length < 3) return points;
     // actual hermite-curve calculation
     final List<Point2D> list = new LinkedList<Point2D>();
     final int count = points.length - (closed ? 0 : 1);
@@ -60,8 +77,7 @@ public abstract class HermiteShapeGenerator extends RoundShapeGenerator {
         list.add(calcPoint(p0, p1, t0, t1, s / g));
       }
     }
-    return parent.convertToShape(list.toArray(new Point2D[list.size()]),
-        closed);
+    return list.toArray(new Point2D[list.size()]);
   }
 
   /**
@@ -78,6 +94,16 @@ public abstract class HermiteShapeGenerator extends RoundShapeGenerator {
     return points[getPointIndex(points, closed, i, j)];
   }
 
+  /**
+   * Gets the index of a point.
+   * 
+   * @param points The points array.
+   * @param closed Whether the curve should be closed, i.e. index 0 and
+   *          {@code points.length} are the same.
+   * @param i The index.
+   * @param j The relative position.
+   * @return The index of the point.
+   */
   protected int getPointIndex(final Point2D[] points, final boolean closed,
       final int i, final int j) {
     return closed ? getRelativeIndex(i, j, points.length) : Math.max(0,
@@ -100,9 +126,24 @@ public abstract class HermiteShapeGenerator extends RoundShapeGenerator {
     return new Point2D.Double(x, y);
   }
 
+  /**
+   * Calculates the tanget for the given point.
+   * 
+   * @param points The point array.
+   * @param closed Whether the shape is closed.
+   * @param i The index of the current point.
+   * @param incoming Whether it is an incoming or outgoing tangent.
+   * @return The tangent.
+   */
   protected abstract Point2D getTangentFor(Point2D[] points, boolean closed,
       int i, boolean incoming);
 
+  /**
+   * Getter.
+   * 
+   * @return The parent.
+   */
+  @Override
   public AbstractShapeGenerator getParent() {
     return parent;
   }

@@ -1,11 +1,9 @@
 package setvis.shape;
 
-import java.awt.Shape;
 import java.awt.geom.Point2D;
 import java.util.LinkedList;
 import java.util.List;
 
-import setvis.SetOutline;
 import setvis.VecUtil;
 
 /**
@@ -18,10 +16,7 @@ import setvis.VecUtil;
  * 
  * @author Joschi <josua.krause@googlemail.com>
  */
-public class ShapeSimplifier extends AbstractShapeGenerator {
-
-  // the underlying shape generator
-  private final AbstractShapeGenerator parent;
+public class ShapeSimplifier extends ShapeGeneratorDecorator {
 
   // the maximum distance where points are regarded as beneath
   private double tolerance;
@@ -45,14 +40,15 @@ public class ShapeSimplifier extends AbstractShapeGenerator {
    */
   public ShapeSimplifier(final AbstractShapeGenerator parent,
       final double tolerance) {
-    super(parent.getSetOutline());
-    this.parent = parent;
+    super(parent);
     // proper initialization of the tolerance
     setTolerance(tolerance);
   }
 
   @Override
   public void setRadius(final double radius) {
+    // parent is null during initialization
+    final AbstractShapeGenerator parent = getParent();
     if(parent != null) {
       parent.setRadius(radius);
     }
@@ -60,7 +56,7 @@ public class ShapeSimplifier extends AbstractShapeGenerator {
 
   @Override
   public double getRadius() {
-    return parent.getRadius();
+    return getParent().getRadius();
   }
 
   // the square of the tolerance for fast checks
@@ -101,11 +97,6 @@ public class ShapeSimplifier extends AbstractShapeGenerator {
    */
   public boolean isDisabled() {
     return tolerance < 0.0;
-  }
-
-  @Override
-  public SetOutline getSetOutline() {
-    return parent.getSetOutline();
   }
 
   /**
@@ -238,9 +229,8 @@ public class ShapeSimplifier extends AbstractShapeGenerator {
   }
 
   @Override
-  public Shape convertToShape(final Point2D[] points, final boolean closed) {
-    if(isDisabled() || points.length < 3) return parent.convertToShape(points,
-        closed);
+  protected Point2D[] convert(final Point2D[] points, final boolean closed) {
+    if(isDisabled() || points.length < 3) return points;
     final List<State> states = new LinkedList<State>();
     int start = 0;
     while(start < points.length) {
@@ -251,16 +241,7 @@ public class ShapeSimplifier extends AbstractShapeGenerator {
       start = s.getEndIndex();
       states.add(s);
     }
-    return parent.convertToShape(createArrayFrom(states), closed);
-  }
-
-  /**
-   * Getter.
-   * 
-   * @return The parent.
-   */
-  public AbstractShapeGenerator getParent() {
-    return parent;
+    return createArrayFrom(states);
   }
 
 }

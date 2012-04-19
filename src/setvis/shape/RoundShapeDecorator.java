@@ -14,7 +14,7 @@ import setvis.SetOutline;
  * 
  * @author Joschi <josua.krause@googlemail.com>
  */
-public abstract class RoundShapeGenerator extends AbstractShapeGenerator {
+public abstract class RoundShapeDecorator extends ShapeGeneratorDecorator {
 
   /**
    * Whether the result of the set outlines are interpreted in clockwise order.
@@ -22,15 +22,15 @@ public abstract class RoundShapeGenerator extends AbstractShapeGenerator {
   private final boolean clockwise;
 
   /**
-   * Creates an {@link RoundShapeGenerator} with a given set outline creator.
+   * Creates an {@link RoundShapeDecorator} with a given set outline creator.
    * 
-   * @param outline The set outline.
+   * @param parent The parent generator.
    * @param clockwise Whether the result of the set outlines are interpreted in
    *          clockwise order.
    */
-  public RoundShapeGenerator(final SetOutline outline,
+  public RoundShapeDecorator(final AbstractShapeGenerator parent,
       final boolean clockwise) {
-    super(outline);
+    super(parent);
     this.clockwise = clockwise;
   }
 
