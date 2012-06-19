@@ -15,39 +15,37 @@ import setvis.SetOutline;
  * {@link SetOutline#createOutline(Rectangle2D[], Rectangle2D[])}.
  * 
  * @author Joschi <josua.krause@googlemail.com>
- * 
  */
 public class PolygonShapeGenerator extends AbstractShapeGenerator {
 
-	/**
-	 * Creates a new {@link PolygonShapeGenerator} with the given set outline
-	 * creator.
-	 * 
-	 * @param outline
-	 *            The set outline generator.
-	 */
-	public PolygonShapeGenerator(final SetOutline outline) {
-		super(outline);
-	}
+  /**
+   * Creates a new {@link PolygonShapeGenerator} with the given set outline
+   * creator.
+   * 
+   * @param outline The set outline generator.
+   */
+  public PolygonShapeGenerator(final SetOutline outline) {
+    super(outline);
+  }
 
-	@Override
-	public Shape convertToShape(final Point2D[] points, final boolean closed) {
-		final GeneralPath res = new GeneralPath();
-		boolean first = true;
-		for (final Point2D pos : points) {
-			final double x = pos.getX();
-			final double y = pos.getY();
-			if (first) {
-				res.moveTo(x, y);
-				first = false;
-			} else {
-				res.lineTo(x, y);
-			}
-		}
-		if (!first && closed) {
-			res.closePath();
-		}
-		return res;
-	}
+  @Override
+  public Shape convertToShape(final Point2D[] points, final boolean closed) {
+    final GeneralPath res = new GeneralPath();
+    boolean first = true;
+    for(final Point2D pos : points) {
+      final double x = pos.getX();
+      final double y = pos.getY();
+      if(first) {
+        res.moveTo(x, y);
+        first = false;
+      } else {
+        res.lineTo(x, y);
+      }
+    }
+    if(!first && closed) {
+      res.closePath();
+    }
+    return res;
+  }
 
 }
