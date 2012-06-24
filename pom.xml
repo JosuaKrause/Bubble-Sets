@@ -33,11 +33,11 @@ http://faculty.uoit.ca/collins/research/bubblesets/</description>
 	<distributionManagement>
 	    <repository>
 	        <id>repo</id>
-	        <url>https://github.com/JosuaKrause/joschi-mvn-repo/raw/master/releases</url>
+	        <url>https://raw.github.com/JosuaKrause/joschi-mvn-repo/master/releases</url>
 	    </repository>
 	    <snapshotRepository>
 	        <id>snapshot-repo</id>
-	        <url>https://github.com/JosuaKrause/joschi-mvn-repo/raw/master/snapshots</url>
+	        <url>https://raw.github.com/JosuaKrause/joschi-mvn-repo/master/snapshots</url>
 	    </snapshotRepository>
 	</distributionManagement>
 </project>
