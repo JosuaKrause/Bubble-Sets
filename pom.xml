@@ -1,0 +1,43 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>Bubble-Sets</groupId>
+	<artifactId>Bubble-Sets</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>Bubble-Sets</name>
+	<description>An implementation of bubble sets without the use of external libraries.
+http://faculty.uoit.ca/collins/research/bubblesets/</description>
+	<properties>
+		<compileSource>1.6</compileSource>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+	</properties>
+	<url>https://github.com/JosuaKrause/Bubble-Sets</url>
+	<issueManagement>
+		<system>GitHub Tracker</system>
+		<url>https://github.com/JosuaKrause/Bubble-Sets/issues</url>
+	</issueManagement>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<distributionManagement>
+	    <repository>
+	        <id>repo</id>
+	        <url>https://github.com/JosuaKrause/joschi-mvn-repo/raw/master/releases</url>
+	    </repository>
+	    <snapshotRepository>
+	        <id>snapshot-repo</id>
+	        <url>https://github.com/JosuaKrause/joschi-mvn-repo/raw/master/snapshots</url>
+	    </snapshotRepository>
+	</distributionManagement>
+</project>
