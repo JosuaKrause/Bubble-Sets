@@ -1,2 +1,2 @@
-mvn -DaltDeploymentRepository=snapshot-repo::default::file:../joschi-mvn-repo/snapshots clean deploy
+mvn -DaltDeploymentRepository=repo::default::file:../joschi-mvn-repo/releases clean deploy
 

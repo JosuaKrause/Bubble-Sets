@@ -3,10 +3,10 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>joschi-mvn</groupId>
 	<artifactId>Bubble-Sets</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<name>Bubble-Sets</name>
 	<description>An implementation of bubble sets without the use of external libraries.
-http://faculty.uoit.ca/collins/research/bubblesets/</description>
+		http://faculty.uoit.ca/collins/research/bubblesets/</description>
 	<properties>
 		<compileSource>1.6</compileSource>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -26,18 +26,24 @@ http://faculty.uoit.ca/collins/research/bubblesets/</description>
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
+					<archive>
+						<manifest>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+						</manifest>
+					</archive>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
 	<distributionManagement>
-	    <repository>
-	        <id>repo</id>
-	        <url>https://raw.github.com/JosuaKrause/joschi-mvn-repo/master/releases</url>
-	    </repository>
-	    <snapshotRepository>
-	        <id>snapshot-repo</id>
-	        <url>https://raw.github.com/JosuaKrause/joschi-mvn-repo/master/snapshots</url>
-	    </snapshotRepository>
+		<repository>
+			<id>repo</id>
+			<url>https://raw.github.com/JosuaKrause/joschi-mvn-repo/master/releases</url>
+		</repository>
+		<snapshotRepository>
+			<id>snapshot-repo</id>
+			<url>https://raw.github.com/JosuaKrause/joschi-mvn-repo/master/snapshots</url>
+		</snapshotRepository>
 	</distributionManagement>
 </project>

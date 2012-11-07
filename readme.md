@@ -1,5 +1,5 @@
 
-== Bubble Sets ==
+## Bubble Sets
 
 This is an implementation of [bubble sets] [1]
 without the use of external libraries.
@@ -75,21 +75,21 @@ And the following shape generators:
 - setvis.shape.BSplineShapeGenerator
 - setvis.shape.ShapeSimplifier (reduces the shape complexity)
 
-== Maven Integration ==
+## Maven Integration
 
 In order to use bubble sets within a Maven project you can use the following dependency:
 
     <dependency>
       <groupId>Bubble-Sets</groupId>
       <artifactId>Bubble-Sets</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>0.0.1</version>
     </dependency>
 
 However, this requires an additional repository in the repositories section of the pom.xml file:
 
     <repository>
-        <id>joschi-snapshots</id>
-        <url>https://raw.github.com/JosuaKrause/joschi-mvn-repo/master/snapshots</url>
+        <id>joschi</id>
+        <url>https://raw.github.com/JosuaKrause/joschi-mvn-repo/master/releases</url>
     </repository>
 
 [1]: http://faculty.uoit.ca/collins/research/bubblesets/ "Collins, Christopher; Penn, Gerald; Carpendale, Sheelagh. Bubble Sets: Revealing Set Relations over Existing Visualizations. In IEEE Transactions on Visualization and Computer Graphics (Proceedings of the IEEE Conference on Information Visualization (InfoVis '09)), 15(6): November-December, 2009."
