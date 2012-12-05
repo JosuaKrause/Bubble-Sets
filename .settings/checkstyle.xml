@@ -27,8 +27,8 @@
     <module name="RedundantImport"/>
     <module name="LineLength">
       <property name="ignorePattern" value="^import"/>
-      <property name="tabWidth" value="2"/>
       <property name="max" value="90"/>
+      <property name="tabWidth" value="2"/>
     </module>
     <module name="EmptyForIteratorPad"/>
     <module name="MethodParamPad"/>
@@ -53,7 +53,10 @@
     <module name="AvoidNestedBlocks"/>
     <module name="LeftCurly"/>
     <module name="RightCurly"/>
-    <module name="DoubleCheckedLocking"/>
+    <module name="DoubleCheckedLocking">
+      <property name="severity" value="ignore"/>
+      <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
+    </module>
     <module name="EqualsHashCode"/>
     <module name="IllegalInstantiation"/>
     <module name="MagicNumber">
