@@ -4,14 +4,12 @@
 This is an implementation of [bubble sets] [1]
 without the use of external libraries.
 
-To build the project, you can use the ANT-script
-provided by build.xml - it generates two jars with
-their respective sources in zip files.
-
-The jar example.jar contains a little example
-program showing off the bubble sets. The other
-jar, bubbleset.jar, contains the api for the
-bubble sets.
+This project is build with Maven.
+Use `mvn install` to generate jars in the `target/` directory.
+The `Bubble-Sets-X.X.X.jar` contains the API for the bubble sets
+and `Bubble-Sets-X.X.X-example.jar` contains a little example program
+showing the bubble sets. Alternatively the project can be used as dependency
+in other Maven projects (see [below] (#maven-integration)).
 
 To get started, you can use the following code:
 
@@ -74,5 +72,23 @@ And the following shape generators:
 - setvis.shape.BezierShapeGenerator
 - setvis.shape.BSplineShapeGenerator
 - setvis.shape.ShapeSimplifier (reduces the shape complexity)
+
+### Maven Integration
+
+In order to use bubble sets within a Maven project you can use the following dependency
+(in the `<dependencies>` section)::
+
+    <dependency>
+      <groupId>joschi-mvn</groupId>
+      <artifactId>Bubble-Sets</artifactId>
+      <version>0.0.1</version>
+    </dependency>
+
+However, this requires an additional repository in the repositories section (`<repositories>`) of the pom.xml file:
+
+    <repository>
+        <id>joschi</id>
+        <url>http://merkur57.inf.uni-konstanz.de/~krause/mvn/releases</url>
+    </repository>
 
 [1]: http://faculty.uoit.ca/collins/research/bubblesets/ "Collins, Christopher; Penn, Gerald; Carpendale, Sheelagh. Bubble Sets: Revealing Set Relations over Existing Visualizations. In IEEE Transactions on Visualization and Computer Graphics (Proceedings of the IEEE Conference on Information Visualization (InfoVis '09)), 15(6): November-December, 2009."
