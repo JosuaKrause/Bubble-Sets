@@ -5,9 +5,9 @@ This is an implementation of [bubble sets] [1]
 without the use of external libraries.
 
 This project is build with Maven.
-Use `mvn install` to generate jars in the `target/` directory.
-The `Bubble-Sets-X.X.X.jar` contains the API for the bubble sets
-and `Bubble-Sets-X.X.X-example.jar` contains a little example program
+Use `mvn install` to generate jars in the *target/* directory.
+The *Bubble-Sets-X.X.X.jar* contains the API for the bubble sets
+and *Bubble-Sets-X.X.X-example.jar* contains a little example program
 showing the bubble sets. Alternatively the project can be used as dependency
 in other Maven projects (see [below] (#maven-integration)).
 
@@ -63,15 +63,15 @@ a possible use within a paint method:
 
 The following set outlines are available:
 
-- setvis.ch.ConvexHull
-- setvis.bubbleset.BubbleSet
+- `setvis.ch.ConvexHull`
+- `setvis.bubbleset.BubbleSet`
 
 And the following shape generators:
 
-- setvis.shape.PolygonShapeGenerator
-- setvis.shape.BezierShapeGenerator
-- setvis.shape.BSplineShapeGenerator
-- setvis.shape.ShapeSimplifier (reduces the shape complexity)
+- `setvis.shape.PolygonShapeGenerator`
+- `setvis.shape.BezierShapeGenerator`
+- `setvis.shape.BSplineShapeGenerator`
+- `setvis.shape.ShapeSimplifier` (reduces the shape complexity)
 
 ### Maven Integration
 
