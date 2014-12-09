@@ -4,7 +4,7 @@
 This is an implementation of [bubble sets] [1]
 without the use of external libraries.
 
-This project is build with Maven.
+This project can be build in eclipse as well as with Maven.
 Use `mvn install` to generate jars in the *target/* directory.
 The *Bubble-Sets-X.X.X.jar* contains the API for the bubble sets
 and *Bubble-Sets-X.X.X-example.jar* contains a little example program
@@ -54,7 +54,7 @@ a possible use within a paint method:
             // drawing the content
             g.setColor(Color.ORANGE);
             g.fill(shape);
-            
+
             // and then the outlines
             g.setColor(Color.BLACK);
             g.draw(shape);
@@ -88,7 +88,7 @@ However, this requires an additional repository in the repositories section (`<r
 
     <repository>
         <id>joschi</id>
-        <url>http://merkur57.inf.uni-konstanz.de/~krause/mvn/releases</url>
+        <url>http://josuakrause.github.io/info/mvn-repo/releases</url>
     </repository>
 
 [1]: http://faculty.uoit.ca/collins/research/bubblesets/ "Collins, Christopher; Penn, Gerald; Carpendale, Sheelagh. Bubble Sets: Revealing Set Relations over Existing Visualizations. In IEEE Transactions on Visualization and Computer Graphics (Proceedings of the IEEE Conference on Information Visualization (InfoVis '09)), 15(6): November-December, 2009."

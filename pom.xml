@@ -72,7 +72,7 @@
 	<distributionManagement>
 		<repository>
 			<id>repo</id>
-			<url>http://merkur57.inf.uni-konstanz.de/~krause/mvn/releases</url>
+			<url>http://josuakrause.github.io/info/mvn-repo/releases</url>
 		</repository>
 	</distributionManagement>
 </project>
