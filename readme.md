@@ -3,6 +3,7 @@
 
 This is an implementation of [bubble sets] [1]
 without the use of external libraries.
+A Javascript implementation can be found [here](https://github.com/JosuaKrause/bubblesets-js).
 
 This project can be build in eclipse as well as with Maven.
 Use `mvn install` to generate jars in the *target/* directory.
