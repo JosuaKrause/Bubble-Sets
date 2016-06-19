@@ -1,7 +1,7 @@
 
 ## Bubble Sets
 
-A Java implementation of [bubble sets] [1]
+A Java implementation of Christopher Collins' [bubble sets] [1]
 without the use of external libraries.
 A JavaScript implementation can be found [here](https://github.com/JosuaKrause/bubblesets-js).
 
