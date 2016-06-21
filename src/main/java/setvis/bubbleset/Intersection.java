@@ -20,7 +20,7 @@ public final class Intersection extends Point2D.Double {
    * 
    * @author Christopher Collins
    */
-  public static enum State {
+  public enum State {
     /** a point intersection */
     Point,
     /** parrallel */

@@ -14,7 +14,7 @@ public final class MarchingSquares {
     // no constructor
   }
 
-  private static enum Direction {
+  private enum Direction {
     N, S, E, W
   }
 
