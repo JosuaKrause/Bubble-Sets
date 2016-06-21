@@ -431,7 +431,7 @@ public class SideBar extends JPanel {
     }
     if((changes & CanvasListener.RECT_SIZE) != 0) {
       final int cw = canvas.getCurrentItemWidth();
-      final String tw = "" + cw;
+      final String tw = Integer.toString(cw);
       try {
         final int w = Integer.parseInt(width.getText());
         if(cw != w) {
@@ -441,7 +441,7 @@ public class SideBar extends JPanel {
         width.setText(tw);
       }
       final int ch = canvas.getCurrentItemHeight();
-      final String th = "" + ch;
+      final String th = Integer.toString(ch);
       try {
         final int h = Integer.parseInt(height.getText());
         if(ch != h) {
