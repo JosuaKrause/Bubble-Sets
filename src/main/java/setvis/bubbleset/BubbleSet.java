@@ -351,7 +351,7 @@ public class BubbleSet implements SetOutline {
       // lowering the threshold
 
       if(iterations > maxMarchingIterations / 2) {
-        if(negativeNodeInfluenceFactor != 0) {
+        if(Double.doubleToRawLongBits(negativeNodeInfluenceFactor) != 0) {
           threshold *= 0.95f;
           negativeNodeInfluenceFactor *= 0.8;
           fillPotentialArea(activeRegion, memberItems, nonMembers,
@@ -532,7 +532,7 @@ public class BubbleSet implements SetOutline {
     // add all positive energy (included items) first, as negative energy
     // (morphing) requires all positives to be already set
 
-    if(nodeInfluenceFactor != 0) {
+    if(Double.doubleToRawLongBits(nodeInfluenceFactor) != 0) {
       for(final Item item : members) {
         // add node energy
         influenceFactor = nodeInfluenceFactor;
@@ -546,7 +546,7 @@ public class BubbleSet implements SetOutline {
       } // end processing node items of this aggregate
     } // end processing positive node energy
 
-    if(edgeInfluenceFactor != 0) {
+    if(Double.doubleToRawLongBits(edgeInfluenceFactor) != 0) {
       // add the influence of all the virtual edges
       influenceFactor = edgeInfluenceFactor;
       final double a = 1 / ((edgeR0 - edgeR1) * (edgeR0 - edgeR1));
@@ -559,7 +559,7 @@ public class BubbleSet implements SetOutline {
 
     // calculate negative energy contribution for all other visible items
     // within bounds
-    if(negativeNodeInfluenceFactor != 0) {
+    if(Double.doubleToRawLongBits(negativeNodeInfluenceFactor) != 0) {
       for(final Rectangle2D item : nonMembers) {
         // if item is within influence bounds, add potential
         if(activeArea.intersects(item.getBounds())) {

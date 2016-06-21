@@ -81,7 +81,7 @@ public final class Intersection extends Point2D.Double {
     final double uB = (b.getY2() - b.getY1()) * (a.getX2() - a.getX1())
         - (b.getX2() - b.getX1()) * (a.getY2() - a.getY1());
 
-    if(uB != 0) {
+    if(java.lang.Double.doubleToRawLongBits(uB) != 0) {
       final double ua = uaT / uB;
       final double ub = ubT / uB;
 
@@ -94,7 +94,7 @@ public final class Intersection extends Point2D.Double {
       }
     } else {
       result =
-          (uaT == 0 || ubT == 0)
+          (java.lang.Double.doubleToRawLongBits(uaT) == 0 || java.lang.Double.doubleToRawLongBits(ubT) == 0)
               ? new Intersection(State.Coincident)
               : new Intersection(State.Parallel);
     }
@@ -120,7 +120,7 @@ public final class Intersection extends Point2D.Double {
     final double uB = (b.getY2() - b.getY1()) * (a.getX2() - a.getX1())
         - (b.getX2() - b.getX1()) * (a.getY2() - a.getY1());
 
-    if(uB != 0) {
+    if(java.lang.Double.doubleToRawLongBits(uB) != 0) {
       final double ua = uaT / uB;
       final double ub = ubT / uB;
 

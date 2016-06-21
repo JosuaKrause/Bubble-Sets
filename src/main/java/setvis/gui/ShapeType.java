@@ -121,7 +121,7 @@ public enum ShapeType {
       }
       creationPrefix(shaper, sb);
       creationText(parent, sb);
-      if(s.getTolerance() != 0.0) {
+      if(Double.doubleToRawLongBits(s.getTolerance()) != 0.0) {
         creationSeparator(sb);
         sb.append(s.getTolerance());
       }
