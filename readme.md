@@ -89,7 +89,7 @@ However, this requires an additional repository in the repositories section (`<r
 
     <repository>
         <id>joschi</id>
-        <url>http://www.josuakrause.com/mvn-repo/releases</url>
+        <url>https://www.josuakrause.com/mvn-repo/releases</url>
     </repository>
 
 [1]: http://vialab.science.uoit.ca/portfolio/bubblesets "Collins, Christopher; Penn, Gerald; Carpendale, Sheelagh. Bubble Sets: Revealing Set Relations over Existing Visualizations. In IEEE Transactions on Visualization and Computer Graphics (Proceedings of the IEEE Conference on Information Visualization (InfoVis '09)), 15(6): November-December, 2009."
