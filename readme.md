@@ -92,4 +92,4 @@ However, this requires an additional repository in the repositories section (`<r
         <url>https://www.josuakrause.com/mvn-repo/releases</url>
     </repository>
 
-[1]: http://vialab.science.uoit.ca/portfolio/bubblesets "Collins, Christopher; Penn, Gerald; Carpendale, Sheelagh. Bubble Sets: Revealing Set Relations over Existing Visualizations. In IEEE Transactions on Visualization and Computer Graphics (Proceedings of the IEEE Conference on Information Visualization (InfoVis '09)), 15(6): November-December, 2009."
+[1]: https://vialab.ca/research/bubble-sets "Collins, Christopher; Penn, Gerald; Carpendale, Sheelagh. Bubble Sets: Revealing Set Relations over Existing Visualizations. In IEEE Transactions on Visualization and Computer Graphics (Proceedings of the IEEE Conference on Information Visualization (InfoVis '09)), 15(6): November-December, 2009."
